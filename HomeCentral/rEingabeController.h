@@ -14,15 +14,14 @@
    IBOutlet UITextField* Datumfeld;
    IBOutlet UITextField* PickerDatumfeld;
    IBOutlet UIDatePicker *DatumPicker;
-   
-}
+  }
 
-@property (strong, nonatomic) UIDatePicker *DatumPicker;
+@property (strong, nonatomic) UIDatePicker *datumpicker;
 @property (strong, nonatomic) UITextField *monat;
 @property (strong, nonatomic) NSString *wochentag;
 @property (strong, nonatomic) NSString *stunde;
-@property (strong, nonatomic) UILabel *Datumfeld;
-@property (strong, nonatomic) UILabel *PickerDatumfeld;
+@property (strong, nonatomic) UITextField *datumfeld;
+@property (strong, nonatomic) UILabel *pickerdatumfeld;
 @property (weak, nonatomic) IBOutlet UITabBarItem *HomeButton;
 @property (weak, nonatomic) IBOutlet UITextField *Benutzernamefeld;
 @property (weak, nonatomic) IBOutlet UITextField *BenutzerPasswortfeld;
@@ -33,5 +32,7 @@
 
 - (IBAction)reportLogin:(id)sender;
 - (IBAction)reportAktualisieren:(id)sender;
+- (IBAction)reportTextFieldReturn:(id)sender;
+- (IBAction)reportBackgroundTouched:(id)sender;
 - (void)changeDateInLabel:(id)sender;
 @end

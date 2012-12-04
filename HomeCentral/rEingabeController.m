@@ -21,14 +21,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-   self.DatumPicker.date = [NSDate date];
-	// Do any additional setup after loading the view, typically from a nib.
+   self.datumpicker.date = [NSDate date];
 }
 
 - (IBAction)reportHeute:(id)sender
 {
    NSLog(@"reportHeute");
-   self.DatumPicker.date = [NSDate date];
+   self.datumpicker.date = [NSDate date];
    [self changeDateInLabel:sender];
    
 }
@@ -41,10 +40,10 @@
 - (IBAction)reportLogin:(id)sender
 {
    NSLog(@"reportLogin");
-   self.Datumfeld.text = [NSString stringWithFormat:@"%@",self.DatumPicker.date.description];
-   self.DatumPicker.date = [NSDate date];
+   self.datumfeld.text = [NSString stringWithFormat:@"%@",self.datumpicker.date.description];
+   self.datumpicker.date = [NSDate date];
 
-  self.wochentag = self.DatumPicker.date.description;
+  self.wochentag = self.datumpicker.date.description;
    NSDate *currDate = [NSDate date];   //Current Date
 
    NSDateFormatter *df = [[NSDateFormatter alloc] init];
@@ -147,21 +146,21 @@
 	//Use NSDateFormatter to write out the date in a friendly format
 	NSDateFormatter *df = [[NSDateFormatter alloc] init];
 	df.dateStyle = NSDateFormatterShortStyle;
-	self.PickerDatumfeld.text = [NSString stringWithFormat:@"%@",
-                 [df stringFromDate:self.DatumPicker.date]];
+	self.pickerdatumfeld.text = [NSString stringWithFormat:@"%@",
+                 [df stringFromDate:self.datumpicker.date]];
    NSDateFormatter *WochentagFormat = [[NSDateFormatter alloc] init];
    [WochentagFormat setDateFormat:@"d"];
-   self.wochentag = [WochentagFormat stringFromDate:self.DatumPicker.date];
+   self.wochentag = [WochentagFormat stringFromDate:self.datumpicker.date];
    
    NSLog(@"changeDateInLabel wochentag: %@",self.wochentag);
    
    NSDateFormatter *StundeFormat = [[NSDateFormatter alloc] init];
    [StundeFormat setDateFormat:@"HH"];
-   self.stunde = [StundeFormat stringFromDate:self.DatumPicker.date];
+   self.stunde = [StundeFormat stringFromDate:self.datumpicker.date];
    NSLog(@"changeDateInLabel stunde: %@",self.stunde);
 
 	self.monat = [NSString stringWithFormat:@"%@",
-                                [df stringFromDate:self.DatumPicker.date]];
+                                [df stringFromDate:self.datumpicker.date]];
    
    NSLog(@"changeDateInLabel monat: %@",self.monat);
 }
@@ -172,6 +171,19 @@
    NSLog(@"prepareForSegue: %@",[segue description]);
    
    //destination.labelText = @"Arrived from Scene 1";
+}
+
+- (IBAction)reportTextFieldReturn:(id)sender
+{
+   NSLog(@"reportTextFieldReturn");
+   [sender resignFirstResponder];
+}
+
+-(IBAction)reportBackgroundTouched:(id)sender
+{
+   NSLog(@"reportBackgroundTouched");
+   [self.datumfeld resignFirstResponder];
+
 }
 
 

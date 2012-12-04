@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+
 
 @interface rHomeController : UIViewController
-
+{
+   MKMapView *mapView;
+   IBOutlet MKMapView*  Karte;
+}
 @end
