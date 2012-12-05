@@ -79,7 +79,7 @@
    }
    
    bool elektroON = ([[lastDataArray objectAtIndex:7]intValue] & 0x10);
-   elektroON=1;
+   NSLog(@"elektroON: %d",elektroON);
    if (elektroON)
    {
       [self.heizung setHidden:NO];
@@ -89,24 +89,58 @@
       [self.heizung setHidden:YES];
       
    }
-   UIBarButtonItem *temporaryBarButtonItem = [[UIBarButtonItem alloc] init];
-	temporaryBarButtonItem.title = @"Back";
-	self.navigationItem.backBarButtonItem = temporaryBarButtonItem;
-
+   /*
+   UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
+   [self.backtaste setBackBarButtonItem:backButton];
+*/
+ //[self.navbar setBackBarButtonItem:self.backtaste];
    self.webfenster.delegate = self;
 	self.webfenster.scalesPageToFit = YES;
-	self.webfenster.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+	//self.webfenster.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+//[self.webfenster loadHTMLString:@"<h1>Visit <a href='http://www.fourtentech.com'>FourTen</a> for mobile application development!</h1>" baseURL:nil];
+  // UIWebView *callWebview = [[UIWebView alloc] init];
+ // NSURL *telURL = [NSURL URLWithString:@"tel://0552407844"];
+  //[self.webfenster loadRequest:[NSURLRequest requestWithURL:telURL]];
+   //[self produceHTMLForPage:1];
+}
 
+-(void)produceHTMLForPage:(NSInteger)pageNumber{
+   
+   //init a mutable string, initial capacity is not a problem, it is flexible
+   NSMutableString* string =[[NSMutableString alloc]initWithCapacity:10];
+   [string appendString:
+    @"<html>"
+    "<head>"
+    "<meta name=\"viewport\" content=\"width=320\"/>"
+    "</head>"
+    "<body>"
+    ];
+   [string appendString:@"</body>"
+    "</html>"
+    ];
+ 
+   [self.webfenster loadHTMLString:string baseURL:nil];        //load the HTML String on UIWebView
+   
 }
 
 - (IBAction)reportTextFieldGo:(id)sender
 {
-   NSLog(@"reportTextFieldReturn: %@",[self.urlfeld text]);
+   NSLog(@"reportTextFieldReturn eingabe: %@",[self.urlfeld text]);
    [sender resignFirstResponder];
    NSString* url = self.urlfeld.text;
+   if (url == @"home")
+   {
+      NSLog(@"reportTextFieldGo NO");
+      [super dismissModalViewControllerAnimated:YES];
+      //do close window magic here!!
+      return ;
+   }
+
    url = [NSString stringWithFormat:@"http://%@",url];
     NSLog(@"reportTextFieldReturn url: %@",url);
    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunesconnect.apple.com"]];
+
+   //[self produceHTMLForPage:1];
 	[self.webfenster loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
 
 }
@@ -140,9 +174,6 @@
 	{
 		
 		NSString* SolarDataSuffix=@"SolarDaten.txt";
-		//NSString* URLPfad=[NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:SolarDataSuffix]];
-		//NSString* URLPfad=[NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:@"SolarDaten.txt"]];
-		//NSLog(@"DataVonHeute URLPfad: %@",URLPfad);
 		//NSLog(@"SolarDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,SolarDataSuffix);
 		NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:SolarDataSuffix]];
 		//NSLog(@"SolarDataVonHeute URL: %@",URL);
@@ -258,6 +289,8 @@
 {
    NSLog(@"viewWillAppear");
 	self.webfenster.delegate = self;	// setup the delegate as the web view is shown
+ 
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -268,18 +301,33 @@
 }
 
 
+
 - (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+   NSLog(@"absoluteString: %@",[[request URL] absoluteString]);
    if ( [@"file:///" isEqualToString:[[request URL] absoluteString]] )
    {
       NSLog(@"shouldStartLoadWithRequest YES");
       return YES;
    }
+   if ([[request URL] absoluteString] == @"http://home/")
+   {
+      NSLog(@"shouldStartLoadWithRequest NO");
+      [super dismissModalViewControllerAnimated:YES];
+      //do close window magic here!!
+      return NO;
+   }
+   if ([[[request URL] absoluteString] isEqualToString:@"plus.google.com/"])
+   { [super dismissModalViewControllerAnimated:YES]; return NO; }
    
-   NSLog(@"shouldStartLoadWithRequest NO %@",[request URL]);
+   NSLog(@"shouldStartLoadWithRequest YES %@",[request URL]);
    [[UIApplication sharedApplication] openURL:[request URL]];
-   return NO;
+   return YES;
+
+
 }
+
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -303,6 +351,10 @@
    [self setHeizung:nil];
    [self setPumpe:nil];
    [self setUrlfeld:nil];
+   
+   [self setBacktaste:nil];
+   [self setBacktaste:nil];
+   [self webfenster].delegate=nil;
     [super viewDidUnload];
    //[KT setText: @"100"];//
   
@@ -311,7 +363,6 @@
 
 
 #pragma mark UIWebViewDelegate
-
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
 	// starting the load, show the activity indicator in the status bar
@@ -322,6 +373,8 @@
 {
 	// finished loading, hide the activity indicator in the status bar
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+//   [webView.scrollView zoomToRect:CGRectMake(0.0, 0.0, 50.0, 50.0) animated:YES];
+//   [webView stringByEvaluatingJavaScriptFromString: @"document.body.style.zoom = 5.0;"];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error

@@ -17,14 +17,17 @@
   }
 
 @property (strong, nonatomic) UIDatePicker *datumpicker;
-@property (strong, nonatomic) UITextField *monat;
+//@property (strong, nonatomic) UITextField *monat;
+@property (strong, nonatomic) NSString *monat;
 @property (strong, nonatomic) NSString *wochentag;
 @property (strong, nonatomic) NSString *stunde;
-@property (strong, nonatomic) UITextField *datumfeld;
-@property (strong, nonatomic) UILabel *pickerdatumfeld;
+//@property (strong, nonatomic) UITextField *datumfeld;
+//@property (strong, nonatomic) UILabel *pickerdatumfeld;
 @property (weak, nonatomic) IBOutlet UITabBarItem *HomeButton;
 @property (weak, nonatomic) IBOutlet UITextField *Benutzernamefeld;
 @property (weak, nonatomic) IBOutlet UITextField *BenutzerPasswortfeld;
+@property (weak, nonatomic) IBOutlet UITextField *datumfeld;
+@property (weak, nonatomic) IBOutlet UITextField *pickerdatumfeld;
 
 - (IBAction)reportHeute:(id)sender;
 - (IBAction)reportDatumPicker:(id)sender;

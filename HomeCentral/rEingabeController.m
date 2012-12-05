@@ -142,7 +142,7 @@
 }
 - (void)changeDateInLabel:(id)sender
 {
-   NSLog(@"changeDateInLabel");
+   NSLog(@"changeDateInLabel %@",self.datumpicker.date);
 	//Use NSDateFormatter to write out the date in a friendly format
 	NSDateFormatter *df = [[NSDateFormatter alloc] init];
 	df.dateStyle = NSDateFormatterShortStyle;
@@ -158,10 +158,13 @@
    [StundeFormat setDateFormat:@"HH"];
    self.stunde = [StundeFormat stringFromDate:self.datumpicker.date];
    NSLog(@"changeDateInLabel stunde: %@",self.stunde);
-
-	self.monat = [NSString stringWithFormat:@"%@",
-                                [df stringFromDate:self.datumpicker.date]];
    
+   NSDateFormatter *MonatFormat = [[NSDateFormatter alloc] init];
+   [MonatFormat setDateFormat:@"M"];
+   self.monat = [MonatFormat stringFromDate:self.datumpicker.date];
+	//self.monat = [NSString stringWithFormat:@"%@",[df stringFromDate:self.datumpicker.date]];
+   NSString* pickerdatumString =[NSString stringWithFormat:@"mt: %@ wt: %@ std: %@",self.monat,self.wochentag,self.stunde];
+   self.datumfeld.text = pickerdatumString;
    NSLog(@"changeDateInLabel monat: %@",self.monat);
 }
 
@@ -197,6 +200,9 @@
    [self setBenutzernamefeld:nil];
    [self setBenutzerPasswortfeld:nil];
    [self setHomeButton:nil];
+   [self setDatumpicker:nil];
+   [self setDatumfeld:nil];
+   [self setPickerdatumfeld:nil];
    [super viewDidUnload];
 }
 @end

@@ -38,7 +38,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *solardata;
 @property (weak, nonatomic) IBOutlet UILabel *heizung;
 @property (weak, nonatomic) IBOutlet UIImageView *pumpe;
+@property (weak, nonatomic) IBOutlet UINavigationBar *navbar;
 
+@property (weak, nonatomic) IBOutlet UINavigationItem *backtaste;
 
 
 
