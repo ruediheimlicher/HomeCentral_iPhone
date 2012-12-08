@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CorePlot-CocoaTouch.h"
-
-@interface rStromController : UIViewController <CPTPlotDataSource>
+//#import "CorePlot-CocoaTouch.h"
+#import "rStromDiagrammView.h"
+@interface rStromController : UIViewController //<CPTPlotDataSource>
 {
    
    IBOutlet UIWebView* WebFeld;
@@ -17,19 +17,14 @@
    int                  lastDataZeit;
    NSString*            StromDataVonHeuteString;
    NSString*            lastStromDataString;
-   NSTimer *            timer;
-   IBOutlet CPTGraphHostingView *stromplotfeld;
-   
-   CPTXYGraph *         stromgraph;
 }
 @property (weak, nonatomic) IBOutlet UILabel *data;
 @property (weak, nonatomic) IBOutlet UILabel *zeit;
 @property (weak, nonatomic) IBOutlet UILabel *datum;
 
 @property (weak, nonatomic) IBOutlet UILabel *leistungaktuell;
-@property (readwrite,  nonatomic) IBOutlet CPTGraphHostingView *plotfeld;
+@property (weak, nonatomic) IBOutlet UIScrollView *diagrammscroller;
+@property (weak, nonatomic) IBOutlet rStromDiagrammView *diagrammview;
 
 - (NSDictionary*)StromDataDicVonHeute;
-- (void)plot;
--(void)timerFired;
 @end

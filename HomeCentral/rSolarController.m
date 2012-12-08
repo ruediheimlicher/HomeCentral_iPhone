@@ -40,7 +40,7 @@
    ServerPfad =@"http://www.ruediheimlicher.ch/Data";
    
    //self.solardata.text = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
-   NSString* lastsolardataString = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
+   NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
    self.solardata.text = lastsolardataString;
    NSLog(@"lastsolardata: %@",lastsolardataString);
    NSArray* lastDataArray = [lastsolardataString componentsSeparatedByString:@"\t"];
@@ -96,13 +96,20 @@
  //[self.navbar setBackBarButtonItem:self.backtaste];
    self.webfenster.delegate = self;
 	self.webfenster.scalesPageToFit = YES;
-	//self.webfenster.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-//[self.webfenster loadHTMLString:@"<h1>Visit <a href='http://www.fourtentech.com'>FourTen</a> for mobile application development!</h1>" baseURL:nil];
-  // UIWebView *callWebview = [[UIWebView alloc] init];
- // NSURL *telURL = [NSURL URLWithString:@"tel://0552407844"];
-  //[self.webfenster loadRequest:[NSURLRequest requestWithURL:telURL]];
+
+	
+   //self.webfenster.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+   //[self.webfenster loadHTMLString:@"<h1>Visit <a href='http://www.fourtentech.com'>FourTen</a> for mobile application development!</h1>" baseURL:nil];
+   // UIWebView *callWebview = [[UIWebView alloc] init];
+   // NSURL *telURL = [NSURL URLWithString:@"tel://0552407844"];
+   //[self.webfenster loadRequest:[NSURLRequest requestWithURL:telURL]];
    //[self produceHTMLForPage:1];
+   // Diagramm vorbereiten
+   
+   
 }
+
+
 
 -(void)produceHTMLForPage:(NSInteger)pageNumber{
    
@@ -145,6 +152,125 @@
 
 }
 
+- (NSDictionary*)lastSolarDataDic
+{
+   /*
+    lastdatenarray =     (
+    48849,	Laufzeit
+    47,		Kollektor Vorlauf
+    46,		Kollektor Ruecklauf
+    40,		Boiler unten
+    128,	Boiler mitte
+    136,	Boiler oben
+    82,		Kollektortemperatur
+    0,
+    255
+    );
+    Alle Temperaturerte mit doppeltem Wert
+	 */
+   
+   NSMutableDictionary* SolarDataDic = [[NSMutableDictionary alloc]initWithCapacity:0];
+   NSCharacterSet* CharOK=[NSCharacterSet alphanumericCharacterSet];
+   
+	NSString* returnString=[NSString string];
+	if (isDownloading)
+	{
+		return nil;//[self cancel];
+	}
+	else
+	{
+		NSString* DataSuffix=@"LastSolarData.txt";
+		//NSLog(@"SolarDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
+		NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
+		//NSLog(@"SolarDataVonHeute URL: %@",URL);
+		NSStringEncoding *  enc=0;
+		NSError* WebFehler=NULL;
+		NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
+		
+		//NSLog(@"DataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
+		if (WebFehler)
+		{
+			//NSLog(@"SolarDataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
+			
+			NSLog(@"SolarDataVonHeute WebFehler: :%@",[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]);
+			//ERROR: 503
+			NSArray* ErrorArray=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]componentsSeparatedByString:@" "];
+			NSLog(@"ErrorArray: %@",[ErrorArray description]);
+         // Login-Alert zeigen
+         UIAlertView *message = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in Download",@"Download misslungen")
+                                                           message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
+                                                          delegate:self
+                                                 cancelButtonTitle:@""
+                                                 otherButtonTitles:@"OK", nil];
+         [message setAlertViewStyle:UIAlertViewStyleDefault];
+         [message show];
+         return nil;
+			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
+			
+			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
+			NSString* s2=[ErrorArray objectAtIndex:2];
+			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
+			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
+			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
+		}
+		if ([DataString length])
+		{
+			
+			char first=[DataString characterAtIndex:0];
+			
+			// eventuellen Leerschlag am Anfang entfernen
+			
+			if (![CharOK characterIsMember:first])
+			{
+				NSLog(@"DataVonHeute: String korrigieren");
+				DataString=[DataString substringFromIndex:1];
+			}
+			NSLog(@"LastSolarData DataString: \n%@",DataString);
+			//lastDataZeit=[self lastDataZeitVon:DataString];
+			//NSLog(@"SolarDataVonHeute lastDataZeit: %d",lastDataZeit);
+			[SolarDataDic setObject:DataString forKey:@"datastring"];
+			//NSLog(@"solardatenarray: %@",[[DataString componentsSeparatedByString:@"\n"]description]);
+         NSArray* SolarDataArray = [DataString componentsSeparatedByString:@"\n"];
+         //NSLog(@"SolarDataArray vor: %@",[SolarDataArray description]);
+         if ([[SolarDataArray lastObject]length] ==0)
+         {
+            NSLog(@"DataVonHeute: SolarDataArray korrigieren");
+            SolarDataArray = [SolarDataArray subarrayWithRange:NSMakeRange(0, [SolarDataArray count]-1)];
+         }
+         NSLog(@"SolarDataArray nach: %@",[[SolarDataArray lastObject]description]);
+         [SolarDataDic setObject:[SolarDataArray lastObject] forKey:@"lastsolardata"];
+         
+         return SolarDataDic;
+		}
+		else
+		{
+			NSLog(@"Keine Daten");
+			//[self setErrString:@"DataVonHeute: keine Daten"];
+		}
+		
+		/*
+		 NSLog(@"DataVon URL: %@ DataString: %@",URL,DataString);
+		 if (URL)
+		 {
+		 download = [[WebDownload alloc] initWithRequest:[NSURLRequest requestWithURL:URL] delegate:self];
+		 downloadFlag=heute;
+		 
+		 }
+		 if (!download)
+		 {
+		 
+		 NSBeginAlertSheet(@"Invalid or unsupported URL", nil, nil, nil, [self window], nil, nil, nil, nil,
+		 @"The entered URL is either invalid or unsupported.");
+		 }
+		 */
+      
+		
+      
+      
+	}
+	return SolarDataDic;
+}
+
 - (NSDictionary*)SolarDataDicVonHeute
 {
    /*
@@ -172,6 +298,8 @@
 	}
 	else
 	{
+      
+      
 		
 		NSString* SolarDataSuffix=@"SolarDaten.txt";
 		//NSLog(@"SolarDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,SolarDataSuffix);
@@ -361,6 +489,11 @@
    
 }
 
+- (IBAction)switch2Strom:(id)sender
+{
+[self performSegueWithIdentifier: @"stromid"
+                          sender: self];
+}
 
 #pragma mark UIWebViewDelegate
 - (void)webViewDidStartLoad:(UIWebView *)webView

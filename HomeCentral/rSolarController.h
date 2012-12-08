@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "rDiagrammView.h"
 
 @interface rSolarController : UIViewController <UITextFieldDelegate, UIWebViewDelegate>
 
@@ -43,9 +44,11 @@
 @property (weak, nonatomic) IBOutlet UINavigationItem *backtaste;
 
 
-
+- (IBAction)switch2Strom:(id)sender;
 - (IBAction)reportTextFieldGo:(id)sender;
 - (NSDictionary*)SolarDataDicVonHeute;
+- (NSDictionary*)lastSolarDataDic
+;
 - (int)lastDataZeitVon:(NSString*)derDatenString;
 
 @end
