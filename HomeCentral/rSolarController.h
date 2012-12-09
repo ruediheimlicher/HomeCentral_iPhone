@@ -42,6 +42,17 @@
 @property (weak, nonatomic) IBOutlet UINavigationBar *navbar;
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *backtaste;
+@property (weak, nonatomic) IBOutlet UIButton *RefreshTaste;
+- (IBAction)reportRefresh:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UIButton *DiagrammTaste;
+@property (weak, nonatomic) IBOutlet UILabel *AussentempFeld;
+
+@property (weak, nonatomic) IBOutlet UIView *boilerfeld;
+
+
+
+- (IBAction)reportDiagrammTaste:(id)sender;
 
 
 - (IBAction)switch2Strom:(id)sender;

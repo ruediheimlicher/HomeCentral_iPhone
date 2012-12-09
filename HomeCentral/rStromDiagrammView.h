@@ -20,7 +20,7 @@
    
 #define kGraphBottom          300
 #define kGraphTop             0
-   NSDictionary*                 DataDic;
+NSDictionary*                 DataDic;
    
 }
 @property (weak,nonatomic, readwrite) NSDictionary* datadic;

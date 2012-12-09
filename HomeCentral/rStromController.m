@@ -25,66 +25,192 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+   [super viewDidLoad];
    self.diagrammscroller.contentSize = self.diagrammview.frame.size;
-
+   
 	// Do any additional setup after loading the view.
    ServerPfad =@"http://www.ruediheimlicher.ch/Data/StromDaten";
    
-   NSDictionary* StromDicVonHeute = [self StromDataDicVonHeute];
-
+   StromDicVonHeute = [self StromDataDicVonHeute];
+   
    NSArray* lastDataArray = [[StromDicVonHeute objectForKey:@"laststromdata"]componentsSeparatedByString:@"\t"];
    //NSArray* lastDataArray = [[[self StromDataDicVonHeute]objectForKey:@"laststromdata"]componentsSeparatedByString:@"\t"];
-   NSLog(@"Strom lastDataArray: %@",[lastDataArray description]);
+   //NSLog(@"Strom lastDataArray: %@",[lastDataArray description]);
    NSLog(@"Strom leistungaktuell: %@",[lastDataArray lastObject]);
    self.leistungaktuell.text = [NSString stringWithFormat:@"%d kW",[[lastDataArray lastObject]intValue]];
    self.datum.text = [NSString stringWithFormat:@"%2d.%02d.20%d",[[lastDataArray objectAtIndex:2]intValue],[[lastDataArray objectAtIndex:1]intValue],[[lastDataArray objectAtIndex:0]intValue]];
    self.zeit.text = [NSString stringWithFormat:@"%d:%02d:%02d",[[lastDataArray objectAtIndex:3]intValue],[[lastDataArray objectAtIndex:4]intValue],[[lastDataArray objectAtIndex:5]intValue]];
-     self.data.text = [StromDicVonHeute objectForKey:@"laststromdata"];
+   self.data.text = [StromDicVonHeute objectForKey:@"laststromdata"];
    
    // Stromdaten von heute
-   NSArray* StromArray = [StromDicVonHeute objectForKey:@"stromdata"];
-   
-   NSLog(@"Strom StromArray: %@",[[StromArray objectAtIndex:0] description]);
-   float zoomfaktorx = self.diagrammview.bounds.size.width/1440;   // Minuten des Tages
-   float zoomfaktory = self.diagrammview.bounds.size.height/8000;                // max Leistung
+   //NSArray* StromArray = [StromDicVonHeute objectForKey:@"stromdata"];
+   NSLog(@"Strom anzeigeseg: %d",self.anzeigeseg.selectedSegmentIndex);
+   //NSLog(@"Strom StromArray: %@",[[StromArray objectAtIndex:0] description]);
+   int startsegment = 1;
+   self.anzeigeseg.selectedSegmentIndex = startsegment;
+   [self switchAnzeigeSeg:startsegment];
+ }
+
+- (NSDictionary*)DiagrammDatenDicVon:(NSArray*)DatenArray mitAnzahlDaten:(int)anz mitIndex:(NSArray*)index
+{
+   NSLog(@"DiagrammDatenDicVon anz: %d %d",anz,[DatenArray count]);
    NSMutableDictionary*  DiagrammdatenDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    NSMutableArray* LineArray = [[NSMutableArray alloc]initWithCapacity:0];
-   //for (int i=0;i<3;i++) // linien
+   // Array: dataarray mit datadics
+   NSMutableArray* tempDataArray = [[NSMutableArray alloc]initWithCapacity:0];
+   
+   int lastminute=0;
+   
+   int std = [[index objectAtIndex:0]intValue]; // Lage der Daten im DatenArray
+   int min = [[index objectAtIndex:1]intValue];
+   int data = [[index objectAtIndex:2]intValue];
+   int art = [[index lastObject]intValue];
+   
+   int offsetstd = [[[[DatenArray objectAtIndex:0]componentsSeparatedByString:@"\t" ]objectAtIndex:std]intValue];
+   int offsetmin = [[[[DatenArray objectAtIndex:0]componentsSeparatedByString:@"\t" ]objectAtIndex:min]intValue];
+   int offsetx = 60*offsetstd + offsetmin;
+   
+   int endstd =  [[[[DatenArray lastObject]componentsSeparatedByString:@"\t" ]objectAtIndex:std]intValue];
+   int endmin =  [[[[DatenArray lastObject]componentsSeparatedByString:@"\t" ]objectAtIndex:min]intValue];
+   int endx = 60*endstd + endmin;
+   int diffx = endx - offsetx;
+   
+   NSLog(@"art: %d endx: %d diffx: %d",art,endx,diffx);
+   float zoomfaktorx=1;
+   switch (art)
    {
-      // Array: dataarray mit datadics
-      NSMutableArray* tempDataArray = [[NSMutableArray alloc]initWithCapacity:0];
-      int lastminute=0;
-      for (int k=0;k<[StromArray count];k++)// Datenarray
+      case 0: // ganzer Tag
       {
-         
-         // Datadic mit Koordinaten
-         NSArray* tempZeilenArray = [[StromArray objectAtIndex:k]componentsSeparatedByString:@"\t"];
-         //NSLog(@"i: %d Strom tempZeilenArray: %@",i,[tempZeilenArray description]);
-       // if (([[tempZeilenArray objectAtIndex:4]intValue]-lastminute)>1)
-        {
-         float x =  (60.0*[[tempZeilenArray objectAtIndex:3]intValue]+[[tempZeilenArray objectAtIndex:4]intValue])*zoomfaktorx;
-         float y = [[tempZeilenArray objectAtIndex:6]intValue]*zoomfaktory;
+         zoomfaktorx = self.diagrammview.bounds.size.width/1440;   // Minuten des Tage
+      }break;
+      case 1: // Monitor 2 Stunden
+      {
+         zoomfaktorx = self.diagrammview.bounds.size.width/diffx;
+      }break;
+   }
+   
+   float zoomfaktory = self.diagrammview.bounds.size.height/8000;  // max Leistung
+   NSLog(@"DiagrammDatenDicVon zoomfaktorx: %.2f",zoomfaktorx);
+
+   
+   
+   //zoomfaktorx=1;
+   NSLog(@"DiagrammDatenDicVon std: %d min: %d data: %d offsetstd: %d offsetmin: %d offsetx: %d",std,min,data,offsetstd,offsetmin,offsetx);
+   for (int k=0;k<[DatenArray count];k++)// Datenarray
+   {
+      
+      // Datadic mit Koordinaten
+      NSArray* tempZeilenArray = [[DatenArray objectAtIndex:k]componentsSeparatedByString:@"\t"];
+      //NSLog(@"i: %d Strom tempZeilenArray: %@",k,[tempZeilenArray description]);
+      // if (([[tempZeilenArray objectAtIndex:4]intValue]-lastminute)>1)
+      {
+         float x =  (60.0*[[tempZeilenArray objectAtIndex:std]intValue]+[[tempZeilenArray objectAtIndex:min]intValue]-offsetx);
+         if (k == [DatenArray count]-1)
+         {
+            NSLog(@"last Data k: %d x vor: %.2f",k,x);
+         }
+         x *= zoomfaktorx;
+         float y = [[tempZeilenArray objectAtIndex:data]intValue]*zoomfaktory;
          NSDictionary* tempDataDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:x],@"x",[NSNumber numberWithFloat:y],@"y", nil];
          
          [tempDataArray addObject:tempDataDic];
-           lastminute = [[tempZeilenArray objectAtIndex:4]intValue];
-        }
+         lastminute = [[tempZeilenArray objectAtIndex:min]intValue];
       }
-      
-      
-      
-      UIColor* tempColor = [UIColor colorWithRed:0.4 green:0.8 blue:0.4 alpha:1.0];
-      NSDictionary* tempLineDic = [NSDictionary dictionaryWithObjectsAndKeys:tempDataArray,@"dataarray",tempColor,@"linecolor", nil];
-      [LineArray addObject:tempLineDic];
    }
+   
+   UIColor* tempColor = [UIColor colorWithRed:1.0 green:0.8 blue:0.4 alpha:1.0];
+   NSDictionary* tempLineDic = [NSDictionary dictionaryWithObjectsAndKeys:tempDataArray,@"dataarray",tempColor,@"linecolor", nil];
+   [LineArray addObject:tempLineDic];
    
    //NSLog(@"LineArray: %@",[LineArray description]);
    [DiagrammdatenDic setObject:LineArray forKey:@"linearray"];
    //NSLog(@"DiagrammdatenDic: %@",[DiagrammdatenDic description]);
-   [self.diagrammview DiagrammZeichnenMitDic:DiagrammdatenDic];
+   
+   return (NSDictionary*)DiagrammdatenDic;
+}
+
+- (IBAction)reportRefresh:(id)sender
+{
+   NSLog(@"reportRefresh");
+   StromDicVonHeute = [self StromDataDicVonHeute];
+   NSArray* lastDataArray = [[StromDicVonHeute objectForKey:@"laststromdata"]componentsSeparatedByString:@"\t"];
+   self.leistungaktuell.text = [NSString stringWithFormat:@"%d kW",[[lastDataArray lastObject]intValue]];
+   self.datum.text = [NSString stringWithFormat:@"%2d.%02d.20%d",[[lastDataArray objectAtIndex:2]intValue],[[lastDataArray objectAtIndex:1]intValue],[[lastDataArray objectAtIndex:0]intValue]];
+   self.zeit.text = [NSString stringWithFormat:@"%d:%02d:%02d",[[lastDataArray objectAtIndex:3]intValue],[[lastDataArray objectAtIndex:4]intValue],[[lastDataArray objectAtIndex:5]intValue]];
+   
+   
+}
+
+- (IBAction)reportAnzeigeSeg:(UISegmentedControl *)sender
+{
+   NSLog(@"\nreportAnzeigeSeg segment: %d",sender.selectedSegmentIndex);
+   [self switchAnzeigeSeg:sender.selectedSegmentIndex];
+   return;
+   
+ }
+
+- (void)switchAnzeigeSeg:(int)seg
+{
+   switch (seg)
+   {
+      case 0:
+         
+      {
+         int std=3;
+         int min=4;
+         int data=6;
+         NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:seg], nil];
+         // index wird als letztes Element eingefuegt, um Darstellungsart zu uebertragen
+         CGRect b = self.diagrammview.frame;
+         b.size.width = 900.0;
+         b.origin.x=0;
+         self.diagrammview.frame = b;
+         
+         [self.diagrammview DiagrammZeichnenMitDic:[self DiagrammDatenDicVon:[StromDicVonHeute objectForKey:@"stromdata"] mitAnzahlDaten:1440  mitIndex:IndexArray]];
+         
+      }break;
+         
+      case 1:
+      {
+         int std=1;
+         int min=2;
+         int data=4;
+         
+         NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:seg], nil];
+         
+         NSArray* StromArray = [StromDicVonHeute objectForKey:@"strommonitor"];
+         CGRect b = self.diagrammview.frame;
+         //b.size.width = 1440.0/900.0 * (float)[StromArray count];
+         b.size.width = self.diagrammscroller.frame.size.width;
+         b.origin.x=0;
+         self.diagrammview.frame = b;
+         
+         [self.diagrammview DiagrammZeichnenMitDic:[self DiagrammDatenDicVon:StromArray mitAnzahlDaten:[StromArray count] mitIndex:IndexArray]];
+         
+      }break;
+         
+   }// switch
+   [self.diagrammview setNeedsDisplay];
 
 }
+
+- (void)refreshData
+{
+   StromDicVonHeute = [self StromDataDicVonHeute];
+   NSArray* lastDataArray = [[StromDicVonHeute objectForKey:@"laststromdata"]componentsSeparatedByString:@"\t"];
+   self.leistungaktuell.text = [NSString stringWithFormat:@"%d kW",[[lastDataArray lastObject]intValue]];
+   self.datum.text = [NSString stringWithFormat:@"%2d.%02d.20%d",[[lastDataArray objectAtIndex:2]intValue],[[lastDataArray objectAtIndex:1]intValue],[[lastDataArray objectAtIndex:0]intValue]];
+   self.zeit.text = [NSString stringWithFormat:@"%d:%02d:%02d",[[lastDataArray objectAtIndex:3]intValue],[[lastDataArray objectAtIndex:4]intValue],[[lastDataArray objectAtIndex:5]intValue]];
+   
+   NSLog(@"\refreshData segment: %d",self.anzeigeseg.selectedSegmentIndex);
+   
+   [self switchAnzeigeSeg:self.anzeigeseg.selectedSegmentIndex];
+   return;
+   
+
+   
+}
+
 
 - (NSDictionary*)StromDataDicVonHeute
 {
@@ -186,7 +312,7 @@
       DataSuffix=@"StromMonitor.txt";
 		//NSLog(@"StromDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
 		URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
-		//NSLog(@"StromDataVonHeute URL: %@",URL);
+		//NSLog(@"StromMonitorDataVonHeute URL: %@",URL);
 		//NSStringEncoding *  enc=0;
 		WebFehler=NULL;
 		DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
@@ -230,21 +356,25 @@
 			}
           
 			//NSLog(@"SolarDataVonHeute DataString: \n%@",DataString);
-			[StromDataDic setObject:DataString forKey:@"datastring"];
+			//[StromDataDic setObject:DataString forKey:@"datastring"];
 			//NSLog(@"StromDataArray: %@",[[DataString componentsSeparatedByString:@"\n"]description]);
          NSArray* StromDataArray = [DataString componentsSeparatedByString:@"\n"];
          //NSLog(@"StromDataArray vor: %@",[SolarDataArray description]);
-         // Kopfzeilen entfernen
-         StromDataArray = [StromDataArray subarrayWithRange:NSMakeRange(7, [StromDataArray count]-8)];
          if ([[StromDataArray lastObject]length] ==0)
          {
             StromDataArray = [StromDataArray subarrayWithRange:NSMakeRange(0, [StromDataArray count]-1)];
          }
          //NSLog(@"StromDataArray nach: %@",[[StromDataArray lastObject]description]);
-         //NSLog(@"StromDataArray nach: %@",[StromDataArray description]);
-         
+         //NSLog(@"StromMonitorDataArray nach: %@",[StromDataArray description]);
+         NSLog(@"StromMonitorDataArray count: %d",[StromDataArray count]);
          [StromDataDic setObject:StromDataArray  forKey:@"strommonitor"];
       }
+      else
+		{
+			NSLog(@"Keine Daten");
+			//[self setErrString:@"DataVonHeute: keine Daten"];
+		}
+
       
       self.diagrammscroller.contentSize = self.diagrammview.frame.size;
       
@@ -287,6 +417,8 @@
    [self setDiagrammscroller:nil];
    [self setDiagrammscroller:nil];
    [self setDiagrammview:nil];
+   [self setAnzeigeseg:nil];
+   [self setRefreshTaste:nil];
    [super viewDidUnload];
 }
 @end

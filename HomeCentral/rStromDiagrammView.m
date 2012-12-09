@@ -27,8 +27,16 @@
 
 -(void)DiagrammZeichnenMitDic:(NSDictionary*)derDataDic
 {
-   //NSLog(@"derDataDic: %@",[derDataDic description]);
+   //NSLog(@"DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
+   
    self.datadic = derDataDic;
+   //NSLog(@"DiagrammZeichnenMitDic Dataarray count: %d",[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]count]);
+   //NSLog(@"DiagrammZeichnenMitDic Dataarray : %@",[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]description]);
+   //float anz=(float)[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]count];
+   //float zoom= anz/1440;
+   
+   //NSLog(@"DiagrammZeichnenMitDic Dataarray count: %.1f zoom: %2.3f",anz,zoom);
+   
    //NSLog(@"self.datadic: %@",[self.datadic description]);
    DataDic = derDataDic;
    [self setNeedsLayout];
@@ -75,9 +83,9 @@
    //CGContextAddLineToPoint(xcontext, kOffsetX +10, kOffsetY+20);
    CGContextSetTextMatrix (xcontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
       
-   char* x_achse = "0 1 2 3\0";
-   NSLog(@"%s l: %zd",x_achse,strlen(x_achse));
-   CGContextShowTextAtPoint(xcontext,kOffsetX +10,kOffsetY+20,x_achse,strlen(x_achse));
+   //char* x_achse = "0 1 2 3\0";
+   //NSLog(@"%s l: %zd",x_achse,strlen(x_achse));
+   //CGContextShowTextAtPoint(xcontext,kOffsetX +10,kOffsetY+20,x_achse,strlen(x_achse));
    CGContextStrokePath(xcontext);
    
    //NSLog(@"drawrect self.datadic: %@",[self.datadic description]);
@@ -116,12 +124,12 @@
                   CGContextSetStrokeColorWithColor(templinecontext, [[UIColor lightGrayColor] CGColor]);
                }
                NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
-               //NSLog(@"tempDataArray an Index: %d da: %@",i,[tempDataArray  description]);
+              // NSLog(@"tempDataArray an Index: %d da: %@",i,[[tempDataArray valueForKey:@"x"] description]);
                float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
                float starty = self.bounds.size.height-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
                
                CGContextMoveToPoint(templinecontext,startx,starty);
-               NSLog(@"x: %.1f \t y: %.1f",startx,starty);
+               NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
                starty = self.bounds.size.height-starty;
                for (int index=1;index < [tempDataArray count];index++)
                {

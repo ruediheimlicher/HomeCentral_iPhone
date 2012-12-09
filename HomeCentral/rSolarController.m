@@ -70,11 +70,11 @@
    //[Pumpe setHidden:pumpeON];
    if (pumpeON)
    {
-      [self.pumpe setHidden:NO];
+      self.pumpe.highlighted = YES;
    }
    else
    {
-      [self.pumpe setHidden:YES];
+      self.pumpe.highlighted = NO;
    
    }
    
@@ -82,11 +82,11 @@
    NSLog(@"elektroON: %d",elektroON);
    if (elektroON)
    {
-      [self.heizung setHidden:NO];
+      [self.heizung setEnabled:YES];
    }
    else
    {
-      [self.heizung setHidden:YES];
+      [self.heizung setEnabled:NO];
       
    }
    /*
@@ -179,7 +179,21 @@
 	}
 	else
 	{
-		NSString* DataSuffix=@"LastSolarData.txt";
+      NSString* AussentempSuffix = @"/TemperaturDaten.txt";
+      NSURL *AussentempURL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:AussentempSuffix]];
+		//NSLog(@"SolarDataVonHeute URL: %@",URL);
+		NSStringEncoding *  Aussentempenc=0;
+		NSError* AussentempWebFehler=NULL;
+		NSString* AussentempDataString=[NSString stringWithContentsOfURL:AussentempURL usedEncoding: Aussentempenc error:&AussentempWebFehler];
+      //NSLog(@"SolarDataVonHeute AussentempDataString: %@",AussentempDataString);
+      NSString* AussentemperaturString = [[AussentempDataString componentsSeparatedByString:@"\n"]objectAtIndex:5];
+      NSLog(@"SolarDataVonHeute AussentemperaturString: %@",AussentemperaturString);
+      AussentemperaturString = [[AussentemperaturString componentsSeparatedByString:@" "]lastObject];
+		AussentemperaturString = [NSString stringWithFormat:@"%@°C",AussentemperaturString];
+      self.AussentempFeld.text = AussentemperaturString;
+      
+      
+      NSString* DataSuffix=@"LastSolarData.txt";
 		//NSLog(@"SolarDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
 		NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
 		//NSLog(@"SolarDataVonHeute URL: %@",URL);
@@ -308,7 +322,7 @@
 		NSStringEncoding *  enc=0;
 		NSError* WebFehler=NULL;
 		NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
-		
+		//NSLog(@"SolarDataVonHeute DataString: \n%@",DataString);
 		//NSLog(@"DataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
 		if (WebFehler)
 		{
@@ -353,12 +367,39 @@
 			[SolarDataDic setObject:DataString forKey:@"datastring"];
 			//NSLog(@"solardatenarray: %@",[[DataString componentsSeparatedByString:@"\n"]description]);
          NSArray* SolarDataArray = [DataString componentsSeparatedByString:@"\n"];
-         //NSLog(@"SolarDataArray vor: %@",[SolarDataArray description]);
+         int n= [SolarDataArray count];
+         SolarDataArray = [SolarDataArray subarrayWithRange:NSMakeRange(6, n-6)];
+
+         //NSLog(@"SolarDataArray sub: %@",[SolarDataArray description]);
          if ([[SolarDataArray lastObject]length] ==0)
          {
             SolarDataArray = [SolarDataArray subarrayWithRange:NSMakeRange(0, [SolarDataArray count]-1)];
          }
-         NSLog(@"SolarDataArray nach: %@",[[SolarDataArray lastObject]description]);
+         //NSLog(@"SolarDataArray nach: %@",[[SolarDataArray lastObject]description]);
+         NSLog(@"SolarDataArray count: %d",[SolarDataArray count]);
+         NSMutableArray* redSolarDataArray = [[NSMutableArray alloc]initWithCapacity:0];
+         int lastZeit=0;
+         int anzData=0;
+         for (int k=0;k<[SolarDataArray count];k++)
+         {
+            NSArray* tempZeilenArray = [[SolarDataArray objectAtIndex:k]componentsSeparatedByString:@"\t"];
+            int t = [[tempZeilenArray objectAtIndex:0]intValue];
+            t/=60;
+            
+            if (t> (lastZeit+2))
+            {
+               //NSLog(@"*   SolarDataArray k: %d t: %d",k,t);
+               lastZeit = t;
+               anzData++;
+               [redSolarDataArray addObject:tempZeilenArray];
+            }
+            else
+            {
+            //NSLog(@"SolarDataArray k: %d t: %d",k,t);
+            }
+         }
+         NSLog(@"anz: %d redSolarDataArray : %@",anzData,[redSolarDataArray description]);
+         [SolarDataDic setObject:redSolarDataArray forKey:@"solardata"];
          [SolarDataDic setObject:[SolarDataArray lastObject] forKey:@"lastsolardata"];
          
          return SolarDataDic;
@@ -391,6 +432,58 @@
       
 	}
 	return SolarDataDic;
+}
+
+- (NSDictionary*)DiagrammDatenDicVon:(NSArray*)DatenArray mitAnzahlDaten:(int)anz mitIndex:(NSArray*)index
+{
+   NSLog(@"Solar DiagrammDatenDicVon anz: %d %d",anz,[DatenArray count]);
+   NSMutableDictionary*  DiagrammdatenDic = [[NSMutableDictionary alloc]initWithCapacity:0];
+   NSMutableArray* LineArray = [[NSMutableArray alloc]initWithCapacity:0];
+   // Array: dataarray mit datadics
+   NSMutableArray* tempDataArray = [[NSMutableArray alloc]initWithCapacity:0];
+
+   int art =0;
+   int std=0;
+   int min=1;
+   int data=2;
+
+   NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:0], nil]; // letztes Element: art
+
+   int offsetstd = [[[[DatenArray objectAtIndex:0]componentsSeparatedByString:@"\t" ]objectAtIndex:std]intValue];
+   int offsetmin = [[[[DatenArray objectAtIndex:0]componentsSeparatedByString:@"\t" ]objectAtIndex:min]intValue];
+   int offsetx = 60*offsetstd + offsetmin;
+   
+   int endstd =  [[[[DatenArray lastObject]componentsSeparatedByString:@"\t" ]objectAtIndex:std]intValue];
+   int endmin =  [[[[DatenArray lastObject]componentsSeparatedByString:@"\t" ]objectAtIndex:min]intValue];
+   int endx = 60*endstd + endmin;
+   int diffx = endx - offsetx;
+   
+   NSLog(@"art: %d endx: %d diffx: %d",art,endx,diffx);
+
+   for (int i=0;i<[DatenArray count];i++)
+   {
+      int tempzeit = [[[DatenArray objectAtIndex:i]objectAtIndex:0]intValue]/60;
+      int tempmin = tempzeit%60;
+      int tempstd = tempzeit/60;
+      int minute = tempzeit%1440; // minute des Tages
+      //NSLog(@"i: %d tempstd: %d tempmin: %d minute: %d",i,tempstd,tempmin,minute);
+      NSNumber* stundeNumber = [NSNumber numberWithInt:tempstd];
+      NSNumber* minuteNumber = [NSNumber numberWithInt:tempmin];
+      // Linien konfig
+      // KV
+      float x = (float)minute/2; // Werte sind doppelt
+      
+      float zoomfaktory = self.diagrammview.bounds.size.height/8000;  // max Leistung
+      float y = [[tempZeilenArray objectAtIndex:data]intValue]*zoomfaktory;
+      
+      NSDictionary* tempDataDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:x],@"x",[NSNumber numberWithFloat:y],@"y", nil];
+      NSLog(@"i: %d tempDataDic%@",i,[tempDataDic description]);
+      [tempDataArray addObject:tempDataDic];
+   }
+   
+   
+   
+   return (NSDictionary*)DiagrammdatenDic;;
 }
 
 - (int)lastDataZeitVon:(NSString*)derDatenString
@@ -483,10 +576,27 @@
    [self setBacktaste:nil];
    [self setBacktaste:nil];
    [self webfenster].delegate=nil;
+   [self setRefreshTaste:nil];
+   [self setDiagrammTaste:nil];
+   [self setAussentempFeld:nil];
+   [self setBoilerfeld:nil];
     [super viewDidUnload];
    //[KT setText: @"100"];//
   
    
+}
+
+- (IBAction)reportRefresh:(id)sender
+{
+     NSLog(@"reportRefresh");
+   
+}
+
+- (IBAction)reportDiagrammTaste:(id)sender
+{
+   NSDictionary* heuteSolarDic = [self SolarDataDicVonHeute];
+   NSDictionary* DiagrammdatenDic =[self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:NULL];
+ 
 }
 
 - (IBAction)switch2Strom:(id)sender
