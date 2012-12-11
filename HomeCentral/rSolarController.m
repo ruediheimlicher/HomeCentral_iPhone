@@ -37,13 +37,13 @@
    UIImage *blueButtonImage = [blueImage stretchableImageWithLeftCapWidth:0 topCapHeight:0];
    [self.diagrammtaste setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
    
+   UIImage *defButtonImage = [[UIImage imageNamed:@"leeretaste.jpg"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
+   [self.diagrammtaste setBackgroundImage:defButtonImage forState:UIControlStateNormal];
+   
    
    self.diagrammscroller.contentSize = self.diagrammview.frame.size;
    self.diagrammscroller.hidden=YES;
    self.ordinate.hidden=YES;
-   
-   
-   
    
    NSLog(@"diagrammscroller origin x: %.1f y: %.1f",self.diagrammview.frame.origin.x,self.diagrammview.frame.origin.y);
    float kttemp=100.1;
@@ -58,6 +58,8 @@
    ServerPfad =@"http://www.ruediheimlicher.ch/Data";
    
    //self.solardata.text = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
+   [self loadLastData];
+   return;
    NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
    self.solardata.text = lastsolardataString;
    //NSLog(@"lastsolardata: %@",lastsolardataString);
@@ -113,8 +115,8 @@
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.backtaste setBackBarButtonItem:backButton];
     */
-   self.webfenster.delegate = self;
-	self.webfenster.scalesPageToFit = YES;
+   //self.webfenster.delegate = self;
+	//self.webfenster.scalesPageToFit = YES;
    
 	
    //self.webfenster.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
@@ -128,6 +130,134 @@
    
 }
 
+- (void)loadLastData
+{
+   NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
+   self.solardata.text = lastsolardataString;
+   //NSLog(@"lastsolardata: %@",lastsolardataString);
+   NSArray* lastDataArray = [lastsolardataString componentsSeparatedByString:@"\t"];
+   float kv_temp = [[lastDataArray objectAtIndex:1]floatValue]/2;
+   self.kv.text = [NSString stringWithFormat:@"%.1f°C",kv_temp];
+   
+   float kr_temp = [[lastDataArray objectAtIndex:2]floatValue]/2;
+   self.kr.text = [NSString stringWithFormat:@"%.1f°C",kr_temp];
+   
+   float bu_temp = [[lastDataArray objectAtIndex:3]floatValue]/2;
+   self.bu.text = [NSString stringWithFormat:@"%.1f°C",bu_temp];
+   
+   float bm_temp = [[lastDataArray objectAtIndex:4]floatValue]/2;
+   self.bm.text = [NSString stringWithFormat:@"%.1f°C",bm_temp];
+   
+   float bo_temp = [[lastDataArray objectAtIndex:5]floatValue]/2;
+   self.bo.text = [NSString stringWithFormat:@"%.1f°C",bo_temp];
+   
+   float kt_temp = [[lastDataArray objectAtIndex:6]floatValue]/2;
+   self.kt.text = [NSString stringWithFormat:@"%.1f°C",kt_temp];
+   
+   self.boilerfeld.hidden = NO;
+   
+   //int test=16;
+   //bool testON = (test & 0x10);
+   //NSLog(@"testON: %d",testON);
+   bool pumpeON = ([[lastDataArray objectAtIndex:7]intValue] & 0x08);
+   //NSLog(@"pumpeON: %d",pumpeON);
+   //[Pumpe setHidden:pumpeON];
+   if (pumpeON)
+   {
+      self.pumpe.highlighted = YES;
+   }
+   else
+   {
+      self.pumpe.highlighted = NO;
+      
+   }
+   
+   bool elektroON = ([[lastDataArray objectAtIndex:7]intValue] & 0x10);
+   //NSLog(@"elektroON: %d",elektroON);
+   if (elektroON)
+   {
+      [self.heizung setEnabled:YES];
+   }
+   else
+   {
+      [self.heizung setEnabled:NO];
+      
+   }
+
+}
+
+- (void)loadDiagrammData
+{
+   int std=0;
+   int min=1;
+   int data=2;
+   int art =0;
+   NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:0], nil]; // letztes Element: art
+   
+   NSDictionary* heuteSolarDic = [self SolarDataDicVonHeute];
+   NSDictionary* DiagrammDatenDic = [self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:IndexArray];
+   // Abstand DiagrammView vom unteren Rand des Srollers: origin hat nullpunkt oben
+   float eckeunteny = self.diagrammview.frame.origin.y + self.diagrammview.frame.size.height;
+   
+   float diagrammhoehe = (int)(self.diagrammview.frame.size.height/10)*10;
+   float diagrammbreite = (int)(self.diagrammview.frame.size.width/10)*10;
+   
+   NSMutableDictionary* OrdinateDic = [[NSMutableDictionary alloc]initWithCapacity:0];
+   //
+   int offsetx=0;
+   int offsety=0;
+   float b = 24;
+   int intervall = 10;
+   int teile = 12;
+   int startwert =0;
+   
+   // Abstand DiagrammView vom unteren Rand des Srollers:
+   
+   
+   [OrdinateDic setObject:[NSNumber numberWithInt:offsetx] forKey:@"offsetx"];
+   [OrdinateDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
+   [OrdinateDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"hoehe"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:b] forKey:@"breite"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:intervall] forKey:@"intervall"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
+   //NSLog(@"OrdinateDic: %@",[OrdinateDic description]);
+   [self.ordinate OrdinateZeichnenMitDic:OrdinateDic];
+   
+   
+   eckeunteny = self.diagrammview.frame.origin.y + self.diagrammview.frame.size.height;
+   int eckeuntenx=0;
+   
+   float h=22;
+   intervall = 60;
+   teile = diagrammbreite/intervall;
+   startwert =0;
+
+   NSMutableDictionary* AbszisseDic = [[NSMutableDictionary alloc]initWithCapacity:0];
+   [AbszisseDic setObject:[NSNumber numberWithInt:eckeunteny] forKey:@"eckeunteny"];
+   [AbszisseDic setObject:[NSNumber numberWithFloat:eckeuntenx] forKey:@"eckeuntenx"];
+   [AbszisseDic setObject:[NSNumber numberWithFloat:h] forKey:@"hoehe"];
+   [AbszisseDic setObject:[NSNumber numberWithInt:diagrammbreite] forKey:@"breite"];
+   [AbszisseDic setObject:[NSNumber numberWithInt:intervall] forKey:@"intervall"];
+   [AbszisseDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
+   [AbszisseDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
+   NSLog(@"AbszisseDic: %@",[AbszisseDic description]);
+   [self.abszisse AbszisseZeichnenMitDic:AbszisseDic];
+   
+   
+   
+   //
+   [self.diagrammview DiagrammZeichnenMitDic:DiagrammDatenDic];
+   // ans Ende scrollen: http://stackoverflow.com/questions/952412/uiscrollview-scroll-to-bottom-programmatically
+   CGPoint rightOffset = CGPointMake(self.diagrammscroller.contentSize.width - 1.1*self.diagrammscroller.bounds.size.width,0);
+   [self.diagrammscroller setContentOffset:rightOffset animated:YES];
+
+   [self.diagrammview setNeedsDisplay];
+   
+   [self.ordinate setNeedsDisplay];
+   [self.abszisse setNeedsDisplay];
+
+}
 
 
 -(void)produceHTMLForPage:(NSInteger)pageNumber{
@@ -324,7 +454,6 @@
    NSMutableDictionary* SolarDataDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    NSCharacterSet* CharOK=[NSCharacterSet alphanumericCharacterSet];
    
-	NSString* returnString=[NSString string];
 	if (isDownloading)
 	{
 		return nil;//[self cancel];
@@ -525,7 +654,7 @@
 
    
    NSArray* DataNamenArray = [NSArray arrayWithObjects:@"",@"KV",@"KR",@"BU",@"BM",@"BO",@"KT", nil]; // erstes Element nur als Fueller, index der Zeit im DataArray
-   NSArray* LinienfarbeArray = [NSArray arrayWithObjects:[UIColor blackColor],[UIColor blueColor],[UIColor redColor],[UIColor greenColor],[UIColor brownColor],[UIColor cyanColor],[UIColor magentaColor], nil];
+   NSArray* LinienfarbeArray = [NSArray arrayWithObjects:[UIColor blackColor],[UIColor blueColor],[UIColor redColor],[UIColor greenColor],[UIColor brownColor],[UIColor cyanColor],[UIColor magentaColor],nil];
 
    
    float zoomfaktory = self.diagrammview.bounds.size.height/120;  // max Temperatur
@@ -572,13 +701,86 @@
          [tempDataArray addObject:tempDataDic];
          
          
-      }
+      } // for i
+      
+       
+ 
+      
+      // *
+      //
       //NSLog(@"linie: %d name: %@",dataindex,[DataNamenArray objectAtIndex:dataindex]);
       NSDictionary* tempLineDic = [NSDictionary dictionaryWithObjectsAndKeys:tempDataArray,@"dataarray",[LinienfarbeArray objectAtIndex:dataindex],@"linecolor", [DataNamenArray objectAtIndex:dataindex],@"linename",nil];
       [LineArray addObject:tempLineDic];
 
       
    } // for dataindex
+   
+   // Linien fuer Pumpe und Heizung
+   // *
+   int codeindex = 7;
+   int lastheizungstate=0; // letzten status speichern, Linie eventuell unterbrechen
+   int lastpumpestate=0;
+   
+   
+   NSMutableArray* tempHeizungDataArray = [[NSMutableArray alloc]initWithCapacity:0];
+   NSMutableArray* tempPumpeDataArray = [[NSMutableArray alloc]initWithCapacity:0];
+   // Daten aus Array den Linien zuordnen
+   //fprintf(stderr,"ix:\ti:\tx:\ty:\n");
+   for (int i=0;i<[DatenArray count];i++)
+   {
+      float x = [[[ZeitArray objectAtIndex:i]lastObject ]floatValue]; // Zeit Minute
+      
+      int tempcode = [[[DatenArray objectAtIndex:i] objectAtIndex:codeindex]intValue];
+      
+      float y = 0;
+      // * Heizung
+      if (tempcode & 0x10)
+      {
+         //NSLog(@"heizung on");
+         y=204;
+         lastheizungstate = 1;
+      }
+      else
+      {
+         y=-100;
+         //NSLog(@"heizung off");
+      }
+      
+      NSDictionary* tempHeizungDataDic = [NSDictionary dictionaryWithObjectsAndKeys:[[ZeitArray objectAtIndex:i]lastObject],@"x",[NSNumber numberWithFloat:y],@"y", nil];
+      //NSLog(@"i: %d tempDataDic%@",i,[tempDataDic description]);
+      [tempHeizungDataArray addObject:tempHeizungDataDic];
+      // * end Heizung
+      
+      y=0;
+      
+      // *Pumpe*
+      
+      if (tempcode & 0x08)
+      {
+         //NSLog(@"Pumpe on on");
+         y=200;
+         lastheizungstate = 1;
+      }
+      else
+      {
+         y=-100;
+         //NSLog(@"Pumpe off");
+      }
+      
+      NSDictionary* tempPumpeDataDic = [NSDictionary dictionaryWithObjectsAndKeys:[[ZeitArray objectAtIndex:i]lastObject],@"x",[NSNumber numberWithFloat:y],@"y", nil];
+      //NSLog(@"i: %d tempDataDic%@",i,[tempDataDic description]);
+      [tempPumpeDataArray addObject:tempPumpeDataDic];
+      
+      // * end Pumpe
+      
+      
+   } // for i
+   
+   NSDictionary* tempPumpeLineDic = [NSDictionary dictionaryWithObjectsAndKeys:tempPumpeDataArray,@"dataarray",[UIColor orangeColor],@"linecolor", @"P",@"linename",nil];
+   [LineArray addObject:tempPumpeLineDic];
+
+   NSDictionary* tempHeizungLineDic = [NSDictionary dictionaryWithObjectsAndKeys:tempHeizungDataArray,@"dataarray",[UIColor orangeColor],@"linecolor", @"E",@"linename",nil];
+   [LineArray addObject:tempHeizungLineDic];
    
    // LineArray einsetzen
    [DiagrammdatenDic setObject:LineArray forKey:@"linearray"];
@@ -686,6 +888,7 @@
    [self setDiagrammtaste:nil];
    [self setOrdinate:nil];
    [self setOrdinate:nil];
+   [self setAbszisse:nil];
    [super viewDidUnload];
    //[KT setText: @"100"];//
    
@@ -695,6 +898,16 @@
 - (IBAction)reportRefresh:(id)sender
 {
    NSLog(@"reportRefresh");
+   if (self.boilerfeld.hidden==NO)
+   {
+      NSLog(@"reportRefresh Boiler");
+      [self loadLastData];
+   }
+   if (self.diagrammscroller.hidden==NO)
+   {
+      NSLog(@"reportRefresh Diagramm");
+      [self loadDiagrammData];
+   }
    
 }
 
@@ -711,10 +924,14 @@
    {
       self.boilerfeld.hidden = YES;
       self.diagrammscroller.hidden=NO;
+      self.diagrammscroller.layer.borderWidth = 2; // #import <QuartzCore/QuartzCore.h> notwendig
+      self.diagrammscroller.layer.borderColor = [UIColor lightGrayColor].CGColor;
+
       self.ordinate.hidden=NO;
       //NSLog(@"reportDiagrammtaste");
       
-      
+      [self loadDiagrammData];
+      return;
       int std=0;
       int min=1;
       int data=2;
@@ -752,6 +969,11 @@
       
        //
       [self.diagrammview DiagrammZeichnenMitDic:DiagrammDatenDic];
+      
+      // ans Ende scrollen: http://stackoverflow.com/questions/952412/uiscrollview-scroll-to-bottom-programmatically
+      CGPoint rightOffset = CGPointMake(self.diagrammscroller.contentSize.width - 1.2*self.diagrammscroller.bounds.size.width,0);
+      [self.diagrammscroller setContentOffset:rightOffset animated:YES];
+
       [self.diagrammview setNeedsDisplay];
       
       [self.ordinate setNeedsDisplay];

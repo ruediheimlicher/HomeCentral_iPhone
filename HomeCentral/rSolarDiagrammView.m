@@ -61,8 +61,8 @@
    
    for (int i = 0; i <= anzh; i++)
    {
-      CGContextMoveToPoint(context, kOffsetX, hoehe - kOffsetY - i * (hoehe/anzh));
-      CGContextAddLineToPoint(context, breite, hoehe - kOffsetY - i * (hoehe/anzh));
+      CGContextMoveToPoint(context, kOffsetX, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
+      CGContextAddLineToPoint(context, breite, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
    }
    
    CGContextStrokePath(context);
@@ -92,6 +92,9 @@
    CGContextSetRGBStrokeColor(context,0,0,1,1);
    
    //NSLog(@"drawrect self.datadic: %@",[self.datadic description]);
+   
+   // Linien zeichnen
+   
    if ([self.datadic objectForKey:@"linearray"])
    {
       CGContextRef templinecontext = UIGraphicsGetCurrentContext();
@@ -107,7 +110,9 @@
       NSLog(@"tempLineArray count: %d",[tempLineArray count]);
       if (tempLineArray.count)
       {
-      for (int linie=0;linie< tempLineArray.count;linie++)
+         // end Linien fuer Temperaturen
+
+      for (int linie=0;linie< tempLineArray.count-1;linie++)
          {
             //NSLog(@"Linie %d",linie);
             
@@ -122,7 +127,7 @@
                //CGContextTranslateCTM (templinecontext,10,0);
                //CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
                
-               CGContextSetLineWidth(templinecontext, 2.0);
+               CGContextSetLineWidth(templinecontext, 1.0);
                
                NSDictionary* tempLineDic = [tempLineArray objectAtIndex:linie];
                if ([tempLineDic objectForKey:@"linecolor"])
@@ -188,7 +193,209 @@
                //UIGraphicsPopContext();
             } //if count
             
-         }// for i
+         }// for linie
+         // end Linien fuer Temperaturen
+         
+         // Linien fuer Heizung und Pumpe
+         
+         // Beginn Pumpe
+         int pumpecodeindex = 6;
+         if ([[tempLineArray objectAtIndex:pumpecodeindex]count]) // linie vorhanden
+         {
+            NSLog(@"Pumpearray da");
+            CGContextSetLineWidth(templinecontext, 3.0);
+            
+            NSDictionary* tempLineDic = [tempLineArray objectAtIndex:pumpecodeindex];
+            if ([tempLineDic objectForKey:@"linecolor"])
+            {
+               CGContextSetStrokeColorWithColor(templinecontext, [[tempLineDic objectForKey:@"linecolor"] CGColor]);
+            }
+            else
+            {
+               CGContextSetStrokeColorWithColor(templinecontext, [[UIColor lightGrayColor] CGColor]);
+            }
+            
+            if ([tempLineDic objectForKey:@"linename"])
+            {
+               NSLog(@"Linie: %d linename: %@",pumpecodeindex,[tempLineDic objectForKey:@"linename"]);
+            }
+            NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
+            //NSLog(@"Pumpe tempDataArray an Index: %d da: %@",pumpecodeindex,[[tempDataArray valueForKey:@"y"] description]);
+            float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
+            
+            float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+            //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+            
+            CGContextMoveToPoint(templinecontext,startx,starty);
+            //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
+           
+            int lastON=0;
+            int yON=self.bounds.size.height-200;
+            float x=startx;
+            float datawert=-100;
+            
+             if (starty>0) //Wert vorhanden, Linie beginnen
+             {
+                CGContextBeginPath(templinecontext);
+                CGContextMoveToPoint(templinecontext,x,yON);
+                lastON=1;
+             }
+             else
+             {
+               
+             }
+            
+            for (int index=1;index < [tempDataArray count];index++)
+            {
+               x = [[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
+               datawert=[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
+               if (datawert > 0) // Heizung istn ON
+               {
+                  if (lastON) // Path schon angefangen
+                  {
+                     CGContextAddLineToPoint(templinecontext,x,yON);
+                  }
+                  else // neuer Path
+                  {
+                     CGContextStrokePath(templinecontext); // letzten Path abschliessen
+                     CGContextMoveToPoint(templinecontext,x,yON);
+                     lastON=1;
+                  }
+                }
+               else // Heizung ist OFF
+               {
+                  if (lastON) // Path war vorhanden
+                  {
+                     CGContextStrokePath(templinecontext); // letzten Path abschliessen
+                     lastON=0;
+                  }
+                  else // Heizung war schon OFF
+                  {
+                     // nichts tun
+                  }
+               }  // Heizung ist OFF
+            }// for index
+            CGContextStrokePath(templinecontext);
+            
+            CGContextBeginPath(templinecontext);
+            CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
+            CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
+            CGContextMoveToPoint(templinecontext,x,yON);
+            CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
+            
+            const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
+            //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
+            
+            CGContextShowTextAtPoint(templinecontext,x,yON+4,cName,1);
+            CGContextStrokePath(templinecontext);
+            
+            
+            
+            //UIGraphicsPopContext();
+         } //if count
+         // End Pumpe
+ 
+         // Beginn Heizung
+         int heizungcodeindex = 7;
+         if ([[tempLineArray objectAtIndex:heizungcodeindex]count]) // linie vorhanden
+         {
+            NSLog(@"Heizungarray da");
+            CGContextSetLineWidth(templinecontext, 3.0);
+            
+            NSDictionary* tempLineDic = [tempLineArray objectAtIndex:heizungcodeindex];
+            if ([tempLineDic objectForKey:@"linecolor"])
+            {
+               CGContextSetStrokeColorWithColor(templinecontext, [[tempLineDic objectForKey:@"linecolor"] CGColor]);
+            }
+            else
+            {
+               CGContextSetStrokeColorWithColor(templinecontext, [[UIColor lightGrayColor] CGColor]);
+            }
+            
+            if ([tempLineDic objectForKey:@"linename"])
+            {
+               NSLog(@"Linie: %d linename: %@",heizungcodeindex,[tempLineDic objectForKey:@"linename"]);
+            }
+            NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
+            //NSLog(@"tempDataArray an Index: %d da: %@",heizungcodeindex,[[tempDataArray valueForKey:@"y"] description]);
+            float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
+            
+            float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+            //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+            
+            CGContextMoveToPoint(templinecontext,startx,starty);
+            //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
+            
+            int heizungyoff=-100;
+            int lastON=0;
+            int yON=self.bounds.size.height-190;
+            float x=startx;
+            float datawert=-100;
+            
+            if (starty>0) //Wert vorhanden, Linie beginnen
+            {
+               CGContextBeginPath(templinecontext);
+               CGContextMoveToPoint(templinecontext,x,yON);
+               lastON=1;
+            }
+            else
+            {
+               
+            }
+            
+            for (int index=1;index < [tempDataArray count];index++)
+            {
+               x = [[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
+               datawert=[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
+               if (datawert > 0) // Heizung istn ON
+               {
+                  if (lastON) // Path schon angefangen
+                  {
+                     CGContextAddLineToPoint(templinecontext,x,yON);
+                  }
+                  else // neuer Path
+                  {
+                     CGContextStrokePath(templinecontext); // letzten Path abschliessen
+                     CGContextMoveToPoint(templinecontext,x,yON);
+                     lastON=1;
+                  }
+               }
+               else // Heizung ist OFF
+               {
+                  if (lastON) // Path war vorhanden
+                  {
+                     CGContextStrokePath(templinecontext); // letzten Path abschliessen
+                     lastON=0;
+                  }
+                  else // Heizung war schon OFF
+                  {
+                     // nichts tun
+                  }
+               }  // Heizung ist OFF
+            }// for index
+            CGContextStrokePath(templinecontext);
+            
+            CGContextBeginPath(templinecontext);
+            CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
+            CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
+            CGContextMoveToPoint(templinecontext,x,yON);
+            CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
+            
+            const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
+            //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
+            
+            CGContextShowTextAtPoint(templinecontext,x,yON+4,cName,1);
+            CGContextStrokePath(templinecontext);
+            
+            
+            
+            //UIGraphicsPopContext();
+         } //if count
+         // End Heizung
+
+         
+         
+         // end Linien fuer Heizung und Pumpe
       }// if count
       CGContextRestoreGState(templinecontext);
    }// if linearray

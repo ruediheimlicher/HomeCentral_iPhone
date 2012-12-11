@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "rSolarDiagrammView.h"
 #import "rBoilerView.h"
 #import "rOrdinate.h"
+#import "rAbszisse.h"
 
 @interface rSolarController : UIViewController <UITextFieldDelegate, UIWebViewDelegate>
 
@@ -56,6 +58,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *anlage;
 @property (weak, nonatomic) IBOutlet UIButton *diagrammtaste;
 @property (weak, nonatomic) IBOutlet rOrdinate *ordinate;
+@property (weak, nonatomic) IBOutlet rAbszisse *abszisse;
 
 - (IBAction)reportDiagrammTaste:(id)sender;
 
@@ -64,8 +67,9 @@
 - (IBAction)switch2Strom:(id)sender;
 - (IBAction)reportTextFieldGo:(id)sender;
 - (NSDictionary*)SolarDataDicVonHeute;
-- (NSDictionary*)lastSolarDataDic
-;
+- (NSDictionary*)lastSolarDataDic;
+- (void)loadLastData;
+- (void)loadDiagrammData;
 - (int)lastDataZeitVon:(NSString*)derDatenString;
 
 @end

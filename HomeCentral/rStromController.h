@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-//#import "CorePlot-CocoaTouch.h"
+
 #import "rStromDiagrammView.h"
 @interface rStromController : UIViewController //<CPTPlotDataSource>
 {
@@ -23,6 +23,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *data;
 @property (weak, nonatomic) IBOutlet UILabel *zeit;
 @property (weak, nonatomic) IBOutlet UILabel *datum;
+@property (nonatomic,readwrite) int lastminute;
+@property (nonatomic,readwrite) float lastzoomfaktorx;
 
 @property (weak, nonatomic) IBOutlet UILabel *leistungaktuell;
 @property (weak, nonatomic) IBOutlet UIScrollView *diagrammscroller;

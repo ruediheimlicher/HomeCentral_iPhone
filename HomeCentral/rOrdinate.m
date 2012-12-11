@@ -126,7 +126,7 @@ char* itoa(int val, int base)
    //NSLog(@"drawRect eckeunteny: %.1f",self.eckeunteny);
 
    float startx = self.offsetx;
-   float starty = self.eckeunteny;
+   float starty = self.eckeunteny+2;
    NSLog(@"startx: %.1f starty: %.1f",startx,starty);
    
    

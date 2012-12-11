@@ -27,6 +27,8 @@ NSDictionary*                 DataDic;
 @property (nonatomic, readwrite) int graphheight;
 @property (nonatomic, readwrite) int graphwidth;
 
+@property (nonatomic, readwrite) int lastzeit;
+
 -(void)DiagrammZeichnenMitDic:(NSDictionary*)derDataDic;
 
 @end
