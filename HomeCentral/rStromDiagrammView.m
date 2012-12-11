@@ -102,7 +102,7 @@
       {
          for (int i=0;i< tempLineArray.count;i++)
          {
-            NSLog(@"Linie %d",i);
+            //NSLog(@"Linie %d",i);
             
             if ([[tempLineArray objectAtIndex:i]count])
             {
@@ -129,7 +129,7 @@
                float starty = self.bounds.size.height-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
                
                CGContextMoveToPoint(templinecontext,startx,starty);
-               NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
+               //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
                starty = self.bounds.size.height-starty;
                for (int index=1;index < [tempDataArray count];index++)
                {

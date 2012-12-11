@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "rDiagrammView.h"
+#import "rSolarDiagrammView.h"
+#import "rBoilerView.h"
+#import "rOrdinate.h"
 
 @interface rSolarController : UIViewController <UITextFieldDelegate, UIWebViewDelegate>
 
@@ -39,20 +41,24 @@
 @property (weak, nonatomic) IBOutlet UILabel *     solardata;
 @property (weak, nonatomic) IBOutlet UILabel *     heizung;
 @property (weak, nonatomic) IBOutlet UIImageView * pumpe;
-@property (weak, nonatomic) IBOutlet UINavigationBar *navbar;
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *backtaste;
 @property (weak, nonatomic) IBOutlet UIButton *RefreshTaste;
 - (IBAction)reportRefresh:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UIButton *DiagrammTaste;
 @property (weak, nonatomic) IBOutlet UILabel *AussentempFeld;
 
-@property (weak, nonatomic) IBOutlet UIView *boilerfeld;
+@property (weak, nonatomic) IBOutlet rBoilerView *boilerfeld;
 
-
+@property (weak, nonatomic) IBOutlet UIScrollView *diagrammscroller;
+@property (weak, nonatomic) IBOutlet rSolarDiagrammView *diagrammview;
+@property (weak, nonatomic) IBOutlet UIImageView *wolke;
+@property (weak, nonatomic) IBOutlet UIImageView *anlage;
+@property (weak, nonatomic) IBOutlet UIButton *diagrammtaste;
+@property (weak, nonatomic) IBOutlet rOrdinate *ordinate;
 
 - (IBAction)reportDiagrammTaste:(id)sender;
+
 
 
 - (IBAction)switch2Strom:(id)sender;

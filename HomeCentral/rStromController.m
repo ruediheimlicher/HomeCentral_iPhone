@@ -90,7 +90,7 @@
    }
    
    float zoomfaktory = self.diagrammview.bounds.size.height/8000;  // max Leistung
-   NSLog(@"DiagrammDatenDicVon zoomfaktorx: %.2f",zoomfaktorx);
+   //NSLog(@"DiagrammDatenDicVon zoomfaktorx: %.2f",zoomfaktorx);
 
    
    

@@ -95,7 +95,7 @@
       {
          for (int i=0;i< tempLineArray.count;i++)
          {
-            NSLog(@"Linie %d",i);
+            //NSLog(@"Linie %d",i);
             
             if ([[tempLineArray objectAtIndex:i]count])
             {
