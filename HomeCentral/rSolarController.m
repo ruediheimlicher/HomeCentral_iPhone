@@ -58,6 +58,7 @@
    ServerPfad =@"http://www.ruediheimlicher.ch/Data";
    
    //self.solardata.text = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
+   NSLog(@"A");
    [self loadLastData];
    return;
    NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
@@ -132,9 +133,10 @@
 
 - (void)loadLastData
 {
+   NSLog(@"B");
    NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
    self.solardata.text = lastsolardataString;
-   //NSLog(@"lastsolardata: %@",lastsolardataString);
+   NSLog(@"lastsolardata: %@",lastsolardataString);
    NSArray* lastDataArray = [lastsolardataString componentsSeparatedByString:@"\t"];
    float kv_temp = [[lastDataArray objectAtIndex:1]floatValue]/2;
    self.kv.text = [NSString stringWithFormat:@"%.1f°C",kv_temp];
@@ -160,7 +162,7 @@
    //bool testON = (test & 0x10);
    //NSLog(@"testON: %d",testON);
    bool pumpeON = ([[lastDataArray objectAtIndex:7]intValue] & 0x08);
-   //NSLog(@"pumpeON: %d",pumpeON);
+   NSLog(@"pumpeON: %d",pumpeON);
    //[Pumpe setHidden:pumpeON];
    if (pumpeON)
    {
@@ -173,7 +175,7 @@
    }
    
    bool elektroON = ([[lastDataArray objectAtIndex:7]intValue] & 0x10);
-   //NSLog(@"elektroON: %d",elektroON);
+   NSLog(@"elektroON: %d",elektroON);
    if (elektroON)
    {
       [self.heizung setEnabled:YES];
@@ -183,7 +185,7 @@
       [self.heizung setEnabled:NO];
       
    }
-
+NSLog(@"C");
 }
 
 - (void)loadDiagrammData
@@ -330,22 +332,25 @@
 	{
       NSString* AussentempSuffix = @"/TemperaturDaten.txt";
       NSURL *AussentempURL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:AussentempSuffix]];
-		//NSLog(@"SolarDataVonHeute URL: %@",URL);
+		NSLog(@"SolarDataVonHeute URL: %@",AussentempURL);
 		NSStringEncoding *  Aussentempenc=0;
 		NSError* AussentempWebFehler=NULL;
 		NSString* AussentempDataString=[NSString stringWithContentsOfURL:AussentempURL usedEncoding: Aussentempenc error:&AussentempWebFehler];
-      //NSLog(@"SolarDataVonHeute AussentempDataString: %@",AussentempDataString);
+      NSLog(@"SolarDataVonHeute AussentempDataString: %@",AussentempDataString);
+      NSArray* TemperaturDatenArray = [AussentempDataString componentsSeparatedByString:@"\n"];
+      NSLog(@"SolarDataVonHeute TemperaturDatenArray: %@",[TemperaturDatenArray description]);
+      
       NSString* AussentemperaturString = [[AussentempDataString componentsSeparatedByString:@"\n"]objectAtIndex:5];
       //NSLog(@"SolarDataVonHeute AussentemperaturString: %@",AussentemperaturString);
       AussentemperaturString = [[AussentemperaturString componentsSeparatedByString:@" "]lastObject];
 		AussentemperaturString = [NSString stringWithFormat:@"%@°C",AussentemperaturString];
       self.AussentempFeld.text = AussentemperaturString;
-      
+      NSLog(@"E");
       
       NSString* DataSuffix=@"LastSolarData.txt";
 		//NSLog(@"SolarDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
 		NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
-		//NSLog(@"SolarDataVonHeute URL: %@",URL);
+		NSLog(@"SolarDataVonHeute URL: %@",URL);
 		NSStringEncoding *  enc=0;
 		NSError* WebFehler=NULL;
 		NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
@@ -376,6 +381,7 @@
 			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
 			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
 		}
+      NSLog(@"F");
 		if ([DataString length])
 		{
 			
@@ -410,26 +416,8 @@
 			NSLog(@"Keine Daten");
 			//[self setErrString:@"DataVonHeute: keine Daten"];
 		}
-		
-		/*
-		 NSLog(@"DataVon URL: %@ DataString: %@",URL,DataString);
-		 if (URL)
-		 {
-		 download = [[WebDownload alloc] initWithRequest:[NSURLRequest requestWithURL:URL] delegate:self];
-		 downloadFlag=heute;
-		 
-		 }
-		 if (!download)
-		 {
-		 
-		 NSBeginAlertSheet(@"Invalid or unsupported URL", nil, nil, nil, [self window], nil, nil, nil, nil,
-		 @"The entered URL is either invalid or unsupported.");
-		 }
-		 */
       
-		
-      
-      
+      NSLog(@"G");
 	}
 	return SolarDataDic;
 }
