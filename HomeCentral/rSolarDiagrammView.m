@@ -24,8 +24,8 @@
 -(void)DiagrammZeichnenMitDic:(NSDictionary*)derDataDic
 {
    
-   self.diagrammhoehe = (int)((self.frame.size.height-self.randoben)/10)*10;
-   NSLog(@"DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
+   //self.diagrammhoehe = (int)((self.frame.size.height-self.randoben)/10)*10;
+  // NSLog(@"DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
    
    self.datadic = derDataDic;
    //NSLog(@"DiagrammZeichnenMitDic Dataarray count: %d",[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]count]);
@@ -49,25 +49,45 @@
        {
           self.diagrammbreite = [[DataDic objectForKey:@"diagrammbreite" ] floatValue];
        }
+
+   self.diagrammhoehe = self.bounds.size.height; // Diagramm fuellt ganzes Feld
+   if ([DataDic objectForKey:@"diagrammhoehe"])
+   {
+      self.diagrammhoehe = [[DataDic objectForKey:@"diagrammhoehe" ] floatValue];
+   }
+   
+   NSLog(@"diagrammhoehe: %.2f diagrammbreite: %.2f",self.diagrammhoehe,self.diagrammbreite);
+
+   float  eckeunteny =  self.frame.size.height; //Startpunkt fuer Diagrammzeichnen
+
    self.randlinks = kOffsetX;
    if ([DataDic objectForKey:@"randlinks"])
    {
       self.randlinks = [[DataDic objectForKey:@"randlinks"]intValue];
    }
-   NSLog(@"randlinks: %d",self.randlinks);
-   self.diagrammbreite  -= self.randlinks;
-   float intervall = kStepX;
+   
+   
+   float  eckeuntenx = [[DataDic objectForKey:@"eckeuntenx"]floatValue]; // Koordinate x Ecke des DiagrammView
+   //float  eckeunteny = [[DataDic objectForKey:@"eckeunteny"]floatValue]; // Koordinate y
+   
+      
+   NSLog(@"randlinks: %d",self.randlinks); // Abstand Diagramm zum View
+   
+   float intervall = kStepX; //Intervall der x-Achse *zoomfaktor
    
    if ([DataDic objectForKey:@"intervallx"]&& [DataDic objectForKey:@"zoomfaktorx"])
    {
       intervall = [[DataDic objectForKey:@"intervallx"]floatValue]* [[DataDic objectForKey:@"zoomfaktorx"]floatValue];
    }
    
-   float randunten = kGraphBottom;
+   self.randunten = kGraphBottom; // Abstand Diagramm zum View
+   
    if ([DataDic objectForKey:@"randunten"])
    {
-      randunten = self.bounds.size.height - [[DataDic objectForKey:@"randunten"]floatValue];
+      self.randunten = [[DataDic objectForKey:@"randunten"]floatValue];
    }
+   
+   NSLog(@"randunten: %d",self.randunten); // Abstand Diagramm zum View
    
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,10,0);
@@ -80,20 +100,25 @@
    CGContextSetTextDrawingMode(context, kCGTextFill);
 
    // How many lines?
-   int howMany = (kDefaultGraphWidth - kOffsetX) / kStepX;
-   
+   int anzsenkrecht = self.diagrammbreite/intervall;
    // Senkrechte Linien
-   for (int i = 0; i < howMany; i++)
+   //eckeunteny = self.frame.size.height;
+   float linieoben = eckeunteny - self.diagrammhoehe-self.randunten;
+   float linieunten = eckeunteny - self.randunten;
+   
+   NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f",eckeunteny,linieoben,linieunten);
+   
+   for (int i = 0; i < anzsenkrecht; i++)
    {
-      float tempoben = randunten - self.diagrammhoehe;
-      CGContextMoveToPoint(context, self.randlinks + i * intervall, tempoben);
-      CGContextAddLineToPoint(context, self.randlinks + i * intervall, randunten);
+      
+      CGContextMoveToPoint(context, self.randlinks + i * intervall,  linieunten);
+      CGContextAddLineToPoint(context, self.randlinks + i * intervall,linieoben);
 
       NSString* Stundestring = [NSString stringWithFormat:@"%d",i];
       const char* cName = [Stundestring UTF8String];
       //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
       
-      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, tempoben+1,cName,strlen(cName));
+      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, linieoben-10,cName,strlen(cName));
 
    }
    float hoehe= (int)(self.bounds.size.height/10)*10;
@@ -117,8 +142,8 @@
       for (int i = 0; i <= anzh; i++)
    {
       
-      CGContextMoveToPoint(context, self.randlinks, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
-      CGContextAddLineToPoint(context, breite, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
+      CGContextMoveToPoint(context, self.randlinks, self.bounds.size.height - self.randunten - i * (self.diagrammhoehe/anzh));
+      CGContextAddLineToPoint(context, breite, self.bounds.size.height - self.randunten - i * (self.diagrammhoehe/anzh));
       
    }
    
@@ -203,20 +228,20 @@
                // NSLog(@"tempDataArray an Index: %d da: %@",i,[[tempDataArray valueForKey:@"x"] description]);
                float startx = self.randlinks+[[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
                
-               float starty = self.bounds.size.height-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+               float starty = self.bounds.size.height-self.randunten-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
                //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
                
                CGContextMoveToPoint(templinecontext,startx,starty);
                
-               //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
+               //
                starty = self.bounds.size.height-starty;
-               
+               NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
                float x=startx;
                float y=starty;
                for (int index=1;index < [tempDataArray count];index++)
                {
                   x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
-                  y = self.bounds.size.height-[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
+                  y = self.bounds.size.height-self.randunten-[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
                   
                   //NSLog(@"index: %d\t x: %.1f \t y: %.1f",index,x,y);
                   CGContextAddLineToPoint(templinecontext,x,y);

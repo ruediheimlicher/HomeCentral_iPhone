@@ -81,7 +81,7 @@
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
- NSLog(@"Abszisse drawRect h: %.1f\t eckeuntenx: %.1f eckeunteny: %.1f" ,self.h,self.eckeuntenx,self.eckeunteny);
+// NSLog(@"Abszisse drawRect h: %.1f\t eckeuntenx: %.1f eckeunteny: %.1f" ,self.h,self.eckeuntenx,self.eckeunteny);
  //NSLog(@"Ordinate drawRect teile: %d",self.teile);
  CGContextRef context = UIGraphicsGetCurrentContext();
  //CGContextTranslateCTM (context,8,0);

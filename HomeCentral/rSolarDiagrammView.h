@@ -19,7 +19,7 @@
 #define kOffsetY              1
 
 
-#define kGraphBottom          300
+#define kGraphBottom          10
 #define kGraphTop             0
 NSDictionary*                 DataDic;
 
@@ -29,6 +29,7 @@ NSDictionary*                 DataDic;
 @property (nonatomic, readwrite) int graphwidth;
 @property (nonatomic, readwrite) int randoben;
 @property (nonatomic, readwrite) int randlinks;
+@property (nonatomic, readwrite) int randunten;
 
 @property (nonatomic, readwrite) float diagrammhoehe;
 @property (nonatomic, readwrite) float diagrammbreite;

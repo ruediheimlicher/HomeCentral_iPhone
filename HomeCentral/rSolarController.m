@@ -195,8 +195,9 @@ NSLog(@"C");
    int data=2;
    int art =0;
    int randlinks=10;
-   int offsety=0;
-   int randunten = 00;
+   int randrechts=0;
+   //int offsety=0;
+   int randunten = 10;
    int randoben = 10;
    float b = 24;
    int intervally = 10;
@@ -208,25 +209,29 @@ NSLog(@"C");
    
    NSDictionary* heuteSolarDic = [self SolarDataDicVonHeute];
    NSMutableDictionary* DiagrammDatenDic = [NSMutableDictionary dictionaryWithDictionary:[self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:IndexArray]];
-   
+   NSLog(@"self.diagrammview.frame.origin.y: %.2f self.diagrammview.frame.size.height: %.2f",self.diagrammview.frame.origin.y , self.diagrammview.frame.size.height);
    // Abstand DiagrammView vom unteren Rand des Srollers: origin hat nullpunkt oben
    float eckeunteny = self.diagrammview.frame.origin.y + self.diagrammview.frame.size.height;
+   float eckeuntenx = self.diagrammview.frame.origin.x;
    
-   float diagrammhoehe = (int)((self.diagrammview.frame.size.height-randoben)/10)*10;
-   float diagrammbreite = (int)((self.diagrammview.frame.size.width-randlinks)/10)*10;
+   
+   float diagrammhoehe = (int)((self.diagrammview.frame.size.height-randoben-randunten)/10)*10;
+   //float diagrammhoehe = (self.diagrammview.frame.size.height-randoben-randunten);
+   float diagrammbreite = (int)((self.diagrammview.frame.size.width-randlinks-randrechts)/10)*10;
    
    [DiagrammDatenDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"diagrammhoehe"];
+   [DiagrammDatenDic setObject:[NSNumber numberWithFloat:diagrammbreite] forKey:@"diagrammbreite"];
    [DiagrammDatenDic setObject:[NSNumber numberWithFloat:randlinks] forKey:@"randlinks"];
    [DiagrammDatenDic setObject:[NSNumber numberWithFloat:randunten] forKey:@"randunten"];
    [DiagrammDatenDic setObject:[NSNumber numberWithInt:intervallx] forKey:@"intervallx"];
    [DiagrammDatenDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
-
+   [DiagrammDatenDic setObject:[NSNumber numberWithFloat:eckeuntenx] forKey:@"eckeuntenx"];
+   [DiagrammDatenDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
    
    NSMutableDictionary* OrdinateDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    //
    
    // Abstand DiagrammView vom unteren Rand des Srollers:
-   
    
    [OrdinateDic setObject:[NSNumber numberWithInt:randlinks] forKey:@"randlinks"];
    [OrdinateDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
@@ -241,8 +246,6 @@ NSLog(@"C");
    [self.ordinate OrdinateZeichnenMitDic:OrdinateDic];
    
    
-   eckeunteny = self.diagrammview.frame.origin.y + self.diagrammview.frame.size.height;
-   int eckeuntenx=0;
    
    float h=22;
    
@@ -940,6 +943,8 @@ NSLog(@"C");
       
       [self loadDiagrammData];
       return;
+      
+      /*
       int std=0;
       int min=1;
       int data=2;
@@ -984,6 +989,7 @@ NSLog(@"C");
       [self.diagrammscroller setContentOffset:rightOffset animated:YES];
       [self.diagrammview setNeedsDisplay];
       [self.ordinate setNeedsDisplay];
+       */
    }
 }
 

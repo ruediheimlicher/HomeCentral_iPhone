@@ -60,13 +60,14 @@ char* itoa(int val, int base)
    {
       self.eckeunteny = self.frame.size.height;
    }
+   
     if ([derDataDic objectForKey:@"diagrammhoehe"])
    {
-      self.h = [[derDataDic objectForKey:@"diagrammhoehe"]floatValue];
+      self.diagrammhoehe = [[derDataDic objectForKey:@"diagrammhoehe"]floatValue];
    }
    else
    {
-      self.h = 200;
+      self.diagrammhoehe = 200;
    }
 
    if ([derDataDic objectForKey:@"b"])
@@ -96,6 +97,15 @@ char* itoa(int val, int base)
       self.intervall = 10;
    }
 
+   if ([derDataDic objectForKey:@"randunten"])
+   {
+      self.randunten = [[derDataDic objectForKey:@"randunten"]floatValue];
+   }
+   else
+   {
+      self.randunten = 10;
+   }
+
 
 }
 
@@ -112,7 +122,7 @@ char* itoa(int val, int base)
    
     // Drawing code
    //NSLog(@"Ordinate drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
-    NSLog(@"Ordinate drawRect h: %.1f\t offsetx: %.1f" ,self.h,self.offsetx);
+    NSLog(@"Ordinate drawRect diagrammhoehe: %.1f\t offsetx: %.1f" ,self.diagrammhoehe,self.offsetx);
    //NSLog(@"Ordinate drawRect teile: %d",self.teile);
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,8,0);
@@ -126,10 +136,9 @@ char* itoa(int val, int base)
    //NSLog(@"drawRect eckeunteny: %.1f",self.eckeunteny);
 
    float startx = self.offsetx;
-   float starty = self.eckeunteny+2;
+   float starty = self.eckeunteny+2-self.randunten;
    NSLog(@"startx: %.1f starty: %.1f",startx,starty);
-   
-   
+      
    CGContextMoveToPoint(context, startx,starty);
 
     for (int i=0;i<self.teile+1;i++)
@@ -157,7 +166,7 @@ char* itoa(int val, int base)
       //char* c = itoa(wert,10);
       //char* cLegende=
       
-      float y = starty - i*(self.h/(self.teile));
+      float y = starty - i*(self.diagrammhoehe/(self.teile));
       
       //NSLog(@"i: %d cLegende: %s x: %.2f y: %.2f",i ,cLegende,x,y);
       CGContextBeginPath(context);

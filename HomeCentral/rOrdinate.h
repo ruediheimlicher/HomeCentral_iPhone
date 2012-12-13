@@ -14,7 +14,9 @@
 }
 @property (nonatomic, readwrite)float offsetx;
 @property (nonatomic, readwrite)float eckeunteny;
-@property (nonatomic, readwrite)float h;
+
+@property (nonatomic, readwrite)float randunten;
+@property (nonatomic, readwrite)float diagrammhoehe;
 @property (nonatomic, readwrite)float b;
 @property (nonatomic, readwrite)int min;
 @property (nonatomic, readwrite)int max;
