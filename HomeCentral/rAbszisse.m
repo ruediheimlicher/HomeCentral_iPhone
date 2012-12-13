@@ -21,7 +21,7 @@
 
 -(void)AbszisseZeichnenMitDic:(NSDictionary*)derDataDic;
 {
-   NSLog(@"AbszisseZeichnenMitDic %@",[derDataDic description]);
+  // NSLog(@"AbszisseZeichnenMitDic %@",[derDataDic description]);
    if ([derDataDic objectForKey:@"offsetx"])
    {
       self.eckeuntenx = [[derDataDic objectForKey:@"offsetx"]floatValue];
@@ -41,9 +41,9 @@
    {
       self.eckeunteny = self.frame.size.height;
    }
-   if ([derDataDic objectForKey:@"hoehe"])
+   if ([derDataDic objectForKey:@"diagrammhoehe"])
    {
-      self.h = [[derDataDic objectForKey:@"hoehe"]floatValue];
+      self.h = [[derDataDic objectForKey:@"diagrammhoehe"]floatValue];
    }
    else
    {

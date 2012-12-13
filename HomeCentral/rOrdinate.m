@@ -60,9 +60,9 @@ char* itoa(int val, int base)
    {
       self.eckeunteny = self.frame.size.height;
    }
-    if ([derDataDic objectForKey:@"hoehe"])
+    if ([derDataDic objectForKey:@"diagrammhoehe"])
    {
-      self.h = [[derDataDic objectForKey:@"hoehe"]floatValue];
+      self.h = [[derDataDic objectForKey:@"diagrammhoehe"]floatValue];
    }
    else
    {

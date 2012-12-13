@@ -194,33 +194,47 @@ NSLog(@"C");
    int min=1;
    int data=2;
    int art =0;
+   int randlinks=10;
+   int offsety=0;
+   int randunten = 00;
+   int randoben = 10;
+   float b = 24;
+   int intervally = 10;
+   float intervallx = 60;
+   int teile = 12;
+   int startwert =0;
+
    NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:0], nil]; // letztes Element: art
    
    NSDictionary* heuteSolarDic = [self SolarDataDicVonHeute];
-   NSDictionary* DiagrammDatenDic = [self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:IndexArray];
+   NSMutableDictionary* DiagrammDatenDic = [NSMutableDictionary dictionaryWithDictionary:[self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:IndexArray]];
+   
    // Abstand DiagrammView vom unteren Rand des Srollers: origin hat nullpunkt oben
    float eckeunteny = self.diagrammview.frame.origin.y + self.diagrammview.frame.size.height;
    
-   float diagrammhoehe = (int)(self.diagrammview.frame.size.height/10)*10;
-   float diagrammbreite = (int)(self.diagrammview.frame.size.width/10)*10;
+   float diagrammhoehe = (int)((self.diagrammview.frame.size.height-randoben)/10)*10;
+   float diagrammbreite = (int)((self.diagrammview.frame.size.width-randlinks)/10)*10;
+   
+   [DiagrammDatenDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"diagrammhoehe"];
+   [DiagrammDatenDic setObject:[NSNumber numberWithFloat:randlinks] forKey:@"randlinks"];
+   [DiagrammDatenDic setObject:[NSNumber numberWithFloat:randunten] forKey:@"randunten"];
+   [DiagrammDatenDic setObject:[NSNumber numberWithInt:intervallx] forKey:@"intervallx"];
+   [DiagrammDatenDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
+
    
    NSMutableDictionary* OrdinateDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    //
-   int offsetx=0;
-   int offsety=0;
-   float b = 24;
-   int intervall = 10;
-   int teile = 12;
-   int startwert =0;
    
    // Abstand DiagrammView vom unteren Rand des Srollers:
    
    
-   [OrdinateDic setObject:[NSNumber numberWithInt:offsetx] forKey:@"offsetx"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:randlinks] forKey:@"randlinks"];
    [OrdinateDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
-   [OrdinateDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"hoehe"];
+   [OrdinateDic setObject:[NSNumber numberWithFloat:randunten] forKey:@"randunten"];
+
+   [OrdinateDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"diagrammhoehe"];
    [OrdinateDic setObject:[NSNumber numberWithInt:b] forKey:@"breite"];
-   [OrdinateDic setObject:[NSNumber numberWithInt:intervall] forKey:@"intervall"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:intervally] forKey:@"intervally"];
    [OrdinateDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
    [OrdinateDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
    //NSLog(@"OrdinateDic: %@",[OrdinateDic description]);
@@ -231,16 +245,16 @@ NSLog(@"C");
    int eckeuntenx=0;
    
    float h=22;
-   intervall = 60;
-   teile = diagrammbreite/intervall;
+   
+   teile = diagrammbreite/intervallx;
    startwert =0;
 
    NSMutableDictionary* AbszisseDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    [AbszisseDic setObject:[NSNumber numberWithInt:eckeunteny] forKey:@"eckeunteny"];
    [AbszisseDic setObject:[NSNumber numberWithFloat:eckeuntenx] forKey:@"eckeuntenx"];
-   [AbszisseDic setObject:[NSNumber numberWithFloat:h] forKey:@"hoehe"];
+   [AbszisseDic setObject:[NSNumber numberWithFloat:h] forKey:@"diagrammhoehe"];
    [AbszisseDic setObject:[NSNumber numberWithInt:diagrammbreite] forKey:@"breite"];
-   [AbszisseDic setObject:[NSNumber numberWithInt:intervall] forKey:@"intervall"];
+   [AbszisseDic setObject:[NSNumber numberWithInt:intervallx] forKey:@"intervall"];
    [AbszisseDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
    [AbszisseDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
    NSLog(@"AbszisseDic: %@",[AbszisseDic description]);
@@ -592,17 +606,17 @@ NSLog(@"C");
    
    int offsetstd = startminute/60;
    int offsetmin = startminute%60;
-   int offsetx = 60*offsetstd + offsetmin;
-   //NSLog(@" offsetstd: %d offsetmin: %d diffx: %d",offsetstd,offsetmin,offsetx);
+   int randlinks = 60*offsetstd + offsetmin;
+   //NSLog(@" offsetstd: %d offsetmin: %d diffx: %d",offsetstd,offsetmin,randlinks);
    //NSLog(@"Solar DiagrammDatenDicVon letzte Zeile array: %@",[[DatenArray lastObject] description]);
    int endminute = [[[DatenArray lastObject]objectAtIndex:0]intValue]/60;
 
    int endstd =  endminute/60;;
    int endmin =  endminute%60;
    int endx = 60*endstd + endmin;
-   int diffx = endx - offsetx;
+   int diffx = endx - randlinks;
    
-   float zoomfaktorx = self.diagrammview.bounds.size.width/1440; // Minuten des Tages
+   self.zoomfaktorx = self.diagrammview.bounds.size.width/1440; // Minuten des Tages
    //NSLog(@"width: %.1f zoomfaktorx: %.2f",self.diagrammview.bounds.size.width,zoomfaktorx );
 
    // Zeitarray mit minute
@@ -616,7 +630,7 @@ NSLog(@"C");
       int minute = tempzeit%1440; // minute des Tages
       NSNumber* stdNumber = [NSNumber numberWithInt:tempstd];
       NSNumber* minNumber = [NSNumber numberWithInt:tempmin];
-      NSNumber* minuteNumber = [NSNumber numberWithFloat:(float)minute*zoomfaktorx];
+      NSNumber* minuteNumber = [NSNumber numberWithFloat:(float)minute*self.zoomfaktorx];
       //NSLog(@"minute: %d minutewert: %.2f",minute,minute*zoomfaktorx );
       NSArray* tempZeitArray = [NSArray arrayWithObjects:stdNumber,minNumber,minuteNumber,nil];
       [ZeitArray addObject:tempZeitArray];
@@ -624,7 +638,7 @@ NSLog(@"C");
    
    //NSLog(@" endstd: %d endmin: %d diffx: %d",endstd,endmin,endx);
 
-   //NSLog(@" offsetx: %d endx: %d diffx: %d",offsetx,endx,diffx);
+   //NSLog(@" randlinks: %d endx: %d diffx: %d",randlinks,endx,diffx);
    /*
     lastdatenarray =     (
     48849,	Laufzeit
@@ -645,7 +659,7 @@ NSLog(@"C");
    NSArray* LinienfarbeArray = [NSArray arrayWithObjects:[UIColor blackColor],[UIColor blueColor],[UIColor redColor],[UIColor greenColor],[UIColor brownColor],[UIColor cyanColor],[UIColor magentaColor],nil];
 
    
-   float zoomfaktory = self.diagrammview.bounds.size.height/120;  // max Temperatur
+   self.zoomfaktory = self.diagrammview.bounds.size.height/120;  // max Temperatur
  
    
    //for (int dataindex=1;dataindex<6;dataindex++)
@@ -670,7 +684,7 @@ NSLog(@"C");
          // KV
          float x = [[[ZeitArray objectAtIndex:i]lastObject ]floatValue]; // Zeit Minute
          
-         float y = [[[DatenArray objectAtIndex:i] objectAtIndex:dataindex]intValue]/2*zoomfaktory;
+         float y = [[[DatenArray objectAtIndex:i] objectAtIndex:dataindex]intValue]/2*self.zoomfaktory;
          //fprintf(stderr,"%d\t%d\t%2.2f\t%2.2f\n",dataindex,i,x,y);
          
          /*
@@ -772,8 +786,13 @@ NSLog(@"C");
    
    // LineArray einsetzen
    [DiagrammdatenDic setObject:LineArray forKey:@"linearray"];
-   
-   return (NSDictionary*)DiagrammdatenDic;;
+   //startminute = 250;
+   [DiagrammdatenDic setObject:[NSNumber numberWithInt:startminute] forKey:@"startwertx"];
+   [DiagrammdatenDic setObject:[NSNumber numberWithInt:endminute] forKey:@"endwertx"];
+   [DiagrammdatenDic setObject:[NSNumber numberWithFloat:self.zoomfaktorx] forKey:@"zoomfaktorx"];
+   [DiagrammdatenDic setObject:[NSNumber numberWithFloat:self.zoomfaktory] forKey:@"zoomfaktory"];
+
+   return (NSDictionary*)DiagrammdatenDic;
 }
 
 - (int)lastDataZeitVon:(NSString*)derDatenString
@@ -914,7 +933,8 @@ NSLog(@"C");
       self.diagrammscroller.hidden=NO;
       self.diagrammscroller.layer.borderWidth = 2; // #import <QuartzCore/QuartzCore.h> notwendig
       self.diagrammscroller.layer.borderColor = [UIColor lightGrayColor].CGColor;
-
+      self.diagrammtaste.selected = YES;
+      
       self.ordinate.hidden=NO;
       //NSLog(@"reportDiagrammtaste");
       
@@ -925,7 +945,7 @@ NSLog(@"C");
       int data=2;
       int art =0;
       NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:0], nil]; // letztes Element: art
-
+      
       NSDictionary* heuteSolarDic = [self SolarDataDicVonHeute];
       NSDictionary* DiagrammDatenDic = [self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:IndexArray];
       // Abstand DiagrammView vom unteren Rand des Srollers: origin hat nullpunkt oben
@@ -935,8 +955,8 @@ NSLog(@"C");
       
       NSMutableDictionary* OrdinateDic = [[NSMutableDictionary alloc]initWithCapacity:0];
       //
-      int offsetx=0;
-      int offsety=0;
+      int randlinks=0;
+      int randunten=0;
       int b = 24;
       int intervall = 10;
       int teile = 12;
@@ -944,10 +964,11 @@ NSLog(@"C");
       
       // Abstand DiagrammView vom unteren Rand des Srollers:
       
-            
-      [OrdinateDic setObject:[NSNumber numberWithInt:offsetx] forKey:@"offsetx"];
+      
+      [OrdinateDic setObject:[NSNumber numberWithInt:randlinks] forKey:@"randlinks"];
+      [OrdinateDic setObject:[NSNumber numberWithInt:randunten] forKey:@"randunten"];
       [OrdinateDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
-      [OrdinateDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"hoehe"];
+      [OrdinateDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"diagrammhoehe"];
       [OrdinateDic setObject:[NSNumber numberWithInt:b] forKey:@"breite"];
       [OrdinateDic setObject:[NSNumber numberWithInt:intervall] forKey:@"intervall"];
       [OrdinateDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
@@ -955,17 +976,14 @@ NSLog(@"C");
       //NSLog(@"OrdinateDic: %@",[OrdinateDic description]);
       [self.ordinate OrdinateZeichnenMitDic:OrdinateDic];
       
-       //
+      //
       [self.diagrammview DiagrammZeichnenMitDic:DiagrammDatenDic];
       
       // ans Ende scrollen: http://stackoverflow.com/questions/952412/uiscrollview-scroll-to-bottom-programmatically
       CGPoint rightOffset = CGPointMake(self.diagrammscroller.contentSize.width - 1.2*self.diagrammscroller.bounds.size.width,0);
       [self.diagrammscroller setContentOffset:rightOffset animated:YES];
-
       [self.diagrammview setNeedsDisplay];
-      
       [self.ordinate setNeedsDisplay];
-      self.diagrammtaste.selected = YES;
    }
 }
 

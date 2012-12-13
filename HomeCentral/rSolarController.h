@@ -59,6 +59,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *diagrammtaste;
 @property (weak, nonatomic) IBOutlet rOrdinate *ordinate;
 @property (weak, nonatomic) IBOutlet rAbszisse *abszisse;
+@property (nonatomic,readwrite) float zoomfaktorx;
+@property (nonatomic,readwrite) float zoomfaktory;
 
 - (IBAction)reportDiagrammTaste:(id)sender;
 

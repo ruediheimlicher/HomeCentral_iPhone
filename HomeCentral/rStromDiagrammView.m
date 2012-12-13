@@ -124,6 +124,10 @@
                   CGContextSetStrokeColorWithColor(templinecontext, [[UIColor lightGrayColor] CGColor]);
                }
                NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
+               if ([tempDataArray count]==0)
+               {
+                  return;
+               }
               // NSLog(@"tempDataArray an Index: %d da: %@",i,[[tempDataArray valueForKey:@"x"] description]);
                float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
                float starty = self.bounds.size.height-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];

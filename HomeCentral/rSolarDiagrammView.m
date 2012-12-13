@@ -13,7 +13,8 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
+    if (self)
+    {
         // Initialization code
     }
     return self;
@@ -22,8 +23,9 @@
 
 -(void)DiagrammZeichnenMitDic:(NSDictionary*)derDataDic
 {
-   self.diagrammhoehe = (int)(self.frame.size.height/10)*10;
-   //NSLog(@"DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
+   
+   self.diagrammhoehe = (int)((self.frame.size.height-self.randoben)/10)*10;
+   NSLog(@"DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
    
    self.datadic = derDataDic;
    //NSLog(@"DiagrammZeichnenMitDic Dataarray count: %d",[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]count]);
@@ -41,37 +43,86 @@
 {
    // Drawing code
    NSLog(@"Solardiagramm drawRect bounds w: %.1f\t h: %.1f diagrammhoehe: %.1f" ,self.bounds.size.width,self.bounds.size.height,self.diagrammhoehe);
+   
+   self.diagrammbreite = self.bounds.size.width;
+   if ([DataDic objectForKey:@"diagrammbreite"])
+       {
+          self.diagrammbreite = [[DataDic objectForKey:@"diagrammbreite" ] floatValue];
+       }
+   self.randlinks = kOffsetX;
+   if ([DataDic objectForKey:@"randlinks"])
+   {
+      self.randlinks = [[DataDic objectForKey:@"randlinks"]intValue];
+   }
+   NSLog(@"randlinks: %d",self.randlinks);
+   self.diagrammbreite  -= self.randlinks;
+   float intervall = kStepX;
+   
+   if ([DataDic objectForKey:@"intervallx"]&& [DataDic objectForKey:@"zoomfaktorx"])
+   {
+      intervall = [[DataDic objectForKey:@"intervallx"]floatValue]* [[DataDic objectForKey:@"zoomfaktorx"]floatValue];
+   }
+   
+   float randunten = kGraphBottom;
+   if ([DataDic objectForKey:@"randunten"])
+   {
+      randunten = self.bounds.size.height - [[DataDic objectForKey:@"randunten"]floatValue];
+   }
+   
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,10,0);
    
    CGContextSetLineWidth(context, 0.4);
    CGContextSetStrokeColorWithColor(context, [[UIColor lightGrayColor] CGColor]);
+   
+   CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
+   CGContextSetTextMatrix (context, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
+   CGContextSetTextDrawingMode(context, kCGTextFill);
+
    // How many lines?
    int howMany = (kDefaultGraphWidth - kOffsetX) / kStepX;
-   // Here the lines go
+   
+   // Senkrechte Linien
    for (int i = 0; i < howMany; i++)
    {
-      CGContextMoveToPoint(context, kOffsetX + i * kStepX, kGraphTop);
-      CGContextAddLineToPoint(context, kOffsetX + i * kStepX, kGraphBottom);
+      float tempoben = randunten - self.diagrammhoehe;
+      CGContextMoveToPoint(context, self.randlinks + i * intervall, tempoben);
+      CGContextAddLineToPoint(context, self.randlinks + i * intervall, randunten);
+
+      NSString* Stundestring = [NSString stringWithFormat:@"%d",i];
+      const char* cName = [Stundestring UTF8String];
+      //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
+      
+      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, tempoben+1,cName,strlen(cName));
+
    }
    float hoehe= (int)(self.bounds.size.height/10)*10;
+   
+   if ([DataDic objectForKey:@"diagrammhoehe"])
+   {
+      hoehe = [[DataDic objectForKey:@"diagrammhoehe"]floatValue];
+   }
+   int startwertx = 0;
+   if ([DataDic objectForKey:@"startwertx"])
+   {
+      startwertx = [[DataDic objectForKey:@"startwertx"]intValue];
+   }
+   NSLog(@"startwertx: %d",startwertx);
+   
+   // waagrechte Linien
+
    float breite = self.bounds.size.width;
    int anzh =12;
    
-   
-   for (int i = 0; i <= anzh; i++)
+      for (int i = 0; i <= anzh; i++)
    {
-      CGContextMoveToPoint(context, kOffsetX, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
+      
+      CGContextMoveToPoint(context, self.randlinks, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
       CGContextAddLineToPoint(context, breite, self.bounds.size.height - kOffsetY - i * (hoehe/anzh));
+      
    }
    
    CGContextStrokePath(context);
-   /*
-    void CGContextShowText (
-    CGContextRef c,
-    const char *string,
-    size_t length
-    */
    
    CGContextRef xcontext = UIGraphicsGetCurrentContext();
    CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
@@ -145,15 +196,17 @@
                   //NSLog(@"linie: %d linename: %@",linie,[tempLineDic objectForKey:@"linename"]);
                }
                NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
+               if ([tempDataArray count]==0)
+               {
+                  return;
+               }
                // NSLog(@"tempDataArray an Index: %d da: %@",i,[[tempDataArray valueForKey:@"x"] description]);
-               float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
+               float startx = self.randlinks+[[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
                
                float starty = self.bounds.size.height-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
                //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
                
                CGContextMoveToPoint(templinecontext,startx,starty);
-               
-               
                
                //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
                starty = self.bounds.size.height-starty;
@@ -162,7 +215,7 @@
                float y=starty;
                for (int index=1;index < [tempDataArray count];index++)
                {
-                  x = [[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
+                  x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
                   y = self.bounds.size.height-[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
                   
                   //NSLog(@"index: %d\t x: %.1f \t y: %.1f",index,x,y);
@@ -171,24 +224,19 @@
                }// for index
                CGContextStrokePath(templinecontext);
                
-               //CGContextRef xcontext = UIGraphicsGetCurrentContext();
                CGContextBeginPath(templinecontext);
                CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
-               CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
-               //CGContextTranslateCTM (templinecontext,10,0);
-               CGContextMoveToPoint(templinecontext,x,y);
-               //CGContextAddLineToPoint(xcontext, kOffsetX +10, kOffsetY+20);
                CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
+               CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
+               
+               CGContextMoveToPoint(templinecontext,x,y);
                
                //char* x_achse = "0 1 2 3\0";
                const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
                //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
 
                CGContextShowTextAtPoint(templinecontext,x +10,y+4,cName,2);
-               //CGContextShowTextAtPoint(templinecontext,x +10,x+20,"*",3);
                CGContextStrokePath(templinecontext);
-
-               
 
                //UIGraphicsPopContext();
             } //if count
@@ -221,7 +269,7 @@
             }
             NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
             //NSLog(@"Pumpe tempDataArray an Index: %d da: %@",pumpecodeindex,[[tempDataArray valueForKey:@"y"] description]);
-            float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
+            float startx = self.randlinks+[[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
             
             float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
             //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
@@ -247,7 +295,7 @@
             
             for (int index=1;index < [tempDataArray count];index++)
             {
-               x = [[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
+               x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
                datawert=[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
                if (datawert > 0) // Heizung istn ON
                {
@@ -318,7 +366,7 @@
             }
             NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
             //NSLog(@"tempDataArray an Index: %d da: %@",heizungcodeindex,[[tempDataArray valueForKey:@"y"] description]);
-            float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
+            float startx = self.randlinks+[[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
             
             float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
             //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
@@ -345,7 +393,7 @@
             
             for (int index=1;index < [tempDataArray count];index++)
             {
-               x = [[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
+               x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
                datawert=[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
                if (datawert > 0) // Heizung istn ON
                {

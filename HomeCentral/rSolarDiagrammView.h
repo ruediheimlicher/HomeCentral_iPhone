@@ -13,7 +13,7 @@
 {
 #define kGraphHeight          300
 #define kDefaultGraphWidth    900
-#define kOffsetX              1
+#define kOffsetX              10
 #define kStepX                20
 #define kStepY                20
 #define kOffsetY              1
@@ -27,8 +27,12 @@ NSDictionary*                 DataDic;
 @property (weak,nonatomic, readwrite) NSDictionary* datadic;
 @property (nonatomic, readwrite) int graphheight;
 @property (nonatomic, readwrite) int graphwidth;
+@property (nonatomic, readwrite) int randoben;
+@property (nonatomic, readwrite) int randlinks;
 
 @property (nonatomic, readwrite) float diagrammhoehe;
+@property (nonatomic, readwrite) float diagrammbreite;
+
 
 -(void)DiagrammZeichnenMitDic:(NSDictionary*)derDataDic;
 
