@@ -198,7 +198,7 @@ NSLog(@"C");
    int randrechts=0;
    //int offsety=0;
    int randunten = 10;
-   int randoben = 10;
+   int randoben = 20;
    float b = 24;
    int intervally = 10;
    float intervallx = 60;
@@ -260,7 +260,7 @@ NSLog(@"C");
    [AbszisseDic setObject:[NSNumber numberWithInt:intervallx] forKey:@"intervall"];
    [AbszisseDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
    [AbszisseDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
-   NSLog(@"AbszisseDic: %@",[AbszisseDic description]);
+   //NSLog(@"AbszisseDic: %@",[AbszisseDic description]);
    [self.abszisse AbszisseZeichnenMitDic:AbszisseDic];
    
    
@@ -560,7 +560,7 @@ NSLog(@"C");
                //NSLog(@"SolarDataArray k: %d t: %d",k,t);
             }
          }
-         NSLog(@"anz: %d redSolarDataArray : %@",anzData,[[redSolarDataArray lastObject] description]);
+         //NSLog(@"anz: %d redSolarDataArray : %@",anzData,[[redSolarDataArray lastObject] description]);
          [SolarDataDic setObject:redSolarDataArray forKey:@"solardata"];
          [SolarDataDic setObject:[SolarDataArray lastObject] forKey:@"lastsolardata"];
          
@@ -658,10 +658,32 @@ NSLog(@"C");
 	 */
 
    
-   NSArray* DataNamenArray = [NSArray arrayWithObjects:@"",@"KV",@"KR",@"BU",@"BM",@"BO",@"KT", nil]; // erstes Element nur als Fueller, index der Zeit im DataArray
-   NSArray* LinienfarbeArray = [NSArray arrayWithObjects:[UIColor blackColor],[UIColor blueColor],[UIColor redColor],[UIColor greenColor],[UIColor brownColor],[UIColor cyanColor],[UIColor magentaColor],nil];
-
+   NSArray* DataNamenArray = [NSArray arrayWithObjects:
+                              @"",
+                              @"KV",
+                              @"KR",
+                              @"BU",
+                              @"BM",
+                              @"BO",
+                              @"KT",
+                              nil]; // erstes Element nur als Fueller, index der Zeit im DataArray
    
+   NSArray* LinienfarbeArray = [NSArray arrayWithObjects:
+                                [UIColor blackColor],
+                                [UIColor blueColor],
+                                [UIColor redColor],
+                                [UIColor greenColor],
+                                [UIColor cyanColor],
+                                [UIColor magentaColor],
+                                [UIColor grayColor],
+                                [UIColor lightGrayColor],
+                                nil];
+   
+   //NSLog(@"LinienfarbeArray: %@",[LinienfarbeArray description]);
+   for (int i=0;i<[LinienfarbeArray count];i++  )
+   {
+      //NSLog(@"i: %d Linienfarbe: %@",i,[LinienfarbeArray objectAtIndex:i ]);
+   }
    self.zoomfaktory = self.diagrammview.bounds.size.height/120;  // max Temperatur
  
    

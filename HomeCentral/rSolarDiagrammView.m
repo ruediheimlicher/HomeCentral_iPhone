@@ -71,7 +71,7 @@
    //float  eckeunteny = [[DataDic objectForKey:@"eckeunteny"]floatValue]; // Koordinate y
    
       
-   NSLog(@"randlinks: %d",self.randlinks); // Abstand Diagramm zum View
+   //NSLog(@"randlinks: %d",self.randlinks); // Abstand Diagramm zum View
    
    float intervall = kStepX; //Intervall der x-Achse *zoomfaktor
    
@@ -87,7 +87,7 @@
       self.randunten = [[DataDic objectForKey:@"randunten"]floatValue];
    }
    
-   NSLog(@"randunten: %d",self.randunten); // Abstand Diagramm zum View
+   //NSLog(@"randunten: %d",self.randunten); // Abstand Diagramm zum View
    
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,10,0);
@@ -106,7 +106,7 @@
    float linieoben = eckeunteny - self.diagrammhoehe-self.randunten;
    float linieunten = eckeunteny - self.randunten;
    
-   NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f",eckeunteny,linieoben,linieunten);
+   //NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f",eckeunteny,linieoben,linieunten);
    
    for (int i = 0; i < anzsenkrecht; i++)
    {
@@ -118,7 +118,7 @@
       const char* cName = [Stundestring UTF8String];
       //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
       
-      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, linieoben-10,cName,strlen(cName));
+      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, linieoben-5,cName,strlen(cName));
 
    }
    float hoehe= (int)(self.bounds.size.height/10)*10;
@@ -132,7 +132,7 @@
    {
       startwertx = [[DataDic objectForKey:@"startwertx"]intValue];
    }
-   NSLog(@"startwertx: %d",startwertx);
+   //NSLog(@"startwertx: %d",startwertx);
    
    // waagrechte Linien
 
@@ -183,12 +183,12 @@
       
       NSArray* tempLineArray = [self.datadic objectForKey:@"linearray"];
       //NSLog(@"tempLineArray da: %@",[[self.datadic objectForKey:@"linearray"] description]);
-      NSLog(@"tempLineArray count: %d",[tempLineArray count]);
+      //NSLog(@"tempLineArray count: %d",[tempLineArray count]);
       if (tempLineArray.count)
       {
          // end Linien fuer Temperaturen
 
-      for (int linie=0;linie< tempLineArray.count-1;linie++)
+      for (int linie=0;linie< tempLineArray.count-2;linie++)
          {
             //NSLog(@"Linie %d",linie);
             
@@ -235,7 +235,7 @@
                
                //
                starty = self.bounds.size.height-starty;
-               NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
+               //NSLog(@"SolarDiagrammView drawRect startx: %.1f \t starty: %.1f",startx,starty);
                float x=startx;
                float y=starty;
                for (int index=1;index < [tempDataArray count];index++)
@@ -272,25 +272,33 @@
          // Linien fuer Heizung und Pumpe
          
          // Beginn Pumpe
+         
+         
          int pumpecodeindex = 6;
          if ([[tempLineArray objectAtIndex:pumpecodeindex]count]) // linie vorhanden
          {
-            NSLog(@"Pumpearray da");
+            //NSLog(@"Pumpearray da");
+            //NSLog(@"[tempLineArray objectAtIndex: *%@*]",[[tempLineArray objectAtIndex:pumpecodeindex] description]);
             CGContextSetLineWidth(templinecontext, 3.0);
             
             NSDictionary* tempLineDic = [tempLineArray objectAtIndex:pumpecodeindex];
+            
             if ([tempLineDic objectForKey:@"linecolor"])
             {
                CGContextSetStrokeColorWithColor(templinecontext, [[tempLineDic objectForKey:@"linecolor"] CGColor]);
+               //NSLog(@"PumpeColor: %@",[tempLineDic objectForKey:@"linecolor"]);
             }
             else
             {
                CGContextSetStrokeColorWithColor(templinecontext, [[UIColor lightGrayColor] CGColor]);
+               //NSLog(@"PumpeColor keine Farbe: %@",[tempLineDic objectForKey:@"linecolor"]);
             }
+            
+            CGContextSetStrokeColorWithColor(templinecontext, [[UIColor grayColor] CGColor]);
             
             if ([tempLineDic objectForKey:@"linename"])
             {
-               NSLog(@"Linie: %d linename: %@",pumpecodeindex,[tempLineDic objectForKey:@"linename"]);
+               //NSLog(@"Linie: %d linename: %@",pumpecodeindex,[tempLineDic objectForKey:@"linename"]);
             }
             NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
             //NSLog(@"Pumpe tempDataArray an Index: %d da: %@",pumpecodeindex,[[tempDataArray valueForKey:@"y"] description]);
@@ -303,7 +311,7 @@
             //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
            
             int lastON=0;
-            int yON=self.bounds.size.height-200;
+            int yON=self.bounds.size.height-225;
             float x=startx;
             float datawert=-100;
             
@@ -322,7 +330,7 @@
             {
                x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
                datawert=[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
-               if (datawert > 0) // Heizung istn ON
+               if (datawert > 0) // Pumpe ist ON
                {
                   if (lastON) // Path schon angefangen
                   {
@@ -335,18 +343,18 @@
                      lastON=1;
                   }
                 }
-               else // Heizung ist OFF
+               else // Pumpe ist OFF
                {
                   if (lastON) // Path war vorhanden
                   {
                      CGContextStrokePath(templinecontext); // letzten Path abschliessen
                      lastON=0;
                   }
-                  else // Heizung war schon OFF
+                  else // Pumpe war schon OFF
                   {
                      // nichts tun
                   }
-               }  // Heizung ist OFF
+               }  // Pumpe ist OFF
             }// for index
             CGContextStrokePath(templinecontext);
             
@@ -369,25 +377,29 @@
          // End Pumpe
  
          // Beginn Heizung
+         
          int heizungcodeindex = 7;
          if ([[tempLineArray objectAtIndex:heizungcodeindex]count]) // linie vorhanden
          {
-            NSLog(@"Heizungarray da");
+            //NSLog(@"Heizungarray da");
             CGContextSetLineWidth(templinecontext, 3.0);
             
             NSDictionary* tempLineDic = [tempLineArray objectAtIndex:heizungcodeindex];
             if ([tempLineDic objectForKey:@"linecolor"])
             {
                CGContextSetStrokeColorWithColor(templinecontext, [[tempLineDic objectForKey:@"linecolor"] CGColor]);
+               //NSLog(@"HeizungColor: %@",[tempLineDic objectForKey:@"linecolor"]);
             }
             else
             {
                CGContextSetStrokeColorWithColor(templinecontext, [[UIColor lightGrayColor] CGColor]);
+               //NSLog(@"HeizungColor keine Farbe: %@",[tempLineDic objectForKey:@"linecolor"]);
             }
-            
+            CGContextSetStrokeColorWithColor(templinecontext, [[UIColor orangeColor] CGColor]);
+
             if ([tempLineDic objectForKey:@"linename"])
             {
-               NSLog(@"Linie: %d linename: %@",heizungcodeindex,[tempLineDic objectForKey:@"linename"]);
+               //NSLog(@"Linie: %d linename: %@",heizungcodeindex,[tempLineDic objectForKey:@"linename"]);
             }
             NSArray* tempDataArray = [tempLineDic objectForKey:@"dataarray"];
             //NSLog(@"tempDataArray an Index: %d da: %@",heizungcodeindex,[[tempDataArray valueForKey:@"y"] description]);
@@ -401,7 +413,7 @@
             
             int heizungyoff=-100;
             int lastON=0;
-            int yON=self.bounds.size.height-190;
+            int yON=self.bounds.size.height-230;
             float x=startx;
             float datawert=-100;
             

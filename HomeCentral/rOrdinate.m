@@ -137,7 +137,7 @@ char* itoa(int val, int base)
 
    float startx = self.offsetx;
    float starty = self.eckeunteny+2-self.randunten;
-   NSLog(@"startx: %.1f starty: %.1f",startx,starty);
+   NSLog(@"Ordinate startx: %.1f starty: %.1f",startx,starty);
       
    CGContextMoveToPoint(context, startx,starty);
 

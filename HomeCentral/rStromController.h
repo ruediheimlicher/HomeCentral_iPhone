@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *zeit;
 @property (weak, nonatomic) IBOutlet UILabel *datum;
 @property (nonatomic,readwrite) int lastminute;
+@property (nonatomic,readwrite) float zoomfaktorx;
 @property (nonatomic,readwrite) float lastzoomfaktorx;
 
 @property (weak, nonatomic) IBOutlet UILabel *leistungaktuell;
@@ -31,6 +32,8 @@
 @property (weak, nonatomic) IBOutlet rStromDiagrammView *diagrammview;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *anzeigeseg;
 @property (weak, nonatomic) IBOutlet UIButton *RefreshTaste;
+
+
 - (IBAction)reportRefresh:(id)sender;
 
 

@@ -77,19 +77,19 @@
    int diffx = endx - offsetx;
    
    //NSLog(@"art: %d endx: %d diffx: %d",art,endx,diffx);
-   float zoomfaktorx=1;
+   self.zoomfaktorx = 1;
    switch (art)
    {
       case 0: // ganzer Tag
       {
-         zoomfaktorx = self.diagrammview.bounds.size.width/1440;   // Minuten des Tage
+         self.zoomfaktorx = self.diagrammview.bounds.size.width/1440;   // Minuten des Tage
       }break;
       case 1: // Monitor 2 Stunden
       {
-         zoomfaktorx = self.diagrammview.bounds.size.width/diffx;
+         self.zoomfaktorx = self.diagrammview.bounds.size.width/diffx;
       }break;
    }
-   self.lastzoomfaktorx = zoomfaktorx;
+   self.lastzoomfaktorx = self.zoomfaktorx;
    float zoomfaktory = self.diagrammview.bounds.size.height/8000;  // max Leistung
    //NSLog(@"DiagrammDatenDicVon zoomfaktorx: %.2f",zoomfaktorx);
 
@@ -110,7 +110,7 @@
          {
             //NSLog(@"last Data k: %d x vor: %.2f",k,x);
          }
-         x *= zoomfaktorx;
+         x *= self.zoomfaktorx;
          float y = [[tempZeilenArray objectAtIndex:data]intValue]*zoomfaktory;
          NSDictionary* tempDataDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:x],@"x",[NSNumber numberWithFloat:y],@"y", nil];
          
