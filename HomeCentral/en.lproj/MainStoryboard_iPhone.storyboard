@@ -745,6 +745,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     <tabBarItem key="tabBarItem" title="EE" id="y3H-y7-zHb"/>
                     <connections>
                         <outlet property="ganzstundetagplanfeld" destination="vIz-LZ-w2d" id="BjQ-Zc-e63"/>
+                        <outlet property="halbstundetagplananzeige" destination="lwK-8b-7D0" id="pQt-PU-9vB"/>
                         <outlet property="halbstundetagplanfeld" destination="Vvf-Mq-191" id="YAI-f0-OEL"/>
                         <outlet property="ipfeld" destination="kzd-c3-zpH" id="FIs-ax-Um0"/>
                         <outlet property="objektname" destination="reP-Yw-L6A" id="MQs-Dt-rsE"/>
@@ -839,7 +840,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="action" name="reportWochentag:"/>
                 <relationship kind="action" name="reportWochentagSeg:"/>
                 <relationship kind="outlet" name="ganzstundetagplanfeld" candidateClass="UIView"/>
-                <relationship kind="outlet" name="halbstundetagplananzeige" candidateClass="rhalbstundetagplananzeige"/>
+                <relationship kind="outlet" name="halbstundetagplananzeige" candidateClass="rTagplanAnzeige"/>
                 <relationship kind="outlet" name="halbstundetagplanfeld" candidateClass="UIView"/>
                 <relationship kind="outlet" name="ipfeld" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="objektname" candidateClass="UITextField"/>
@@ -936,9 +937,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         </class>
         <class className="rToggleTaste" superclassName="UIButton">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/rToggleTaste.h"/>
-        </class>
-        <class className="rhalbstundetagplananzeige" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/rhalbstundetagplananzeige.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
