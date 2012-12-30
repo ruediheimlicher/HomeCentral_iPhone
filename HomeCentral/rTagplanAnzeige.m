@@ -1,15 +1,15 @@
 //
-//  rTagplanAnzeige.m
+//  rhalbstundetagplananzeige.m
 //  HomeCentral
 //
 //  Created by Ruedi Heimlicher on 29.Dezember.12.
 //  Copyright (c) 2012 Ruedi Heimlicher. All rights reserved.
 //
 
-#import "rTagplanAnzeige.h"
+#import "rtagplananzeige.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation rTagplanAnzeige
+@implementation rhalbstundetagplananzeige
 
 - (id)initWithFrame:(CGRect)frame
 {

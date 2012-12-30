@@ -157,8 +157,8 @@
    {
       NSArray* ZeilenDataArray = [ZeilenArray subarrayWithRange:NSMakeRange(4, 6)];
       NSArray* StundenByteArray = [self StundenByteArrayVonByteArray:ZeilenDataArray];
-      self.tagplananzeige.datenarray = StundenByteArray;
-      [self.tagplananzeige setNeedsDisplay];
+      self.halbstundetagplananzeige.datenarray = StundenByteArray;
+      [self.halbstundetagplananzeige setNeedsDisplay];
       //NSLog(@"StundenByteArray: %@",[StundenByteArray description]);
       
       if ([ZeilenArray count]>13)
