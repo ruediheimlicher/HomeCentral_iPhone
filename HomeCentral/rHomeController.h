@@ -18,7 +18,8 @@
    rToggleTaste* StundenTaste;
 }
 @property (weak, nonatomic) IBOutlet UIScrollView *tagplanscroller;
-@property (weak, nonatomic) IBOutlet UIView *tagplanfeld;
+@property (weak, nonatomic) IBOutlet UIView *halbstundetagplanfeld;
+@property (weak, nonatomic) IBOutlet UIView *ganzstundetagplanfeld;
 @property (weak, nonatomic) IBOutlet rToggleTaste *taste0;
 @property (weak, nonatomic) IBOutlet rToggleTaste *stundentaste;
 @property (weak, nonatomic) IBOutlet UITextField *ipfeld;

@@ -71,6 +71,11 @@
    CGRect tagplanframe = self.halbstundetagplanfeld.frame;
    tagplanframe.size.width = 24*stundenabstand + 100;
    self.halbstundetagplanfeld.frame = tagplanframe;
+   
+   tagplanframe = self.ganzstundetagplanfeld.frame;
+   tagplanframe.size.width = 24*stundenabstand + 100;
+   self.ganzstundetagplanfeld.frame = tagplanframe;
+   
    self.tagplanscroller.contentSize = self.halbstundetagplanfeld.frame.size;
    
    
@@ -157,8 +162,8 @@
    {
       NSArray* ZeilenDataArray = [ZeilenArray subarrayWithRange:NSMakeRange(4, 6)];
       NSArray* StundenByteArray = [self StundenByteArrayVonByteArray:ZeilenDataArray];
-      self.halbstundetagplananzeige.datenarray = StundenByteArray;
-      [self.halbstundetagplananzeige setNeedsDisplay];
+      self.tagplananzeige.datenarray = StundenByteArray;
+      [self.tagplananzeige setNeedsDisplay];
       //NSLog(@"StundenByteArray: %@",[StundenByteArray description]);
       
       if ([ZeilenArray count]>13)
@@ -231,6 +236,7 @@
          {
             self.ganzstundetagplanfeld.hidden=YES;
             self.halbstundetagplanfeld.hidden=NO;
+            [self.halbstundetagplanfeld setNeedsDisplay];
             //NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
             //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
             [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste0tag]setSelected:((stundenwert & 0x02)>0)];
@@ -242,9 +248,10 @@
          {
             self.halbstundetagplanfeld.hidden=YES;
             self.ganzstundetagplanfeld.hidden=NO;
+            [self.ganzstundetagplanfeld setNeedsDisplay];
+
             [(UIButton*)[self.ganzstundetagplanfeld viewWithTag:gtastetag]setSelected:((stundenwert )>0)];
-           
-         }break;
+                     }break;
             
       } // switch ObjektTyp
       

@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Ruedi Heimlicher. All rights reserved.
 //
 
-#import "rtagplananzeige.h"
+#import "rTagplanAnzeige.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation rhalbstundetagplananzeige
+@implementation rTagplanAnzeige
 
 - (id)initWithFrame:(CGRect)frame
 {
