@@ -638,8 +638,13 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" red="0.67599624165993411" green="0.98971619897959184" blue="0.73715162673986745" alpha="1" colorSpace="calibratedRGB"/>
                                     </view>
+                                    <view contentMode="scaleToFill" id="vIz-LZ-w2d">
+                                        <rect key="frame" x="0.0" y="10" width="534" height="92"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.71870821440869204" green="0.98971619899999996" blue="0.90749729064457463" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.74693159726987934" green="1" blue="0.83674842175318065" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             </scrollView>
                             <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="7" id="eaP-Fa-e0R">
                                 <rect key="frame" x="206" y="118" width="94" height="27"/>
@@ -740,13 +745,14 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </view>
                     <tabBarItem key="tabBarItem" title="EE" id="y3H-y7-zHb"/>
                     <connections>
+                        <outlet property="ganzstundetagplanfeld" destination="vIz-LZ-w2d" id="BjQ-Zc-e63"/>
+                        <outlet property="halbstundetagplanfeld" destination="Vvf-Mq-191" id="YAI-f0-OEL"/>
                         <outlet property="ipfeld" destination="kzd-c3-zpH" id="FIs-ax-Um0"/>
                         <outlet property="objektname" destination="reP-Yw-L6A" id="MQs-Dt-rsE"/>
                         <outlet property="objektstepper" destination="eaP-Fa-e0R" id="IlT-cD-5GN"/>
                         <outlet property="onofftaste" destination="0bZ-u7-0wK" id="HQy-KM-Cda"/>
                         <outlet property="raumseg" destination="bDY-ng-tkC" id="cB4-Qw-zrK"/>
                         <outlet property="tagplananzeige" destination="lwK-8b-7D0" id="t2g-da-mX5"/>
-                        <outlet property="tagplanfeld" destination="Vvf-Mq-191" id="wQ7-fn-gA5"/>
                         <outlet property="tagplanscroller" destination="J45-RZ-TYJ" id="qoJ-GZ-OD0"/>
                         <outlet property="wochentagseg" destination="3d1-yb-e6a" id="t2t-L5-Oll"/>
                     </connections>

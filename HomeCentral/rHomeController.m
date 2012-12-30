@@ -65,13 +65,13 @@
    
    UIImage *defButtonImage = [[UIImage imageNamed:@"helletaste.jpg"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
    
-   UIColor* hintergrund = self.tagplanfeld.backgroundColor;
+   UIColor* hintergrund = self.halbstundetagplanfeld.backgroundColor;
    int stundenabstand = 70;
    
-   CGRect tagplanframe = self.tagplanfeld.frame;
+   CGRect tagplanframe = self.halbstundetagplanfeld.frame;
    tagplanframe.size.width = 24*stundenabstand + 100;
-   self.tagplanfeld.frame = tagplanframe;
-   self.tagplanscroller.contentSize = self.tagplanfeld.frame.size;
+   self.halbstundetagplanfeld.frame = tagplanframe;
+   self.tagplanscroller.contentSize = self.halbstundetagplanfeld.frame.size;
    
    
    // Felder fuer die Stunden aufbauen
@@ -82,34 +82,50 @@
       std.text=[NSString stringWithFormat:@"%d",stunde];
       std.textAlignment = NSTextAlignmentCenter;
       std.backgroundColor = hintergrund;
-      [self.tagplanfeld addSubview:std];
-
+      [self.halbstundetagplanfeld addSubview:std];
+      
+      // Tasten fuer halbe Stunden
       
       CGRect tastenfeld = CGRectMake(20+stundenabstand*stunde, 10, 30, 40);
-      rToggleTaste* stdtaste0=[[rToggleTaste alloc]initWithFrame:tastenfeld];
-      [stdtaste0 setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
-      [stdtaste0 setBackgroundImage:defButtonImage forState:UIControlStateNormal];
-      [stdtaste0 setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-      [stdtaste0 setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-      [stdtaste0 setTag:100 +10*stunde];
-      [stdtaste0 addTarget:self
+      rToggleTaste* hstdtaste0=[[rToggleTaste alloc]initWithFrame:tastenfeld];
+      [hstdtaste0 setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
+      [hstdtaste0 setBackgroundImage:defButtonImage forState:UIControlStateNormal];
+      [hstdtaste0 setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+      [hstdtaste0 setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+      [hstdtaste0 setTag:100 +10*stunde];
+      [hstdtaste0 addTarget:self
                    action:@selector(reportStundenTaste:)
          forControlEvents:UIControlEventTouchUpInside];
-      [self.tagplanfeld addSubview:stdtaste0];
+      [self.halbstundetagplanfeld addSubview:hstdtaste0];
       
       
       tastenfeld.origin.x += 32;
-      UIButton* stdtaste1=[[UIButton alloc]initWithFrame:tastenfeld];
-      [stdtaste1 setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
-      [stdtaste1 setBackgroundImage:defButtonImage forState:UIControlStateNormal];
-      [stdtaste1 setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-      [stdtaste1 setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-      [stdtaste1 setTag:100 +10*stunde+1];
-      [stdtaste1 addTarget:self
+      UIButton* hstdtaste1=[[UIButton alloc]initWithFrame:tastenfeld];
+      [hstdtaste1 setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
+      [hstdtaste1 setBackgroundImage:defButtonImage forState:UIControlStateNormal];
+      [hstdtaste1 setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+      [hstdtaste1 setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+      [hstdtaste1 setTag:100 +10*stunde+1];
+      [hstdtaste1 addTarget:self
                     action:@selector(reportStundenTaste:)
           forControlEvents:UIControlEventTouchUpInside];
-      [self.tagplanfeld addSubview:stdtaste1];
+      [self.halbstundetagplanfeld addSubview:hstdtaste1];
       
+      // Tasten fuer ganze Stunden
+      
+      CGRect gtastenfeld = CGRectMake(20+stundenabstand*stunde, 10, 60, 40);
+      rToggleTaste* gstdtaste=[[rToggleTaste alloc]initWithFrame:gtastenfeld];
+      [gstdtaste setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
+      [gstdtaste setBackgroundImage:defButtonImage forState:UIControlStateNormal];
+      [gstdtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+      [gstdtaste setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+      [gstdtaste setTag:200 +10*stunde];
+      [gstdtaste addTarget:self
+                     action:@selector(reportStundenTaste:)
+           forControlEvents:UIControlEventTouchUpInside];
+      gstdtaste.hidden=NO;
+      [self.ganzstundetagplanfeld addSubview:gstdtaste];
+
    
    }
    
@@ -191,30 +207,47 @@
    for (int stunde=0;stunde<24;stunde++)
    {
       int stundenwert = [[stundenbytearray objectAtIndex:stunde]intValue];
-      int taste0tag = 100 + 10*stunde;
       
+      /*
+      int taste0tag = 100 + 10*stunde;
       //NSLog(@"stundenwert: %d taste0tag: %d",stundenwert,taste0tag);
       //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
-      [(UIButton*)[self.tagplanfeld viewWithTag:taste0tag]setSelected:((stundenwert & 0x02)>0)];
+      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:taste0tag]setSelected:((stundenwert & 0x02)>0)];
 
       
       int taste1tag = taste0tag +1;
-      [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
+      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
+      */
+      // tags fuer halbe stunden
+      int htaste0tag = 100 + 10*stunde;
+      int htaste1tag = htaste0tag +1;
       
-      /*
+      // tags fuer ganze stunden
+      int gtastetag = 200 + 10*stunde;
+      
       switch (self.aktuellerObjekttyp)
       {
          case 0: // halbe Stunden
          {
-            [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
+            self.ganzstundetagplanfeld.hidden=YES;
+            self.halbstundetagplanfeld.hidden=NO;
+            //NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
+            //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
+            [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste0tag]setSelected:((stundenwert & 0x02)>0)];
+            [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste1tag]setSelected:((stundenwert & 0x01)>0)];
+            
          }break;
+            
          case 1: // nur ganze Stunden
          {
-            [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x02)>0)];
+            self.halbstundetagplanfeld.hidden=YES;
+            self.ganzstundetagplanfeld.hidden=NO;
+            [(UIButton*)[self.ganzstundetagplanfeld viewWithTag:gtastetag]setSelected:((stundenwert )>0)];
+           
          }break;
             
       } // switch ObjektTyp
-      */
+      
       
    }
 }
@@ -282,8 +315,8 @@
    // Felder fuer die Stunden aufbauen
    for (int stunde=0;stunde<24;stunde++)
    {
-      [(UIButton*)[self.tagplanfeld viewWithTag:100+10*stunde]setSelected:NO];
-      [(UIButton*)[self.tagplanfeld viewWithTag:100+10*stunde+1]setSelected:NO];
+      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:100+10*stunde]setSelected:NO];
+      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:100+10*stunde+1]setSelected:NO];
       
    }
 }
@@ -295,8 +328,8 @@
    // Felder fuer die Stunden aufbauen
    for (int stunde=0;stunde<24;stunde++)
    {
-      [(UIButton*)[self.tagplanfeld viewWithTag:100+10*stunde]setSelected:NO];
-      [(UIButton*)[self.tagplanfeld viewWithTag:100+10*stunde+1]setSelected:NO];
+      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:100+10*stunde]setSelected:NO];
+      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:100+10*stunde+1]setSelected:NO];
    }
 
 }
