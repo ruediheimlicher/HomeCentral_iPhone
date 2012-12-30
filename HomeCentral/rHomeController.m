@@ -40,7 +40,7 @@
    NSString *WochenplanString = [self Wochenplan];
    self.wochenplanarray = [WochenplanString componentsSeparatedByString:@"\n"];
    //NSLog(@"wochenplanarray: %@",[self.wochenplanarray description]);
-   
+  
    
     NSCalendar* heutekalender = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
    [heutekalender setFirstWeekday:2];
@@ -59,8 +59,6 @@
    
    self.raumseg.selectedSegmentIndex=self.aktuellerRaum;
    
-   
-   [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    
    UIImage *blueImage = [UIImage imageNamed:@"blauetaste.jpg"];
    UIImage *blueButtonImage = [blueImage stretchableImageWithLeftCapWidth:0 topCapHeight:0];
@@ -128,9 +126,8 @@
 
    [self.stundentaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.stundentaste setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-
    
- //  [self setTagPlanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag mitDaten:StundenByteArray];
+   [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
 
 }
 
@@ -196,7 +193,7 @@
       int stundenwert = [[stundenbytearray objectAtIndex:stunde]intValue];
       int taste0tag = 100 + 10*stunde;
       
-      NSLog(@"stundenwert: %d taste0tag: %d",stundenwert,taste0tag);
+      //NSLog(@"stundenwert: %d taste0tag: %d",stundenwert,taste0tag);
       //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
       [(UIButton*)[self.tagplanfeld viewWithTag:taste0tag]setSelected:((stundenwert & 0x02)>0)];
 
@@ -204,7 +201,7 @@
       int taste1tag = taste0tag +1;
       [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
       
-      return;
+      /*
       switch (self.aktuellerObjekttyp)
       {
          case 0: // halbe Stunden
@@ -217,7 +214,7 @@
          }break;
             
       } // switch ObjektTyp
-      
+      */
       
    }
 }
