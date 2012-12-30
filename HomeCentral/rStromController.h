@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 #import "rStromDiagrammView.h"
+#import "rOrdinate.h"
+#import "rVariableStore.h"
 @interface rStromController : UIViewController //<CPTPlotDataSource>
 {
    
@@ -18,6 +20,20 @@
    NSString*            StromDataVonHeuteString;
    NSDictionary*        StromDicVonHeute;
    NSString*            lastStromDataString;
+   int std;
+   int min;
+   int data;
+   int art;
+   int randlinks;
+   int randrechts;
+   int randunten;
+   int randoben;
+   float b;
+   int intervally;
+   int intervallx;
+   int teile;
+   int startwert;
+
    
 }
 @property (weak, nonatomic) IBOutlet UILabel *data;
@@ -33,6 +49,7 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *anzeigeseg;
 @property (weak, nonatomic) IBOutlet UIButton *RefreshTaste;
 
+@property (weak, nonatomic) IBOutlet rOrdinate *ordinate;
 
 - (IBAction)reportRefresh:(id)sender;
 

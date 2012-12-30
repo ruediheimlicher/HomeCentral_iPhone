@@ -45,34 +45,166 @@
 - (void)drawRect:(CGRect)rect
 {
    // Drawing code
-   NSLog(@"drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
+   NSLog(@"Strom drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
+   
+   int art = 0;
+   if ([DataDic objectForKey:@"art"])
+   {
+      art = [[DataDic objectForKey:@"art" ]intValue];
+   }
+   
+   self.diagrammbreite = self.bounds.size.width;
+   if ([DataDic objectForKey:@"diagrammbreite"])
+   {
+      self.diagrammbreite = [[DataDic objectForKey:@"diagrammbreite" ] floatValue];
+   }
+   
+   self.diagrammhoehe = self.bounds.size.height; // Diagramm fuellt ganzes Feld
+   if ([DataDic objectForKey:@"diagrammhoehe"])
+   {
+      self.diagrammhoehe = [[DataDic objectForKey:@"diagrammhoehe" ] floatValue];
+   }
+   
+   //NSLog(@"diagrammhoehe: %.2f diagrammbreite: %.2f",self.diagrammhoehe,self.diagrammbreite);
+   
+   float  eckeunteny =  self.frame.size.height; //Startpunkt fuer Diagrammzeichnen
+   
+   self.randlinks = kOffsetX;
+   if ([DataDic objectForKey:@"randlinks"])
+   {
+      self.randlinks = [[DataDic objectForKey:@"randlinks"]intValue];
+   }
+   
+   
+   float  eckeuntenx = [[DataDic objectForKey:@"eckeuntenx"]floatValue]; // Koordinate x Ecke des DiagrammView
+   //float  eckeunteny = [[DataDic objectForKey:@"eckeunteny"]floatValue]; // Koordinate y
+   
+   
+   //NSLog(@"randlinks: %d",self.randlinks); // Abstand Diagramm zum View
+   
+   float intervall = kStepX; //Intervall der x-Achse *zoomfaktor
+   
+   float zoomfaktorx = 1;
+   
+   if ([DataDic objectForKey:@"zoomfaktorx"])
+   {
+      zoomfaktorx = [[DataDic objectForKey:@"zoomfaktorx"]floatValue];
+   }
+   
+   
+   
+   if ([DataDic objectForKey:@"intervallx"])
+   {
+      intervall = [[DataDic objectForKey:@"intervallx"]floatValue];
+   }
+   
+   intervall *= zoomfaktorx;
+   
+   int startx=0;
+   if ([DataDic objectForKey:@"startx"])
+   {
+      startx = [[DataDic objectForKey:@"startx"]intValue];
+   }
+   
+   
+   NSLog(@"intervallx: %.2f zoomfaktorx: %.2f intervall: %.2f startx: %d",[[DataDic objectForKey:@"intervallx"]floatValue],[[DataDic objectForKey:@"zoomfaktorx"]floatValue],intervall,startx);
+
+   self.randunten = kGraphBottom; // Abstand Diagramm zum View
+   
+   if ([DataDic objectForKey:@"randunten"])
+   {
+      self.randunten = [[DataDic objectForKey:@"randunten"]floatValue];
+   }
+   
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,10,0);
    
-   CGContextSetLineWidth(context, 0.6);
-   CGContextSetStrokeColorWithColor(context, [[UIColor lightGrayColor] CGColor]);
-   // How many lines?
-   int howMany = (kDefaultGraphWidth - kOffsetX) / kStepX;
-   // Here the lines go
-   for (int i = 0; i < howMany; i++)
+   CGContextSetLineWidth(context, 0.4);
+   CGContextSetStrokeColorWithColor(context, [[UIColor grayColor] CGColor]);
+   
+   CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
+   CGContextSetTextMatrix (context, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
+   CGContextSetTextDrawingMode(context, kCGTextFill);
+
+   // Senkrechte Linien
+   
+   
+ // Senkrechte Linien
+   
+   float linieoben = eckeunteny - self.diagrammhoehe - self.randunten;
+   float linieunten = eckeunteny - self.randunten;
+   NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f art: %d",eckeunteny,linieoben,linieunten,art);
+
+   int startstd = startx/60;
+   int startmin = startx%60;
+   /*
+   switch (art)
    {
-      CGContextMoveToPoint(context, kOffsetX + i * kStepX, kGraphTop);
-      CGContextAddLineToPoint(context, kOffsetX + i * kStepX, kGraphBottom);
+      case 0:
+      {
+         
+      }break;
+      case 1:
+      {
+         //startstd += 1; // Erste angezeigte Stunde ist die naechste volle Stunde
+      }break;
    }
-   int howManyHorizontal = (kGraphBottom - kGraphTop - kOffsetY) / kStepY;
-   for (int i = 0; i <= howManyHorizontal; i++)
+   */
+   if (startstd)
    {
-      CGContextMoveToPoint(context, kOffsetX, kGraphBottom - kOffsetY - i * kStepY);
-      CGContextAddLineToPoint(context, kDefaultGraphWidth, kGraphBottom - kOffsetY - i * kStepY);
+      //startstd += 1; // Erste angezeigte Stunde ist die naechste volle Stunde
+   
+   }
+  
+   
+   NSLog(@"startstd: %d startmin %d",startstd,startmin);
+   
+   int anzsenkrecht = self.diagrammbreite/intervall;
+   
+   for (int i = 0; i <= anzsenkrecht; i++)
+   {
+      float x = self.randlinks-(startmin * zoomfaktorx) + i * intervall;
+      CGContextMoveToPoint(context, x,  linieunten);
+      CGContextAddLineToPoint(context, x,linieoben);
+      
+      NSString* Stundestring = [NSString stringWithFormat:@"%d",i+startstd];      
+      
+      const char* cName = [Stundestring UTF8String];
+      //NSLog(@"linie: %d  x: %.2f cName: %s linieoben: %.2f",i ,x,cName,linieoben);
+      
+      CGContextShowTextAtPoint(context,x-(strlen(cName)*3), linieoben-5,cName,strlen(cName));
+   }
+   CGContextStrokePath(context);
+   
+   // Waagrechte Linien
+   
+   float hoehe= (int)(self.bounds.size.height/10)*10;
+   if ([DataDic objectForKey:@"diagrammhoehe"])
+   {
+      hoehe = [[DataDic objectForKey:@"diagrammhoehe"]floatValue];
    }
    
+   int startwertx = 0;
+   if ([DataDic objectForKey:@"startwertx"])
+   {
+      startwertx = [[DataDic objectForKey:@"startwertx"]intValue];
+   }
+   //NSLog(@"startwertx: %d",startwertx);
+   
+   // waagrechte Linien
+   
+   float breite = self.bounds.size.width;
+   int anzh =8;
+   
+   for (int i = 0; i <= anzh; i++)
+   {
+      //if (i%2==0)
+      {
+      CGContextMoveToPoint(context, self.randlinks, self.bounds.size.height - self.randunten - i * (self.diagrammhoehe/anzh)-0.1);
+      CGContextAddLineToPoint(context, breite, self.bounds.size.height - self.randunten - i * (self.diagrammhoehe/anzh));
+      }
+   }
    CGContextStrokePath(context);
-   /*
-    void CGContextShowText (
-    CGContextRef c,
-    const char *string,
-    size_t length
-    */
    
    CGContextRef xcontext = UIGraphicsGetCurrentContext();
    CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
@@ -129,20 +261,27 @@
                   return;
                }
               // NSLog(@"tempDataArray an Index: %d da: %@",i,[[tempDataArray valueForKey:@"x"] description]);
-               float startx = [[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
-               float starty = self.bounds.size.height-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+               float startx = self.randlinks+[[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
+               
+               float starty = self.bounds.size.height-self.randunten-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
+               CGContextMoveToPoint(templinecontext,startx,starty);
+               //
+               //starty = self.bounds.size.height-starty;
+               //NSLog(@"SolarDiagrammView drawRect startx: %.1f \t starty: %.1f",startx,starty);
+               float x=startx;
+               float y=starty;
+
                
                CGContextMoveToPoint(templinecontext,startx,starty);
                //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
                starty = self.bounds.size.height-starty;
                for (int index=1;index < [tempDataArray count];index++)
                {
-                  float x = [[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
-                  float y = self.bounds.size.height-[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
-                  
+                  x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
+                  y = self.bounds.size.height-self.randunten-[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
+
                   //NSLog(@"index: %d\t x: %.1f \t y: %.1f",index,x,y);
                   CGContextAddLineToPoint(templinecontext,x,y);
-                  
                }// for index
                CGContextStrokePath(templinecontext);
             } //if count

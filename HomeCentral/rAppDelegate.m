@@ -12,8 +12,23 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-   NSLog(@"didFinishLaunchingWithOptions: %@",[launchOptions description]);
+   //NSLog(@"didFinishLaunchingWithOptions: %@",[launchOptions description]);
     // Override point for customization after application launch.
+   NSString* DataSuffix=@"ip.txt";
+   //NSLog(@"StromDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
+   NSString* ServerPfad =@"http://www.ruediheimlicher.ch/Data";
+   NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
+   //NSLog(@"StromDataVonHeute URL: %@",URL);
+   NSStringEncoding *  enc=0;
+   NSError* WebFehler=NULL;
+   NSString* IPString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
+   NSLog(@"IP: %@",IPString);
+   NSArray* IPArray = [IPString componentsSeparatedByString:@"\r\n"];
+   NSLog(@"IPArray: %@",[IPArray description]);
+   NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+   [nc postNotificationName:@"IP" object:self userInfo:[NSDictionary dictionaryWithObject:IPString forKey:@"ip"]];
+   [[rVariableStore sharedInstance] setIP:IPString];
+   
     return YES;
 }
 							
@@ -37,6 +52,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+   //NSArray* Kontroller = [self rootViewController];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

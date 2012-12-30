@@ -17,10 +17,11 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-   if (self) {
+   if (self)
+   {
       // Custom initialization
       isDownloading = 0;
-      
+
    }
    return self;
 }
@@ -28,6 +29,20 @@
 - (void)viewDidLoad
 {
    [super viewDidLoad];
+   std=0;
+   min=1;
+   data=2;
+   art =0;
+   randlinks=10;
+   randrechts=0;
+   randunten = 10;
+   randoben = 20;
+   b = 24;
+   intervally = 10;
+   intervallx = 60;
+   teile = 12;
+   startwert =0;
+
    //[self.diagrammtaste setBackgroundColor:[UIColor grayColor]];
    [self.diagrammtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.diagrammtaste setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
@@ -40,12 +55,11 @@
    UIImage *defButtonImage = [[UIImage imageNamed:@"leeretaste.jpg"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
    [self.diagrammtaste setBackgroundImage:defButtonImage forState:UIControlStateNormal];
    
-   
    self.diagrammscroller.contentSize = self.diagrammview.frame.size;
    self.diagrammscroller.hidden=YES;
    self.ordinate.hidden=YES;
    
-   NSLog(@"diagrammscroller origin x: %.1f y: %.1f",self.diagrammview.frame.origin.x,self.diagrammview.frame.origin.y);
+   //NSLog(@"diagrammscroller origin x: %.1f y: %.1f",self.diagrammview.frame.origin.x,self.diagrammview.frame.origin.y);
    float kttemp=100.1;
    self.kt.text = [NSString stringWithFormat:@"%.1f°C",kttemp];;
    float botemp=60.5;
@@ -58,7 +72,7 @@
    ServerPfad =@"http://www.ruediheimlicher.ch/Data";
    
    //self.solardata.text = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
-   NSLog(@"A");
+   //NSLog(@"A");
    [self loadLastData];
    return;
    NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
@@ -133,10 +147,10 @@
 
 - (void)loadLastData
 {
-   NSLog(@"B");
+   //NSLog(@"B");
    NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
    self.solardata.text = lastsolardataString;
-   NSLog(@"lastsolardata: %@",lastsolardataString);
+   //NSLog(@"lastsolardata: %@",lastsolardataString);
    NSArray* lastDataArray = [lastsolardataString componentsSeparatedByString:@"\t"];
    float kv_temp = [[lastDataArray objectAtIndex:1]floatValue]/2;
    self.kv.text = [NSString stringWithFormat:@"%.1f°C",kv_temp];
@@ -162,7 +176,7 @@
    //bool testON = (test & 0x10);
    //NSLog(@"testON: %d",testON);
    bool pumpeON = ([[lastDataArray objectAtIndex:7]intValue] & 0x08);
-   NSLog(@"pumpeON: %d",pumpeON);
+   //NSLog(@"pumpeON: %d",pumpeON);
    //[Pumpe setHidden:pumpeON];
    if (pumpeON)
    {
@@ -175,7 +189,7 @@
    }
    
    bool elektroON = ([[lastDataArray objectAtIndex:7]intValue] & 0x10);
-   NSLog(@"elektroON: %d",elektroON);
+   //NSLog(@"elektroON: %d",elektroON);
    if (elektroON)
    {
       [self.heizung setEnabled:YES];
@@ -185,38 +199,38 @@
       [self.heizung setEnabled:NO];
       
    }
-NSLog(@"C");
+//NSLog(@"C");
 }
 
 - (void)loadDiagrammData
 {
-   int std=0;
-   int min=1;
-   int data=2;
-   int art =0;
-   int randlinks=10;
-   int randrechts=0;
-   //int offsety=0;
-   int randunten = 10;
-   int randoben = 20;
-   float b = 24;
-   int intervally = 10;
-   float intervallx = 60;
-   int teile = 12;
-   int startwert =0;
-
+   /*
+   std=0;
+   min=1;
+   data=2;
+   art =0;
+   randlinks=10;
+   randrechts=0;
+   randunten = 10;
+   randoben = 20;
+   b = 24;
+   intervally = 10;
+   //intervallx = 60;
+   //teile = 12;
+   //startwert =0;
+    */
    NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:0], nil]; // letztes Element: art
    
    NSDictionary* heuteSolarDic = [self SolarDataDicVonHeute];
    NSMutableDictionary* DiagrammDatenDic = [NSMutableDictionary dictionaryWithDictionary:[self DiagrammDatenDicVon:[heuteSolarDic objectForKey:@"solardata"]mitAnzahlDaten:1 mitIndex:IndexArray]];
-   NSLog(@"self.diagrammview.frame.origin.y: %.2f self.diagrammview.frame.size.height: %.2f",self.diagrammview.frame.origin.y , self.diagrammview.frame.size.height);
+   
+   //NSLog(@"self.diagrammview.frame.origin.y: %.2f self.diagrammview.frame.size.height: %.2f",self.diagrammview.frame.origin.y , self.diagrammview.frame.size.height);
    // Abstand DiagrammView vom unteren Rand des Srollers: origin hat nullpunkt oben
    float eckeunteny = self.diagrammview.frame.origin.y + self.diagrammview.frame.size.height;
    float eckeuntenx = self.diagrammview.frame.origin.x;
    
    
    float diagrammhoehe = (int)((self.diagrammview.frame.size.height-randoben-randunten)/10)*10;
-   //float diagrammhoehe = (self.diagrammview.frame.size.height-randoben-randunten);
    float diagrammbreite = (int)((self.diagrammview.frame.size.width-randlinks-randrechts)/10)*10;
    
    [DiagrammDatenDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"diagrammhoehe"];
@@ -229,9 +243,7 @@ NSLog(@"C");
    [DiagrammDatenDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
    
    NSMutableDictionary* OrdinateDic = [[NSMutableDictionary alloc]initWithCapacity:0];
-   //
-   
-   // Abstand DiagrammView vom unteren Rand des Srollers:
+    // Abstand DiagrammView vom unteren Rand des Srollers:
    
    [OrdinateDic setObject:[NSNumber numberWithInt:randlinks] forKey:@"randlinks"];
    [OrdinateDic setObject:[NSNumber numberWithFloat:eckeunteny] forKey:@"eckeunteny"];
@@ -242,6 +254,11 @@ NSLog(@"C");
    [OrdinateDic setObject:[NSNumber numberWithInt:intervally] forKey:@"intervally"];
    [OrdinateDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
    [OrdinateDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
+   //char e = (char)(176);
+   NSString *GradCelsius = [NSString stringWithFormat:@"%@", @"\u00B0"];
+   //NSLog(@"temperature: %@",GradCelsius);
+   [OrdinateDic setObject:GradCelsius forKey:@"einheit"];
+   [OrdinateDic setObject:@"C" forKey:@"einheit"];
    //NSLog(@"OrdinateDic: %@",[OrdinateDic description]);
    [self.ordinate OrdinateZeichnenMitDic:OrdinateDic];
    
@@ -349,25 +366,24 @@ NSLog(@"C");
 	{
       NSString* AussentempSuffix = @"/TemperaturDaten.txt";
       NSURL *AussentempURL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:AussentempSuffix]];
-		NSLog(@"SolarDataVonHeute URL: %@",AussentempURL);
+		//NSLog(@"SolarDataVonHeute URL: %@",AussentempURL);
 		NSStringEncoding *  Aussentempenc=0;
 		NSError* AussentempWebFehler=NULL;
 		NSString* AussentempDataString=[NSString stringWithContentsOfURL:AussentempURL usedEncoding: Aussentempenc error:&AussentempWebFehler];
-      NSLog(@"SolarDataVonHeute AussentempDataString: %@",AussentempDataString);
+      //NSLog(@"SolarDataVonHeute AussentempDataString: %@",AussentempDataString);
       NSArray* TemperaturDatenArray = [AussentempDataString componentsSeparatedByString:@"\n"];
-      NSLog(@"SolarDataVonHeute TemperaturDatenArray: %@",[TemperaturDatenArray description]);
+      //NSLog(@"SolarDataVonHeute TemperaturDatenArray: %@",[TemperaturDatenArray description]);
       
       NSString* AussentemperaturString = [[AussentempDataString componentsSeparatedByString:@"\n"]objectAtIndex:5];
       //NSLog(@"SolarDataVonHeute AussentemperaturString: %@",AussentemperaturString);
       AussentemperaturString = [[AussentemperaturString componentsSeparatedByString:@" "]lastObject];
 		AussentemperaturString = [NSString stringWithFormat:@"%@°C",AussentemperaturString];
       self.AussentempFeld.text = AussentemperaturString;
-      NSLog(@"E");
       
       NSString* DataSuffix=@"LastSolarData.txt";
 		//NSLog(@"SolarDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
 		NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
-		NSLog(@"SolarDataVonHeute URL: %@",URL);
+		//NSLog(@"SolarDataVonHeute URL: %@",URL);
 		NSStringEncoding *  enc=0;
 		NSError* WebFehler=NULL;
 		NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
@@ -398,7 +414,6 @@ NSLog(@"C");
 			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
 			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
 		}
-      NSLog(@"F");
 		if ([DataString length])
 		{
 			
@@ -408,7 +423,7 @@ NSLog(@"C");
 			
 			if (![CharOK characterIsMember:first])
 			{
-				NSLog(@"DataVonHeute: String korrigieren");
+				//NSLog(@"DataVonHeute: String korrigieren");
 				DataString=[DataString substringFromIndex:1];
 			}
 			//NSLog(@"LastSolarData DataString: \n%@",DataString);
@@ -434,7 +449,6 @@ NSLog(@"C");
 			//[self setErrString:@"DataVonHeute: keine Daten"];
 		}
       
-      NSLog(@"G");
 	}
 	return SolarDataDic;
 }
@@ -609,7 +623,7 @@ NSLog(@"C");
    
    int offsetstd = startminute/60;
    int offsetmin = startminute%60;
-   int randlinks = 60*offsetstd + offsetmin;
+   int offsetlinks = 60*offsetstd + offsetmin;
    //NSLog(@" offsetstd: %d offsetmin: %d diffx: %d",offsetstd,offsetmin,randlinks);
    //NSLog(@"Solar DiagrammDatenDicVon letzte Zeile array: %@",[[DatenArray lastObject] description]);
    int endminute = [[[DatenArray lastObject]objectAtIndex:0]intValue]/60;
@@ -619,7 +633,7 @@ NSLog(@"C");
    int endx = 60*endstd + endmin;
    int diffx = endx - randlinks;
    
-   self.zoomfaktorx = self.diagrammview.bounds.size.width/1440; // Minuten des Tages
+   self.zoomfaktorx = (self.diagrammview.bounds.size.width - randlinks)/1440; // Minuten des Tages
    //NSLog(@"width: %.1f zoomfaktorx: %.2f",self.diagrammview.bounds.size.width,zoomfaktorx );
 
    // Zeitarray mit minute
@@ -684,7 +698,7 @@ NSLog(@"C");
    {
       //NSLog(@"i: %d Linienfarbe: %@",i,[LinienfarbeArray objectAtIndex:i ]);
    }
-   self.zoomfaktory = self.diagrammview.bounds.size.height/120;  // max Temperatur
+   self.zoomfaktory = (self.diagrammview.bounds.size.height-randunten)/120;  // max Temperatur
  
    
    //for (int dataindex=1;dataindex<6;dataindex++)

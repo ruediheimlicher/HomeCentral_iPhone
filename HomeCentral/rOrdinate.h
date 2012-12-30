@@ -23,6 +23,8 @@
 @property (nonatomic, readwrite)int teile;
 @property (nonatomic, readwrite)int startwert;
 @property (nonatomic, readwrite)int intervall;
+@property (nonatomic, readwrite)int red;
+@property (nonatomic, readwrite)NSString* einheit;
 
 -(void)OrdinateZeichnenMitDic:(NSDictionary*)derDataDic;
 

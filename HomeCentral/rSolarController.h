@@ -12,6 +12,7 @@
 #import "rBoilerView.h"
 #import "rOrdinate.h"
 #import "rAbszisse.h"
+#import "rVariableStore.h"
 
 @interface rSolarController : UIViewController <UITextFieldDelegate, UIWebViewDelegate>
 
@@ -30,6 +31,21 @@
    int                     lastDataZeit;
    NSString*               SolarDataVonHeuteString;
    NSString*               lastSolarDataString;
+   int std;
+   int min;
+   int data;
+   int art;
+   int randlinks;
+   int randrechts;
+   int randunten;
+   int randoben;
+   float b;
+   int intervally;
+   int intervallx;
+   int teile;
+   int startwert;
+   
+
    
 }
 @property (weak, nonatomic) IBOutlet UILabel *     kt;
@@ -46,6 +62,8 @@
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *backtaste;
 @property (weak, nonatomic) IBOutlet UIButton *RefreshTaste;
+
+
 - (IBAction)reportRefresh:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UILabel *AussentempFeld;

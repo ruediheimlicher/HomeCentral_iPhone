@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "rVariableStore.h"
 
 @interface rAppDelegate : UIResponder <UIApplicationDelegate>
 {
-   
-   
-
+   IBOutlet id TabBar;
+  
 }
 @property (strong, nonatomic) UIWindow *window;
 

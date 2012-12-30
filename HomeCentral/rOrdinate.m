@@ -40,7 +40,7 @@ char* itoa(int val, int base)
 
 -(void)OrdinateZeichnenMitDic:(NSDictionary*)derDataDic;
 {
-   NSLog(@"OrdinateZeichnenMitDic. %@",[derDataDic description]);
+   //NSLog(@"OrdinateZeichnenMitDic: %@",[derDataDic description]);
    if ([derDataDic objectForKey:@"offsetx"])
    {
       self.offsetx = [[derDataDic objectForKey:@"offsetx"]floatValue];
@@ -88,15 +88,17 @@ char* itoa(int val, int base)
       self.teile = 10;
    }
 
-   if ([derDataDic objectForKey:@"intervall"])
+   if ([derDataDic objectForKey:@"intervally"])
    {
-      self.intervall = [[derDataDic objectForKey:@"intervall"]floatValue];
+      self.intervall = [[derDataDic objectForKey:@"intervally"]floatValue];
    }
    else
    {
       self.intervall = 10;
    }
 
+   
+   
    if ([derDataDic objectForKey:@"randunten"])
    {
       self.randunten = [[derDataDic objectForKey:@"randunten"]floatValue];
@@ -106,6 +108,24 @@ char* itoa(int val, int base)
       self.randunten = 10;
    }
 
+   if ([derDataDic objectForKey:@"red"]) // Reduktion der anzahl angegebener Ordinaten. 0: alle 1: nur gerade
+   {
+      self.red = [[derDataDic objectForKey:@"red"]floatValue];
+   }
+   else
+   {
+      self.red = 0;
+   }
+
+   if ([derDataDic objectForKey:@"einheit"])
+   {
+      self.einheit = [derDataDic objectForKey:@"einheit"];
+   }
+   else
+   {
+      self.einheit = @"";
+   }
+   //NSLog(@"einheit: *%@*",self.einheit);
 
 }
 
@@ -122,7 +142,7 @@ char* itoa(int val, int base)
    
     // Drawing code
    //NSLog(@"Ordinate drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
-    NSLog(@"Ordinate drawRect diagrammhoehe: %.1f\t offsetx: %.1f" ,self.diagrammhoehe,self.offsetx);
+    //NSLog(@"Ordinate drawRect diagrammhoehe: %.1f\t offsetx: %.1f" ,self.diagrammhoehe,self.offsetx);
    //NSLog(@"Ordinate drawRect teile: %d",self.teile);
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,8,0);
@@ -137,18 +157,21 @@ char* itoa(int val, int base)
 
    float startx = self.offsetx;
    float starty = self.eckeunteny+2-self.randunten;
-   NSLog(@"Ordinate startx: %.1f starty: %.1f",startx,starty);
+   //NSLog(@"Ordinate startx: %.1f starty: %.1f",startx,starty);
       
    CGContextMoveToPoint(context, startx,starty);
-
+   float y = 0;
+   float x = 0;
+   NSNumber *celcius = @21;
+   NSNumber *pi = @3.14159265359;
     for (int i=0;i<self.teile+1;i++)
    {
       int wert = self.startwert+i*self.intervall;
       //const char* cLegende = [[[NSNumber numberWithInt:wert]stringValue]UTF8String];
       const char* cLegende = malloc(6);
-      
+      //NSLog(@"Ordinate i: %d wert: %d",i,wert);
       cLegende = [[[NSNumber numberWithInt:wert ]stringValue] UTF8String];
-      float x = self.offsetx;
+      x = self.offsetx;
       
       if (wert<10)
       {
@@ -162,18 +185,45 @@ char* itoa(int val, int base)
       
      // NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",wert] attributes:attributes];
       
-
+      CGContextBeginPath(context);
       //char* c = itoa(wert,10);
       //char* cLegende=
+      switch (self.red)
+      {
+         case 0:
+         {
+            y = starty - i*(self.diagrammhoehe/(self.teile));
+            CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
+         }break;
+         case 1: // nur gerade
+         {
+            if (i%2==0)
+            {
+               y = starty - i*(self.diagrammhoehe/(self.teile));
+               CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
+            }
+         }break;
+      } // switch
       
-      float y = starty - i*(self.diagrammhoehe/(self.teile));
       
       //NSLog(@"i: %d cLegende: %s x: %.2f y: %.2f",i ,cLegende,x,y);
-      CGContextBeginPath(context);
-      CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
+      
+      
       CGContextStrokePath(context);
-   }
    
+    
+   }
+   if ([self.einheit length])
+   {
+      CGContextBeginPath(context);
+      const char* cEinheit = malloc(4);
+      cEinheit = [self.einheit UTF8String];
+      //NSLog(@"cEinheit: %s",cEinheit);
+      CGContextShowTextAtPoint(context,self.offsetx+5 ,y-15,cEinheit,strlen(cEinheit));
+      CGContextStrokePath(context);
+      
+   }
+
    
    
 }

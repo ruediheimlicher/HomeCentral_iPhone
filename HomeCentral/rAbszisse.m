@@ -95,7 +95,7 @@
 
    float startx = self.eckeuntenx;
    float starty = self.eckeunteny;
-   NSLog(@"Abszisse startx: %.1f starty: %.1f",startx,starty);
+   //NSLog(@"Abszisse startx: %.1f starty: %.1f",startx,starty);
 
 
 }

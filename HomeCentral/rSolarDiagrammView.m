@@ -23,18 +23,15 @@
 
 -(void)DiagrammZeichnenMitDic:(NSDictionary*)derDataDic
 {
-   
-   //self.diagrammhoehe = (int)((self.frame.size.height-self.randoben)/10)*10;
-  // NSLog(@"DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
-   
    self.datadic = derDataDic;
+   //self.diagrammhoehe = (int)((self.frame.size.height-self.randoben)/10)*10;
+  //NSLog(@"Solar DiagrammZeichnenMitDic derDataDic: %@",[derDataDic description]);
    //NSLog(@"DiagrammZeichnenMitDic Dataarray count: %d",[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]count]);
    //NSLog(@"DiagrammZeichnenMitDic Dataarray : %@",[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]description]);
    //float anz=(float)[[[[self.datadic objectForKey:@"linearray"]objectAtIndex:0]objectForKey:@"dataarray"]count];
-   
    //NSLog(@"DiagrammZeichnenMitDic Dataarray count: %.1f zoom: %2.3f",anz,zoom);
-   
    //NSLog(@"self.datadic: %@",[self.datadic description]);
+   
    DataDic = derDataDic;
    [self setNeedsLayout];
 }
@@ -42,13 +39,13 @@
 - (void)drawRect:(CGRect)rect
 {
    // Drawing code
-   NSLog(@"Solardiagramm drawRect bounds w: %.1f\t h: %.1f diagrammhoehe: %.1f" ,self.bounds.size.width,self.bounds.size.height,self.diagrammhoehe);
+   //NSLog(@"Solardiagramm drawRect bounds w: %.1f\t h: %.1f diagrammhoehe: %.1f" ,self.bounds.size.width,self.bounds.size.height,self.diagrammhoehe);
    
    self.diagrammbreite = self.bounds.size.width;
    if ([DataDic objectForKey:@"diagrammbreite"])
-       {
-          self.diagrammbreite = [[DataDic objectForKey:@"diagrammbreite" ] floatValue];
-       }
+   {
+      self.diagrammbreite = [[DataDic objectForKey:@"diagrammbreite" ] floatValue];
+   }
 
    self.diagrammhoehe = self.bounds.size.height; // Diagramm fuellt ganzes Feld
    if ([DataDic objectForKey:@"diagrammhoehe"])
@@ -56,7 +53,7 @@
       self.diagrammhoehe = [[DataDic objectForKey:@"diagrammhoehe" ] floatValue];
    }
    
-   NSLog(@"diagrammhoehe: %.2f diagrammbreite: %.2f",self.diagrammhoehe,self.diagrammbreite);
+   //NSLog(@"diagrammhoehe: %.2f diagrammbreite: %.2f",self.diagrammhoehe,self.diagrammbreite);
 
    float  eckeunteny =  self.frame.size.height; //Startpunkt fuer Diagrammzeichnen
 
@@ -65,19 +62,32 @@
    {
       self.randlinks = [[DataDic objectForKey:@"randlinks"]intValue];
    }
-   
-   
+      
    float  eckeuntenx = [[DataDic objectForKey:@"eckeuntenx"]floatValue]; // Koordinate x Ecke des DiagrammView
    //float  eckeunteny = [[DataDic objectForKey:@"eckeunteny"]floatValue]; // Koordinate y
    
-      
    //NSLog(@"randlinks: %d",self.randlinks); // Abstand Diagramm zum View
    
    float intervall = kStepX; //Intervall der x-Achse *zoomfaktor
    
-   if ([DataDic objectForKey:@"intervallx"]&& [DataDic objectForKey:@"zoomfaktorx"])
+   float zoomfaktorx = 1;
+   
+   if ([DataDic objectForKey:@"zoomfaktorx"])
    {
-      intervall = [[DataDic objectForKey:@"intervallx"]floatValue]* [[DataDic objectForKey:@"zoomfaktorx"]floatValue];
+      zoomfaktorx = [[DataDic objectForKey:@"zoomfaktorx"]floatValue];
+   }
+      
+   if ([DataDic objectForKey:@"intervallx"])
+   {
+      intervall = [[DataDic objectForKey:@"intervallx"]floatValue];
+   }
+   
+   intervall *= zoomfaktorx;
+   
+   int startx=0;
+   if ([DataDic objectForKey:@"startx"])
+   {
+      startx = [[DataDic objectForKey:@"startx"]intValue];
    }
    
    self.randunten = kGraphBottom; // Abstand Diagramm zum View
@@ -102,27 +112,34 @@
    // How many lines?
    int anzsenkrecht = self.diagrammbreite/intervall;
    // Senkrechte Linien
-   //eckeunteny = self.frame.size.height;
    float linieoben = eckeunteny - self.diagrammhoehe-self.randunten;
    float linieunten = eckeunteny - self.randunten;
    
+   int startstd = startx/60; // offset der Stunde vom Nullpunkt
+   int startmin = startx%60; // offset der Minute vom Nullpunkt
+   
+   if (startstd)
+   {
+      //startstd += 1; // Erste angezeigte Stunde ist die naechste volle Stunde
+   }
+
    //NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f",eckeunteny,linieoben,linieunten);
    
-   for (int i = 0; i < anzsenkrecht; i++)
+   for (int i = 0; i <= anzsenkrecht; i++)
    {
-      
-      CGContextMoveToPoint(context, self.randlinks + i * intervall,  linieunten);
-      CGContextAddLineToPoint(context, self.randlinks + i * intervall,linieoben);
+      float x = self.randlinks-(startmin * zoomfaktorx) + i * intervall;
+      CGContextMoveToPoint(context, x,  linieunten);
+      CGContextAddLineToPoint(context, x,linieoben);
 
-      NSString* Stundestring = [NSString stringWithFormat:@"%d",i];
+      NSString* Stundestring = [NSString stringWithFormat:@"%d",i+startstd];
       const char* cName = [Stundestring UTF8String];
       //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
       
       CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, linieoben-5,cName,strlen(cName));
 
    }
-   float hoehe= (int)(self.bounds.size.height/10)*10;
    
+   float hoehe= (int)(self.bounds.size.height/10)*10;
    if ([DataDic objectForKey:@"diagrammhoehe"])
    {
       hoehe = [[DataDic objectForKey:@"diagrammhoehe"]floatValue];
@@ -154,7 +171,6 @@
    CGContextSetTextDrawingMode(xcontext, kCGTextFill);
    //CGContextTranslateCTM (xcontext,10,0);
    CGContextMoveToPoint(xcontext,kOffsetX,kOffsetY);
-   //CGContextAddLineToPoint(xcontext, kOffsetX +10, kOffsetY+20);
    CGContextSetTextMatrix (xcontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
    
    //char* x_achse = "0 1 2 3\0";
@@ -174,7 +190,6 @@
    if ([self.datadic objectForKey:@"linearray"])
    {
       CGContextRef templinecontext = UIGraphicsGetCurrentContext();
-      
 
       CGContextSaveGState(templinecontext);
       //CGContextRef linecontext = UIGraphicsGetCurrentContext();
@@ -194,11 +209,6 @@
             
             if ([[tempLineArray objectAtIndex:linie]count]) // linie vorhanden
             {
-               //NSLog(@"tempLineArray objectAtIndex: %d da: %@",linie,[[[[tempLineArray objectAtIndex:linie]objectForKey:@"dataarray"]objectAtIndex:0] description]);
-               //NSLog(@"tempLineArray objectAtIndex: %d da: %@",linie,[[[[tempLineArray objectAtIndex:linie]objectForKey:@"dataarray"]objectAtIndex:1] description]);
-               //NSLog(@"tempLineArray objectAtIndex: %d da: %@",linie,[[[[tempLineArray objectAtIndex:linie]objectForKey:@"dataarray"]objectAtIndex:2] description]);
-               // contextref anlegen
-               //UIGraphicsPushContext(templinecontext);
                CGContextBeginPath(templinecontext);
                //CGContextTranslateCTM (templinecontext,10,0);
                //CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
@@ -227,14 +237,10 @@
                }
                // NSLog(@"tempDataArray an Index: %d da: %@",i,[[tempDataArray valueForKey:@"x"] description]);
                float startx = self.randlinks+[[[tempDataArray objectAtIndex:0]objectForKey:@"x"]floatValue];
-               
                float starty = self.bounds.size.height-self.randunten-[[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
-               //float starty = [[[tempDataArray objectAtIndex:0]objectForKey:@"y"]floatValue];
-               
-               CGContextMoveToPoint(templinecontext,startx,starty);
-               
+                CGContextMoveToPoint(templinecontext,startx,starty);
                //
-               starty = self.bounds.size.height-starty;
+               //starty = self.bounds.size.height-starty;
                //NSLog(@"SolarDiagrammView drawRect startx: %.1f \t starty: %.1f",startx,starty);
                float x=startx;
                float y=starty;
@@ -413,7 +419,7 @@
             
             int heizungyoff=-100;
             int lastON=0;
-            int yON=self.bounds.size.height-230;
+            int yON=self.bounds.size.height-220;
             float x=startx;
             float datawert=-100;
             
