@@ -34,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *wochentagseg;
 @property (nonatomic, readwrite) NSArray* WochentagArray;
 @property (weak, nonatomic) IBOutlet rTagplanAnzeige *halbstundetagplananzeige;
+@property (weak, nonatomic) IBOutlet rTagplanAnzeige *ganzstundetagplananzeige;
 
 @property (nonatomic, readwrite) int aktuellerRaum;
 @property (nonatomic, readwrite) int aktuellesObjekt;

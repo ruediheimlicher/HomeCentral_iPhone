@@ -47,41 +47,64 @@
       std.text=[NSString stringWithFormat:@"%d",stunde];
       std.textAlignment = NSTextAlignmentCenter;
       std.backgroundColor = hintergrund;
-       
       [self addSubview:std];
       
       }
       position +=6;
       int stundenwert = [[self.datenarray objectAtIndex:stunde]intValue];
-      //NSLog(@"stundenwert: %d",stundenwert);
-      CGRect tastenfeld = CGRectMake(position, 8.0, 3.8, 8.0);
-      
-      CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
-      if ((stundenwert & 0x02)>0)
+      switch (self.typ)
       {
-         CGContextSetRGBFillColor(context, 0.0, 0.0, 1.0, 0.8);
-      }
-      else
-      {
-         CGContextSetRGBFillColor(context, 0.6, 0.6, 0.6, 0.5);
-      }
-      CGContextFillPath(context);
-      
-      
-      tastenfeld.origin.x += 5;
-      CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
-      
-      if ((stundenwert & 0x01)>0)
-      {
-         CGContextSetRGBFillColor(context, 0.0, 0.0, 1.0, 0.8);
-      }
-      else
-      {
-         CGContextSetRGBFillColor(context, 0.6, 0.6, 0.6, 0.5);
-      }
-      
-      CGContextFillPath(context);
-     
+         case 0:
+         {
+            
+            NSLog(@"typ 0 stundenwert: %d",stundenwert);
+            CGRect tastenfeld = CGRectMake(position, 8.0, 3.8, 8.0);
+            
+            CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
+            if ((stundenwert & 0x02)>0)
+            {
+               CGContextSetRGBFillColor(context, 0.0, 0.0, 1.0, 0.8);
+            }
+            else
+            {
+               CGContextSetRGBFillColor(context, 0.6, 0.6, 0.6, 0.5);
+            }
+            CGContextFillPath(context);
+            
+            
+            tastenfeld.origin.x += 5;
+            CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
+            
+            if ((stundenwert & 0x01)>0)
+            {
+               CGContextSetRGBFillColor(context, 0.0, 0.0, 1.0, 0.8);
+            }
+            else
+            {
+               CGContextSetRGBFillColor(context, 0.6, 0.6, 0.6, 0.5);
+            }
+            
+            CGContextFillPath(context);
+         }break;
+            
+         case 1: // ganze Stunden
+         {
+            NSLog(@"typ 1 stundenwert: %d",stundenwert);
+            CGRect tastenfeld = CGRectMake(position, 8.0, 7.6, 8.0);
+            
+            CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
+            if ((stundenwert )>0)
+            {
+               CGContextSetRGBFillColor(context, 0.0, 0.0, 1.0, 0.8);
+            }
+            else
+            {
+               CGContextSetRGBFillColor(context, 0.6, 0.6, 0.6, 0.5);
+            }
+            CGContextFillPath(context);
+
+         }break;
+      }//switch
       
    } // for stunde
    

@@ -10,7 +10,9 @@
 
 @interface rTagplanAnzeige : UIView
 {
+   
   }
 @property (nonatomic, readwrite) NSArray* datenarray;
+@property (nonatomic, readwrite) int typ;
 
 @end

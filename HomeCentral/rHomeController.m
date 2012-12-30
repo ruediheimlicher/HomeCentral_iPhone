@@ -134,6 +134,9 @@
    
    }
    
+   // Tagplananzeige: typ angegen
+   self.halbstundetagplananzeige.typ=0;
+   self.ganzstundetagplananzeige.typ=1;
    
    
    [self.onofftaste setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
@@ -163,6 +166,8 @@
       NSArray* ZeilenDataArray = [ZeilenArray subarrayWithRange:NSMakeRange(4, 6)];
       NSArray* StundenByteArray = [self StundenByteArrayVonByteArray:ZeilenDataArray];
       self.halbstundetagplananzeige.datenarray = StundenByteArray;
+      self.ganzstundetagplananzeige.datenarray = StundenByteArray;
+      [self.ganzstundetagplananzeige setNeedsDisplay];
       [self.halbstundetagplananzeige setNeedsDisplay];
       //NSLog(@"StundenByteArray: %@",[StundenByteArray description]);
       
@@ -234,6 +239,8 @@
       {
          case 0: // halbe Stunden
          {
+            self.ganzstundetagplananzeige.hidden=YES;
+            self.halbstundetagplananzeige.hidden=NO;
             self.ganzstundetagplanfeld.hidden=YES;
             self.halbstundetagplanfeld.hidden=NO;
             [self.halbstundetagplanfeld setNeedsDisplay];
@@ -246,6 +253,8 @@
             
          case 1: // nur ganze Stunden
          {
+            self.ganzstundetagplananzeige.hidden=NO;
+            self.halbstundetagplananzeige.hidden=YES;
             self.halbstundetagplanfeld.hidden=YES;
             self.ganzstundetagplanfeld.hidden=NO;
             [self.ganzstundetagplanfeld setNeedsDisplay];
