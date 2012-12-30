@@ -196,12 +196,29 @@
       int stundenwert = [[stundenbytearray objectAtIndex:stunde]intValue];
       int taste0tag = 100 + 10*stunde;
       
-      //NSLog(@"stundenwert: %d taste0tag: %d",stundenwert,taste0tag);
+      NSLog(@"stundenwert: %d taste0tag: %d",stundenwert,taste0tag);
       //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
       [(UIButton*)[self.tagplanfeld viewWithTag:taste0tag]setSelected:((stundenwert & 0x02)>0)];
 
+      
       int taste1tag = taste0tag +1;
       [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
+      
+      return;
+      switch (self.aktuellerObjekttyp)
+      {
+         case 0: // halbe Stunden
+         {
+            [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
+         }break;
+         case 1: // nur ganze Stunden
+         {
+            [(UIButton*)[self.tagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x02)>0)];
+         }break;
+            
+      } // switch ObjektTyp
+      
+      
    }
 }
 
