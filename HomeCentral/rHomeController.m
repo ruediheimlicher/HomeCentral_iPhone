@@ -9,6 +9,7 @@
 #import "rHomeController.h"
 #import "rEingabeController.h"
 
+#define PW "ideur00"
 
 
 
@@ -32,6 +33,7 @@
 - (void)viewDidLoad
 {
    [super viewDidLoad];
+   HomeCentralURL = @"http://ruediheimlicher.dyndns.org";
    //[UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
    self.ipfeld.text = [[rVariableStore sharedInstance] IP];
 
@@ -45,7 +47,7 @@
     NSCalendar* heutekalender = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
    [heutekalender setFirstWeekday:2];
    int wochentagindex = [heutekalender ordinalityOfUnit:NSWeekdayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[NSDate date]]-1;
-   NSLog(@"wochentagindex: %d",wochentagindex);
+   //NSLog(@"wochentagindex: %d",wochentagindex);
    
    /*
    NSDateComponents *weekdayComponents =[heutekalender components:( NSWeekdayCalendarUnit) fromDate:[NSDate date]];
@@ -152,6 +154,10 @@
    [self.stundentaste setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
    
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
+   self.webfenster.delegate = self;
+   maxAnzahl = 12;
+   [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+   [self.sendtaste setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
 }
 
@@ -193,7 +199,7 @@
       {
          self.aktuellerObjekttyp=0;
       }
-      NSLog(@"aktuellerObjekttyp: %d",self.aktuellerObjekttyp);
+      //NSLog(@"aktuellerObjekttyp: %d",self.aktuellerObjekttyp);
 
       
       
@@ -203,7 +209,7 @@
    else
    {
       self.objektname.text = @"Keine Daten";
-      [self clearWochenplan];
+      [self clearTagplan];
    }
 }
 
@@ -278,8 +284,10 @@
    NSStringEncoding *  enc=0;
    NSError* WebFehler=NULL;
    NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
-   
-   NSLog(@"Wochenplan WebFehler: :%@",[[WebFehler userInfo]description]);
+   if (WebFehler)
+   {
+      NSLog(@"Wochenplan WebFehler: :%@",[[WebFehler userInfo]description]);
+   }
    //NSLog(@"Wochenplan DataString: %@",DataString);
    
    return DataString;
@@ -329,16 +337,13 @@
 {
    NSLog(@"reportClear");
    // Felder fuer die Stunden aufbauen
-   for (int stunde=0;stunde<24;stunde++)
-   {
-      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:100+10*stunde]setSelected:NO];
-      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:100+10*stunde+1]setSelected:NO];
-      
-   }
+   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Clear" message:@"Tagplan löschen??" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
+   [alert show];
+
 }
 
 
-- (void)clearWochenplan
+- (void)clearTagplan
 {
    NSLog(@"clearWochenplan");
    // Felder fuer die Stunden aufbauen
@@ -349,6 +354,8 @@
    }
 
 }
+
+
 
 - (IBAction)reportRaumSeg:(UISegmentedControl*)sender
 {
@@ -375,6 +382,187 @@
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
 
 }
+
+- (IBAction)reportSendTaste:(UIButton *)sender
+{
+   NSLog(@"reportSendTaste");
+}
+
+- (IBAction)reportTWITaste:(UISwitch *)sender
+{
+   //NSLog(@"reportTWITaste state: %d",sender.state);
+   if (sender.on)
+   {
+      [self setTWIState:YES];// TWI einschalten
+   }
+   else
+   {
+      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
+                            [alert show];
+
+   }
+}
+
+// Antworten auf Login-Button
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+   if ([[alertView title]isEqualToString:@"TWI-Status"])
+   {
+      NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+      if([title isEqualToString:@"Ja"])
+      {
+         //NSLog(@"Button Ja was selected.");
+         [self setTWIState:NO]; // TWI ausschalten
+      }
+      else if([title isEqualToString:@"Nein"])
+      {
+         //NSLog(@"TWI nicht ausschalten.");
+         self.twitaste.on=YES;
+         // Nichts tun
+      }
+      return;
+   }
+   if ([[alertView title]isEqualToString:@"Clear"])
+   {
+      NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+      if([title isEqualToString:@"Ja"])
+      {
+         NSLog(@"Clear: Button Ja was selected.");
+         [self clearTagplan]; // Tagplan löschen
+      }
+      else
+      {
+         return;
+      }
+      return;
+   }
+}
+
+- (void)setTWIState:(int)status
+{
+    //NSLog(@"setTWIstate status: %d",status);
+   if (status)
+   {
+      //NSLog(@"setTWIstate TWI einschalten");
+      self.sendtaste.enabled= NO;
+      NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
+      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralURL, TWIStatusSuffix];
+      
+      //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
+      
+      NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
+      //NSLog(@"TWI ein URL: %@",URL);
+     
+      //NSError* err=0;
+      //NSString *html = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&err];
+      //NSLog(@"TWI ON html: %@\nerr: %@",html,err);
+      
+      [self loadURL:URL];
+
+   }
+   else
+   {
+      NSLog(@"setTWIstate TWI ausschalten");
+      
+      NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
+      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralURL, TWIStatusSuffix];
+      
+      //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
+      
+      NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
+      NSLog(@"TWI aus URL: %@",URL);
+      
+      //NSError* err=0;
+     // NSString *html = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&err];
+     // NSLog(@"TWI OFF html: %@\nerr: %@",html,err);
+       [self loadURL:URL];
+      NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+      [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
+      int sendResetDelay=1.0;
+      //NSLog(@"EEPROMReadDataAktion  confirmTimerDic: %@",[confirmTimerDic description]);
+      
+      confirmStatusTimer=[NSTimer scheduledTimerWithTimeInterval:sendResetDelay
+                                                           target:self
+                                                         selector:@selector(statusTimerFunktion:)
+                                                         userInfo:confirmTimerDic
+                                                          repeats:YES];
+
+      
+   }
+}
+
+- (void)statusTimerFunktion:(NSTimer*) derTimer
+{
+	NSMutableDictionary* statusTimerDic=(NSMutableDictionary*) [derTimer userInfo];
+	//NSLog(@"statusTimerFunktion  maxAnzahl: %d  statusTimerDic: %@",maxAnzahl,[statusTimerDic description]);
+   
+	if ([statusTimerDic objectForKey:@"anzahl"])
+	{
+		int anz=[[statusTimerDic objectForKey:@"anzahl"] intValue];
+      NSString* TWIStatus0URL;
+		if (anz < maxAnzahl)
+		{
+			anz++;
+			if (anz>1)
+			{
+            NSString* pw = [NSString stringWithUTF8String: PW];
+            NSString* TWIStatus0URLSuffix = [NSString stringWithFormat:@"pw=%@&isstat0ok=1",pw];
+            
+            TWIStatus0URL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralURL, TWIStatus0URLSuffix];
+            [statusTimerDic setObject:[NSNumber numberWithInt:0] forKey:@"local"];
+            
+            NSURL *URL = [NSURL URLWithString:TWIStatus0URL];
+            //NSLog(@"statusTimerFunktion  URL: %@",URL);
+            [self loadURL:URL];
+			}
+			
+			[statusTimerDic setObject:[NSNumber numberWithInt:anz] forKey:@"anzahl"];
+         
+         
+			// Blinkanzeige im PW-Feld
+			NSMutableDictionary* tempDataDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+			if (anz%2==0)// gerade
+			{
+            //[self loadURL:URL];
+            self.sendtaste.hidden=NO;
+				[tempDataDic setObject:@"*" forKey:@"wait"];
+			}
+			else
+			{
+            self.sendtaste.hidden=YES;
+				[tempDataDic setObject:@" " forKey:@"wait"];
+			}
+			
+			NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+			[nc postNotificationName:@"StatusWait" object:self userInfo:tempDataDic];
+			
+		}
+		else
+		{
+			
+			NSLog(@"statusTimerFunktion statusTimer invalidate");
+			// Misserfolg an AVRClient senden
+			NSMutableDictionary* tempDataDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+			[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"isstatusok"];
+         if ([statusTimerDic objectForKey:@"local"] && [[statusTimerDic objectForKey:@"local"]intValue]==1 )
+         {
+            [tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"local"];
+         }
+         else
+         {
+            [tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"local"];
+            
+         }
+			self.sendtaste.hidden=NO;
+			[derTimer invalidate];
+			
+			
+		}
+		
+	}
+}
+
+
 
 - (IBAction)reportStundenTaste:(rToggleTaste*)sender
 {
@@ -436,6 +624,74 @@
    }
    //NSLog(@"StundenByteArray: %@",[StundenByteArray description]);
    return (NSArray*)StundenByteArray;
+}
+
+
+- (void)loadURL:(NSURL *)URL
+{
+	//NSLog(@"loadURL: %@",URL);
+	NSURLRequest *HCRequest = [ [NSURLRequest alloc] initWithURL: URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:3.0];
+   //	[[NSURLCache sharedURLCache] removeAllCachedResponses];
+   //	NSLog(@"Cache mem: %d",[[NSURLCache sharedURLCache]memoryCapacity]);
+   //	[[NSURLCache sharedURLCache] removeCachedResponseForRequest:HCRequest];
+   //	NSLog(@"loadURL:Vor loadRequest");
+	if (HCRequest)
+	{
+      //NSLog(@"loadURL:Request OK");
+      [self.webfenster  loadRequest:HCRequest];
+	}
+	
+}
+
+-(void)webViewDidStartLoad:(UIWebView *)webView
+{
+   //NSLog(@"webViewDidStartLoad");
+   //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+   //NSLog(@"webViewDidFinishLoad");
+   NSRange CheckRange;
+	NSString* Code_String= @"okcode=";
+	//NSString* Status0_String= @"status0";
+   NSString* Status0_String= @"status0+"; // Status 0 ist bestaetigt
+
+	NSString* Status1_String= @"status1";
+
+   NSString *HTML_Inhalt = [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.textContent"];
+   NSLog(@"HTML_Inhalt: %@",HTML_Inhalt);
+   // Test, ob Webseite eine okcode-Antwort ist
+	CheckRange = [HTML_Inhalt rangeOfString:Code_String];
+	if (CheckRange.location < NSNotFound)
+	{
+		//NSLog(@"didFinishLoadForFrame: okcode= ist da");
+      // isstatus0ok vorhanden??
+		
+		//NSString* status0_String= @"status0+";
+		CheckRange = [HTML_Inhalt rangeOfString:Status0_String];
+		if (CheckRange.location < NSNotFound)
+		{
+			//NSLog(@"didFinishLoadForFrame: status0+ ist da");
+         self.sendtaste.enabled= YES;
+         self.sendtaste.hidden=NO;
+		//	[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"status0"];
+			if ([confirmStatusTimer isValid])
+             {
+                [confirmStatusTimer invalidate];
+             }
+		}
+		else
+		{
+		//	[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"status0"];
+		}
+      
+      // end isstatus0ok
+
+   }
+   
+   
+   //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 @end

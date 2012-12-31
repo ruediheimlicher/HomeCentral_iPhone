@@ -12,20 +12,25 @@
 #import "rToggleTaste.h"
 #import "rTagplanAnzeige.h"
 
-@interface rHomeController : UIViewController
+@interface rHomeController : UIViewController <UIAlertViewDelegate,UIWebViewDelegate>
 {
+   NSString* HomeCentralURL;
    rToggleTaste* OnOffTaste;
    rToggleTaste* StundenTaste;
+   NSTimer* confirmTimer;
+	NSTimer* confirmStatusTimer;
+	int maxAnzahl;
+
 }
 @property (weak, nonatomic) IBOutlet UIScrollView *tagplanscroller;
 @property (weak, nonatomic) IBOutlet UIView *halbstundetagplanfeld;
 @property (weak, nonatomic) IBOutlet UIView *ganzstundetagplanfeld;
 @property (weak, nonatomic) IBOutlet rToggleTaste *taste0;
 @property (weak, nonatomic) IBOutlet rToggleTaste *stundentaste;
-@property (weak, nonatomic) IBOutlet UITextField *ipfeld;
+@property (weak, nonatomic) IBOutlet UILabel *ipfeld;
 @property (weak, nonatomic) IBOutlet UIStepper *wochentagstepper;
 @property (weak, nonatomic) IBOutlet UIStepper *objektstepper;
-@property (weak, nonatomic) IBOutlet UITextField *objektname;
+@property (weak, nonatomic) IBOutlet UILabel *objektname;
 @property (weak, nonatomic) IBOutlet UITextField *wochentag;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *raumseg;
@@ -44,6 +49,16 @@
 
 @property (nonatomic, readwrite) NSArray* wochenplanarray;
 
+@property (strong, nonatomic) IBOutlet UISwitch *twitaste;
+@property (weak, nonatomic) IBOutlet UIWebView *webfenster;
+
+@property (weak, nonatomic) IBOutlet UIButton *sendtaste;
+
+- (IBAction)reportSendTaste:(UIButton *)sender;
+
+
+- (IBAction)reportTWITaste:(UISwitch *)sender;
+
 
 - (IBAction)reportStundenTaste:(id)sender;
 
@@ -58,5 +73,6 @@
 - (NSArray*)StundenByteArrayVonByteArray:(NSArray*)bytearray;
 - (void)setTagPlanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag mitDaten:(NSArray*)stundenbytearray;
 - (void)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag;
-- (void)clearWochenplan;
+- (void)clearTagplan;
+- (void)setTWIState:(int)status;
 @end

@@ -57,7 +57,7 @@
          case 0:
          {
             
-            NSLog(@"typ 0 stundenwert: %d",stundenwert);
+            //NSLog(@"typ 0 stundenwert: %d",stundenwert);
             CGRect tastenfeld = CGRectMake(position, 8.0, 3.8, 8.0);
             
             CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
@@ -89,7 +89,7 @@
             
          case 1: // ganze Stunden
          {
-            NSLog(@"typ 1 stundenwert: %d",stundenwert);
+            //NSLog(@"typ 1 stundenwert: %d",stundenwert);
             CGRect tastenfeld = CGRectMake(position, 8.0, 7.6, 8.0);
             
             CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
