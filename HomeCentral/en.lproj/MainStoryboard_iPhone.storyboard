@@ -630,11 +630,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="J45-RZ-TYJ">
-                                <rect key="frame" x="20" y="185" width="292" height="131"/>
+                                <rect key="frame" x="10" y="199" width="300" height="93"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" id="Vvf-Mq-191">
-                                        <rect key="frame" x="0.0" y="7" width="534" height="93"/>
+                                        <rect key="frame" x="0.0" y="5" width="534" height="79"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" red="0.67599624165993411" green="0.98971619897959184" blue="0.73715162673986745" alpha="1" colorSpace="calibratedRGB"/>
                                     </view>
@@ -642,14 +642,14 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <color key="backgroundColor" red="0.70438873445316741" green="0.69499307657895304" blue="0.97393176020408168" alpha="1" colorSpace="calibratedRGB"/>
                             </scrollView>
                             <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="7" id="eaP-Fa-e0R">
-                                <rect key="frame" x="206" y="101" width="94" height="27"/>
+                                <rect key="frame" x="216" y="127" width="94" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <connections>
                                     <action selector="reportObjektStepper:" destination="fc2-zf-OXd" eventType="valueChanged" id="Aja-3z-K81"/>
                                 </connections>
                             </stepper>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="bDY-ng-tkC">
-                                <rect key="frame" x="10" y="5" width="300" height="44"/>
+                                <rect key="frame" x="10" y="12" width="300" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="HZ"/>
@@ -666,7 +666,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </segmentedControl>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="3d1-yb-e6a">
-                                <rect key="frame" x="10" y="55" width="300" height="44"/>
+                                <rect key="frame" x="10" y="69" width="300" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="MO"/>
@@ -682,7 +682,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="TEk-CJ-ROv">
-                                <rect key="frame" x="20" y="364" width="44" height="44"/>
+                                <rect key="frame" x="10" y="331" width="44" height="39"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <state key="normal" title="C">
@@ -696,55 +696,70 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="reportClear:" destination="fc2-zf-OXd" eventType="touchUpInside" id="h1h-h6-oBG"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="yFO-ix-xFr">
+                                <rect key="frame" x="62" y="331" width="73" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <state key="normal" title="reset">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="reportResetTaste:" destination="fc2-zf-OXd" eventType="touchUpInside" id="jnR-aK-aHk"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" id="lwK-8b-7D0" customClass="rTagplanAnzeige">
-                                <rect key="frame" x="20" y="149" width="290" height="28"/>
+                                <rect key="frame" x="11" y="165" width="300" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.61551839815887943" green="1" blue="0.65600562448707156" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Objekt:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="d3x-eR-lck">
-                                <rect key="frame" x="22" y="101" width="60" height="21"/>
+                                <rect key="frame" x="33" y="130" width="60" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EDi-Hp-QNa">
-                                <rect key="frame" x="90" y="101" width="108" height="27"/>
+                                <rect key="frame" x="100" y="127" width="108" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gWd-AN-Ojo">
-                                <rect key="frame" x="233" y="394" width="77" height="13"/>
+                                <rect key="frame" x="233" y="373" width="77" height="13"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="E3m-Tr-uTg">
-                                <rect key="frame" x="141" y="380" width="79" height="27"/>
+                                <rect key="frame" x="154" y="347" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="reportTWITaste:" destination="fc2-zf-OXd" eventType="touchUpInside" id="bZu-eB-61i"/>
                                 </connections>
                             </switch>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="TWI" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="C5w-Yu-DtR">
-                                <rect key="frame" x="90" y="383" width="32" height="21"/>
+                                <rect key="frame" x="176" y="313" width="32" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <webView contentMode="scaleToFill" id="xBN-z9-r6R">
-                                <rect key="frame" x="20" y="324" width="292" height="24"/>
+                                <rect key="frame" x="10" y="388" width="301" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zXz-ij-I5D">
-                                <rect key="frame" x="248" y="348" width="62" height="39"/>
+                                <rect key="frame" x="248" y="331" width="62" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <state key="normal" title="send">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -761,13 +776,13 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </view>
                     <tabBarItem key="tabBarItem" title="EE" id="y3H-y7-zHb"/>
                     <connections>
-                        <outlet property="halbstundetagplananzeige" destination="lwK-8b-7D0" id="pQt-PU-9vB"/>
-                        <outlet property="halbstundetagplanfeld" destination="Vvf-Mq-191" id="YAI-f0-OEL"/>
                         <outlet property="ipfeld" destination="gWd-AN-Ojo" id="AZ2-aK-tgz"/>
                         <outlet property="objektname" destination="EDi-Hp-QNa" id="tWv-ch-QPg"/>
                         <outlet property="objektstepper" destination="eaP-Fa-e0R" id="IlT-cD-5GN"/>
                         <outlet property="raumseg" destination="bDY-ng-tkC" id="cB4-Qw-zrK"/>
                         <outlet property="sendtaste" destination="zXz-ij-I5D" id="jPD-HK-wcR"/>
+                        <outlet property="tagplananzeige" destination="lwK-8b-7D0" id="NDn-gC-krf"/>
+                        <outlet property="tagplanfeld" destination="Vvf-Mq-191" id="hkv-5z-5ka"/>
                         <outlet property="tagplanscroller" destination="J45-RZ-TYJ" id="qoJ-GZ-OD0"/>
                         <outlet property="twitaste" destination="E3m-Tr-uTg" id="pCN-h6-fWN"/>
                         <outlet property="webfenster" destination="xBN-z9-r6R" id="3Y8-Rh-kBp"/>
@@ -854,22 +869,22 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="action" name="reportObjektStepper:"/>
                 <relationship kind="action" name="reportOnOff:"/>
                 <relationship kind="action" name="reportRaumSeg:"/>
+                <relationship kind="action" name="reportResetTaste:"/>
                 <relationship kind="action" name="reportSendTaste:" candidateClass="UIButton"/>
                 <relationship kind="action" name="reportStundenTaste:"/>
                 <relationship kind="action" name="reportTWITaste:" candidateClass="UISwitch"/>
                 <relationship kind="action" name="reportWochentag:"/>
                 <relationship kind="action" name="reportWochentagSeg:"/>
-                <relationship kind="outlet" name="ganzstundetagplananzeige" candidateClass="rTagplanAnzeige"/>
-                <relationship kind="outlet" name="ganzstundetagplanfeld" candidateClass="UIView"/>
-                <relationship kind="outlet" name="halbstundetagplananzeige" candidateClass="rTagplanAnzeige"/>
-                <relationship kind="outlet" name="halbstundetagplanfeld" candidateClass="UIView"/>
                 <relationship kind="outlet" name="ipfeld" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="objektname" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="objektstepper" candidateClass="UIStepper"/>
                 <relationship kind="outlet" name="onofftaste" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="raumseg" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="resettaste" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="sendtaste" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="stundentaste" candidateClass="rToggleTaste"/>
+                <relationship kind="outlet" name="tagplananzeige" candidateClass="rTagplanAnzeige"/>
+                <relationship kind="outlet" name="tagplanfeld" candidateClass="UIView"/>
                 <relationship kind="outlet" name="tagplanscroller" candidateClass="UIScrollView"/>
                 <relationship kind="outlet" name="taste0" candidateClass="rToggleTaste"/>
                 <relationship kind="outlet" name="twitaste" candidateClass="UISwitch"/>

@@ -31,7 +31,7 @@
    }
     // Drawing code
    // Felder fuer die Stunden aufbauen
-   float stundenabstand = 11.5;
+   float stundenabstand = 12;
    
    UIColor* hintergrund = self.backgroundColor;
    CGContextRef context = UIGraphicsGetCurrentContext();
