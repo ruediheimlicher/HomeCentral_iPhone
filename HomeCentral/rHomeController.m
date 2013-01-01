@@ -74,10 +74,11 @@
    tagplanframe.size.width = 24*stundenabstand + 100;
    self.halbstundetagplanfeld.frame = tagplanframe;
    
+   /*
    tagplanframe = self.ganzstundetagplanfeld.frame;
    tagplanframe.size.width = 24*stundenabstand + 100;
    self.ganzstundetagplanfeld.frame = tagplanframe;
-   
+   */
    self.tagplanscroller.contentSize = self.halbstundetagplanfeld.frame.size;
    
    
@@ -94,7 +95,7 @@
       // Tasten fuer halbe Stunden
       
       CGRect tastenfeld = CGRectMake(20+stundenabstand*stunde, 10, 30, 40);
-      rToggleTaste* hstdtaste0=[[rToggleTaste alloc]initWithFrame:tastenfeld];
+      UIButton* hstdtaste0=[[UIButton alloc]initWithFrame:tastenfeld];
       [hstdtaste0 setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
       [hstdtaste0 setBackgroundImage:defButtonImage forState:UIControlStateNormal];
       [hstdtaste0 setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -120,25 +121,25 @@
       
       // Tasten fuer ganze Stunden
       
-      CGRect gtastenfeld = CGRectMake(20+stundenabstand*stunde, 10, 60, 40);
-      rToggleTaste* gstdtaste=[[rToggleTaste alloc]initWithFrame:gtastenfeld];
+      CGRect gtastenfeld = CGRectMake(20+stundenabstand*stunde, 10+8, 60, 40);
+      UIButton* gstdtaste=[[UIButton alloc]initWithFrame:gtastenfeld];
       [gstdtaste setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
       [gstdtaste setBackgroundImage:defButtonImage forState:UIControlStateNormal];
       [gstdtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
       [gstdtaste setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-      [gstdtaste setTag:200 +10*stunde];
+      [gstdtaste setTag:500 +10*stunde];
       [gstdtaste addTarget:self
                      action:@selector(reportStundenTaste:)
            forControlEvents:UIControlEventTouchUpInside];
-      gstdtaste.hidden=NO;
-      [self.ganzstundetagplanfeld addSubview:gstdtaste];
+      gstdtaste.hidden=YES;
+      [self.halbstundetagplanfeld addSubview:gstdtaste];
 
    
    }
    
    // Tagplananzeige: typ angegen
-   self.halbstundetagplananzeige.typ=0;
-   self.ganzstundetagplananzeige.typ=1;
+   //self.halbstundetagplananzeige.typ=0;
+   //self.ganzstundetagplananzeige.typ=1;
    
    
    [self.onofftaste setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
@@ -154,6 +155,8 @@
    [self.stundentaste setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
    
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
+   //[self.halbstundetagplananzeige setNeedsDisplay];
+   
    self.webfenster.delegate = self;
    maxAnzahl = 12;
    [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -161,7 +164,7 @@
 
 }
 
-- (void)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
+- (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
 {
    int zeile = 56* raum + 7*objekt + wochentag;
    
@@ -169,13 +172,23 @@
    //NSLog(@"setTagplanInRaum ZeilenArray: %@",[ZeilenArray description]);
    if ([ZeilenArray count]>4)
    {
+      // Array mit 6 Bytes fuer je 4 Tasten. Int-Werte
       NSArray* ZeilenDataArray = [ZeilenArray subarrayWithRange:NSMakeRange(4, 6)];
-      NSArray* StundenByteArray = [self StundenByteArrayVonByteArray:ZeilenDataArray];
-      self.halbstundetagplananzeige.datenarray = StundenByteArray;
-      self.ganzstundetagplananzeige.datenarray = StundenByteArray;
-      [self.ganzstundetagplananzeige setNeedsDisplay];
+      
+      
+      // Array mit 24 int 0..3 mit den Angaben fuer jede Stunde
+      //NSMutableArray* StundenByteArray = [self StundenByteArrayVonByteArray:ZeilenDataArray];
+      
+      self.aktuellerstundenbytearray  = [self StundenByteArrayVonByteArray:ZeilenDataArray];
+      self.halbstundetagplananzeige.datenarray = self.aktuellerstundenbytearray;
+//      self.ganzstundetagplananzeige.datenarray = self.aktuellerstundenbytearray;
+//      [self.ganzstundetagplananzeige setNeedsDisplay];
       [self.halbstundetagplananzeige setNeedsDisplay];
-      //NSLog(@"StundenByteArray: %@",[StundenByteArray description]);
+      
+      //[self.tagplandic setObject:self.aktuellerstundenbytearray forKey:@"stundenbytearray"];
+      
+      
+      //NSLog(@"StundenByteArray: %@",[self.aktuellerstundenbytearray description]);
       
       if ([ZeilenArray count]>13)
       {
@@ -188,6 +201,8 @@
          self.aktuellerObjektname =  @"Kein  Name";
          self.objektname.text = @"Kein  Name";
       }
+      //[self.tagplandic setObject:self.objektname.text forKey:@"objektname"];
+
       
       
       if ([ZeilenArray count]>14)
@@ -199,18 +214,21 @@
       {
          self.aktuellerObjekttyp=0;
       }
-      //NSLog(@"aktuellerObjekttyp: %d",self.aktuellerObjekttyp);
-
+      NSLog(@"setTagplan aktuellerObjekttyp: %d",self.aktuellerObjekttyp);
       
+      self.halbstundetagplananzeige.typ = self.aktuellerObjekttyp;
+       
+      [self setTagPlanInRaum:raum fuerObjekt:objekt anWochentag:wochentag mitDaten:self.aktuellerstundenbytearray];
       
-      [self setTagPlanInRaum:raum fuerObjekt:objekt anWochentag:wochentag mitDaten:StundenByteArray];
-
+      return nil;
    }
    else
    {
       self.objektname.text = @"Keine Daten";
       [self clearTagplan];
+      
    }
+   return nil;
 }
 
 
@@ -224,54 +242,46 @@
    {
       int stundenwert = [[stundenbytearray objectAtIndex:stunde]intValue];
       
-      /*
-      int taste0tag = 100 + 10*stunde;
-      //NSLog(@"stundenwert: %d taste0tag: %d",stundenwert,taste0tag);
-      //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
-      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:taste0tag]setSelected:((stundenwert & 0x02)>0)];
-
-      
-      int taste1tag = taste0tag +1;
-      [(UIButton*)[self.halbstundetagplanfeld viewWithTag:taste1tag]setSelected:((stundenwert & 0x01)>0)];
-      */
       // tags fuer halbe stunden
       int htaste0tag = 100 + 10*stunde;
       int htaste1tag = htaste0tag +1;
       
       // tags fuer ganze stunden
-      int gtastetag = 200 + 10*stunde;
-      
-      switch (self.aktuellerObjekttyp)
+      int gtastetag = 500 + 10*stunde;
+      //NSLog(@"stunde: %d htaste0tag: %d htaste1tag: %d gtastetag: %d aktuellerObjekttyp: %d",stunde,htaste0tag,htaste1tag,gtastetag,self.aktuellerObjekttyp);
+      //
       {
-         case 0: // halbe Stunden
+         switch (self.aktuellerObjekttyp)
          {
-            self.ganzstundetagplananzeige.hidden=YES;
-            self.halbstundetagplananzeige.hidden=NO;
-            self.ganzstundetagplanfeld.hidden=YES;
-            self.halbstundetagplanfeld.hidden=NO;
-            [self.halbstundetagplanfeld setNeedsDisplay];
-            //NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
-            //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
-            [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste0tag]setSelected:((stundenwert & 0x02)>0)];
-            [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste1tag]setSelected:((stundenwert & 0x01)>0)];
-            
-         }break;
-            
-         case 1: // nur ganze Stunden
-         {
-            self.ganzstundetagplananzeige.hidden=NO;
-            self.halbstundetagplananzeige.hidden=YES;
-            self.halbstundetagplanfeld.hidden=YES;
-            self.ganzstundetagplanfeld.hidden=NO;
-            [self.ganzstundetagplanfeld setNeedsDisplay];
-
-            [(UIButton*)[self.ganzstundetagplanfeld viewWithTag:gtastetag]setSelected:((stundenwert )>0)];
-                     }break;
-            
-      } // switch ObjektTyp
-      
+            case 0: // halbe Stunden
+            {
+               //NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
+               //NSLog(@"w0: %d w1: %d",(stundenwert & 0x02),(stundenwert & 0x01));
+               
+               [[self.halbstundetagplanfeld viewWithTag:gtastetag]setHidden:YES];
+               [[self.halbstundetagplanfeld viewWithTag:htaste0tag]setHidden:NO];
+               [[self.halbstundetagplanfeld viewWithTag:htaste1tag]setHidden:NO];
+               
+               [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste0tag]setSelected:((stundenwert & 0x02)>0)];
+              
+               [(UIButton*)[self.halbstundetagplanfeld viewWithTag:htaste1tag]setSelected:((stundenwert & 0x01)>0)];
+               
+            }break;
+               
+            case 1: // nur ganze Stunden
+            {
+               [[self.halbstundetagplanfeld viewWithTag:htaste0tag]setHidden:YES];
+               [[self.halbstundetagplanfeld viewWithTag:htaste1tag]setHidden:YES];
+               [[self.halbstundetagplanfeld viewWithTag:gtastetag]setHidden:NO];
+               
+               [(UIButton*)[self.halbstundetagplanfeld viewWithTag:gtastetag]setSelected:((stundenwert )>0)];
+            }break;
+               
+         } // switch ObjektTyp
+      }
       
    }
+   [self.halbstundetagplanfeld setNeedsDisplay];
 }
 
 - (NSString*)Wochenplan
@@ -567,11 +577,68 @@
 - (IBAction)reportStundenTaste:(rToggleTaste*)sender
 {
    
-   NSLog(@"reportStundenTaste: selected vor: %d tag: %d",sender.selected,sender.tag);
+   //NSLog(@"reportStundenTaste: selected vor: %d tag: %d",sender.selected,sender.tag);
    sender.selected = !sender.selected;
+   int tastenON = sender.selected;
+   int tastenstunde =0;
+   switch(self.aktuellerObjekttyp)
+   {
+      case 0:
+      {
+         tastenstunde = (int)(sender.tag-100)/10;
+      }break;
+      case 1:
+      {
+         tastenstunde = (int)(sender.tag-500)/10;
+      }break;
+   }
+   
+   int ON = [[self.aktuellerstundenbytearray objectAtIndex:tastenstunde]intValue];
+   //NSLog(@"reportStundenTaste: ON vor: %d",[[self.aktuellerstundenbytearray objectAtIndex:tastenstunde]intValue]);
+   //NSLog(@"reportStundenTaste: ON vor: %d",ON);
+   switch (sender.tag%2)
+   {
+      case 0:// Taste links
+      {
+         NSLog(@"reportStundenTaste: links");
+         if (sender.selected==YES)
+         {
+            ON |= 0x02;
+         }
+         else
+         {
+            ON &= ~0x02;
+         }
+      }
+         break;
+      case 1:// Taste rechts
+      {
+         NSLog(@"reportStundenTaste: rechts");
+         if (sender.selected==YES)
+         {
+            ON |= 0x01;
+         }
+         else
+         {
+            ON &= ~0x01;
+         }
+      }
+         break;
+    }
+   NSLog(@"reportStundenTaste: ON nach: %d",ON);
+   //NSLog(@"reportStundenTaste aktuellerstundenbytearray vor: %@",[self.aktuellerstundenbytearray description]);
+   [self.aktuellerstundenbytearray replaceObjectAtIndex:tastenstunde withObject: [NSNumber numberWithInt:ON]];
+   //NSLog(@"reportStundenTaste aktuellerstundenbytearray nach: %@",[self.aktuellerstundenbytearray description]);
+
+  //NSLog(@"reportStundenTaste: ON nach: %d",[[self.aktuellerstundenbytearray objectAtIndex:tastenstunde]intValue]);
+   self.halbstundetagplananzeige.datenarray = self.aktuellerstundenbytearray;
+   //self.ganzstundetagplananzeige.datenarray = self.aktuellerstundenbytearray;
+   //[self.ganzstundetagplananzeige setNeedsDisplay];
+   [self.halbstundetagplananzeige setNeedsDisplay];
+
 }
 
-- (NSArray*)StundenByteArrayVonByteArray:(NSArray*)bytearray
+- (NSMutableArray*)StundenByteArrayVonByteArray:(NSArray*)bytearray
 {
    /*
     Codierung:
@@ -623,7 +690,7 @@
       
    }
    //NSLog(@"StundenByteArray: %@",[StundenByteArray description]);
-   return (NSArray*)StundenByteArray;
+   return StundenByteArray;
 }
 
 

@@ -630,24 +630,19 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="J45-RZ-TYJ">
-                                <rect key="frame" x="20" y="185" width="292" height="119"/>
+                                <rect key="frame" x="20" y="185" width="292" height="131"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" id="Vvf-Mq-191">
-                                        <rect key="frame" x="0.0" y="7" width="534" height="92"/>
+                                        <rect key="frame" x="0.0" y="7" width="534" height="93"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" red="0.67599624165993411" green="0.98971619897959184" blue="0.73715162673986745" alpha="1" colorSpace="calibratedRGB"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" id="vIz-LZ-w2d">
-                                        <rect key="frame" x="0.0" y="7" width="534" height="109"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <color key="backgroundColor" red="0.71870821440869204" green="0.98971619899999996" blue="0.90749729064457463" alpha="1" colorSpace="calibratedRGB"/>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" red="0.70438873445316741" green="0.69499307657895304" blue="0.97393176020408168" alpha="1" colorSpace="calibratedRGB"/>
                             </scrollView>
                             <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="7" id="eaP-Fa-e0R">
-                                <rect key="frame" x="206" y="113" width="94" height="27"/>
+                                <rect key="frame" x="206" y="101" width="94" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <connections>
                                     <action selector="reportObjektStepper:" destination="fc2-zf-OXd" eventType="valueChanged" id="Aja-3z-K81"/>
@@ -704,24 +699,17 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <view contentMode="scaleToFill" id="lwK-8b-7D0" customClass="rTagplanAnzeige">
                                 <rect key="frame" x="20" y="149" width="290" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" id="X1c-wj-yLr" customClass="rTagplanAnzeige">
-                                        <rect key="frame" x="0.0" y="0.0" width="290" height="28"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.71870821439999999" green="0.98971619899999996" blue="0.90749729059999995" alpha="1" colorSpace="calibratedRGB"/>
-                                    </view>
-                                </subviews>
                                 <color key="backgroundColor" red="0.61551839815887943" green="1" blue="0.65600562448707156" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Objekt:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="d3x-eR-lck">
-                                <rect key="frame" x="22" y="116" width="60" height="21"/>
+                                <rect key="frame" x="22" y="101" width="60" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EDi-Hp-QNa">
-                                <rect key="frame" x="90" y="113" width="108" height="27"/>
+                                <rect key="frame" x="90" y="101" width="108" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -749,7 +737,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <nil key="highlightedColor"/>
                             </label>
                             <webView contentMode="scaleToFill" id="xBN-z9-r6R">
-                                <rect key="frame" x="20" y="312" width="292" height="24"/>
+                                <rect key="frame" x="20" y="324" width="292" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
@@ -773,8 +761,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </view>
                     <tabBarItem key="tabBarItem" title="EE" id="y3H-y7-zHb"/>
                     <connections>
-                        <outlet property="ganzstundetagplananzeige" destination="X1c-wj-yLr" id="g8q-sg-ffZ"/>
-                        <outlet property="ganzstundetagplanfeld" destination="vIz-LZ-w2d" id="BjQ-Zc-e63"/>
                         <outlet property="halbstundetagplananzeige" destination="lwK-8b-7D0" id="pQt-PU-9vB"/>
                         <outlet property="halbstundetagplanfeld" destination="Vvf-Mq-191" id="YAI-f0-OEL"/>
                         <outlet property="ipfeld" destination="gWd-AN-Ojo" id="AZ2-aK-tgz"/>

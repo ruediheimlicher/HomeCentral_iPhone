@@ -22,12 +22,17 @@
    NSStringEncoding *  enc=0;
    NSError* WebFehler=NULL;
    NSString* IPString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
+   
    NSLog(@"IP: %@",IPString);
+   if (IPString)
+   {
+
    //NSArray* IPArray = [IPString componentsSeparatedByString:@"\r\n"];
    //NSLog(@"IPArray: %@",[IPArray description]);
    NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
    [nc postNotificationName:@"IP" object:self userInfo:[NSDictionary dictionaryWithObject:IPString forKey:@"ip"]];
-   [[rVariableStore sharedInstance] setIP:IPString];
+      [[rVariableStore sharedInstance] setIP:IPString];
+   }
    
     return YES;
 }

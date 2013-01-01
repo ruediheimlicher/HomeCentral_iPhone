@@ -25,6 +25,10 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
+   if ([self.datenarray count]==0)
+   {
+      return;
+   }
     // Drawing code
    // Felder fuer die Stunden aufbauen
    float stundenabstand = 11.5;
