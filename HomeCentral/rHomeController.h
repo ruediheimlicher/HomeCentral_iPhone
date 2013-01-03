@@ -14,12 +14,17 @@
 
 @interface rHomeController : UIViewController <UIAlertViewDelegate,UIWebViewDelegate>
 {
-   NSString* HomeCentralURL;
+   NSURL* HomeCentralURL;
    rToggleTaste* OnOffTaste;
    rToggleTaste* StundenTaste;
    NSTimer* confirmTimer;
 	NSTimer* confirmStatusTimer;
+   NSTimer* TWIStatusTimer;
 	int maxAnzahl;
+   NSURL* HomeServerURL;
+   NSString* HomeCentralAdresseString;
+   NSString* HomeServerAdresseString;
+
 
 }
 @property (weak, nonatomic) IBOutlet UIScrollView *               tagplanscroller;
@@ -51,17 +56,22 @@
 @property (nonatomic, readwrite) NSArray*                         wochenplanarray;
 @property (nonatomic, readwrite) NSMutableDictionary*             tagplandic;
 
+@property (nonatomic, readwrite) NSString*                        aktuellesjahr;
+@property (nonatomic, readwrite) NSString*                        aktuellermonat;
+@property (nonatomic, readwrite) NSString*                        aktuellertag;
+
 @property (strong, nonatomic) IBOutlet UISwitch *                 twitaste;
 @property (weak, nonatomic) IBOutlet UIWebView *                  webfenster;
 
 @property (weak, nonatomic) IBOutlet UIButton *                   sendtaste;
+@property (weak, nonatomic) IBOutlet UILabel *twitimer;
+
+
 - (IBAction)reportResetTaste:(id)sender;
 
 - (IBAction)reportSendTaste:(UIButton *)sender;
 
-
 - (IBAction)reportTWITaste:(UISwitch *)sender;
-
 
 - (IBAction)reportStundenTaste:(id)sender;
 
@@ -73,9 +83,13 @@
 - (IBAction)reportClear:(id)sender;
 - (IBAction)reportObjektStepper:(id)sender;
 
-- (NSMutableArray*)StundenByteArrayVonByteArray:(NSArray*)bytearray;
+- (NSMutableArray*)StundenCodeArrayVonByteArray:(NSArray*)bytearray;
+- (NSArray*)StundenByteArrayVonStundenCodeArray:(NSArray*)stundencodearray;
+
 - (void)setTagPlanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag mitDaten:(NSArray*)stundencodearray;
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag;
 - (void)clearTagplan;
 - (void)setTWIState:(int)status;
+
+- (void)loadURL:(NSURL *)URL;
 @end

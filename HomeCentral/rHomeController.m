@@ -11,6 +11,9 @@
 
 #define PW "ideur00"
 
+#define TAGPLANBREITE		0x40	// 64 Bytes, 2 page im EEPROM
+
+#define RAUMPLANBREITE		0x200	// 512 Bytes
 
 
 @interface rHomeController ()
@@ -33,7 +36,6 @@
 - (void)viewDidLoad
 {
    [super viewDidLoad];
-   HomeCentralURL = @"http://ruediheimlicher.dyndns.org";
    //[UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
    self.ipfeld.text = [[rVariableStore sharedInstance] IP];
 
@@ -46,6 +48,7 @@
    
     NSCalendar* heutekalender = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
    [heutekalender setFirstWeekday:2];
+   
    int wochentagindex = [heutekalender ordinalityOfUnit:NSWeekdayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[NSDate date]]-1;
    //NSLog(@"wochentagindex: %d",wochentagindex);
    
@@ -152,15 +155,59 @@
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    //[self.tagplananzeige setNeedsDisplay];
    
+   
+   HomeCentralAdresseString = @"http://ruediheimlicher.dyndns.org";
+   HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
+
    self.webfenster.delegate = self;
    maxAnzahl = 12;
    [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.sendtaste setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
+   
+   // Datum
+   NSDate *currDate = [NSDate date];   //Current Date
+   
+   NSDateFormatter *df = [[NSDateFormatter alloc] init];
+   
+   //Day
+   [df setDateFormat:@"dd"];
+   NSString* myDayString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   self.aktuellertag = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   
+   //Month
+   [df setDateFormat:@"MM"]; //MM will give you numeric "03", MMM will give you "Mar"
+   NSString* myMonthString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   self.aktuellermonat = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   
+   //Year
+   [df setDateFormat:@"yy"];
+   NSString* myYearString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   self.aktuellesjahr = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   //Hour
+   [df setDateFormat:@"hh"];
+   NSString* myHourString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   
+   //Minute
+   [df setDateFormat:@"mm"];
+   NSString* myMinuteString = [NSString stringWithFormat:@"%@",[df stringFromDate:currDate]];
+   
+   //Second
+   [df setDateFormat:@"ss"];
+   NSString* mySecondString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+   
+   //NSLog(@"Year: %@, Month: %@, Day: %@, Hour: %@, Minute: %@, Second: %@", myYearString, myMonthString, myDayString, myHourString, myMinuteString, mySecondString);
+   
 }
 
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
 {
+   // eventuell TWI-Timer reseten
+   if ([TWIStatusTimer isValid])
+   {
+      NSMutableDictionary* TWITimerDic=(NSMutableDictionary*) [TWIStatusTimer userInfo];
+      [TWITimerDic setObject:[NSNumber numberWithInt:maxAnzahl] forKey:@"twitimeoutanzahl"];
+   }
    int zeile = 56* raum + 7*objekt + wochentag;
    
    NSArray* ZeilenArray = [[self.wochenplanarray objectAtIndex:zeile]componentsSeparatedByString:@"\t"];
@@ -172,9 +219,9 @@
       
       
       // Array mit 24 int 0..3 mit den Angaben fuer jede Stunde
-      //NSMutableArray* StundenByteArray = [self StundenByteArrayVonByteArray:ZeilenDataArray];
+      //NSMutableArray* StundenByteArray = [self StundenCodeArrayVonByteArray:ZeilenDataArray];
       
-      self.aktuellerstundencodearray  = [self StundenByteArrayVonByteArray:ZeilenDataArray];
+      self.aktuellerstundencodearray  = [self StundenCodeArrayVonByteArray:ZeilenDataArray];
       self.tagplananzeige.datenarray = self.aktuellerstundencodearray;
 //      self.ganzstundetagplananzeige.datenarray = self.aktuellerstundencodearray;
 //      [self.ganzstundetagplananzeige setNeedsDisplay];
@@ -193,8 +240,8 @@
       }
       else
       {
-         self.aktuellerObjektname =  @"Kein  Name";
-         self.objektname.text = @"Kein  Name";
+         self.aktuellerObjektname =  @"Kein_Name";
+         self.objektname.text = @"Kein_Name";
       }
       //[self.tagplandic setObject:self.objektname.text forKey:@"objektname"];
 
@@ -384,7 +431,8 @@
    
    self.aktuellerWochentag = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
-
+   NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag
+         );
 }
 
 - (IBAction)reportResetTaste:(id)sender
@@ -400,7 +448,100 @@
 {
    NSLog(@"reportSendTaste");
    
+   int permanent=3;
+   NSLog(@"reportSendTaste aktuellerstundencodearray: %@",[self.aktuellerstundencodearray description]);
+   NSArray* StundenByteArray = [self StundenByteArrayVonStundenCodeArray:[self aktuellerstundencodearray]];
+   //NSLog(@"reportSendTaste StundenByteArray: %@",[StundenByteArray description]);
+   /*
+   // Webserver:
+    
+    HomeClientWriteStandardAktion HomeClientURLString: http://192.168.1.210/twi?pw=ideur00&wadr=0&lbyte=00&hbyte=00&data=0+f+fb+33+ff+75+ff+ff
+    
+   sendEEPROM URL: http://www.ruediheimlicher.ch/cgi-bin/eeprom.pl?pw=ideur00&perm=1&hbyte=00&lbyte=00&data=0+15+251+51+255+117+255+255&titel=Brenner&typ=0
+   */
+   
+   // URL fuer HomeCentral aufbauen:
+   NSString* HomeCentralPfad = [NSString stringWithFormat:@"%@/twi?pw=ideur00&wadr=0&",HomeCentralAdresseString];
+   //NSLog(@"send raum: %d objekt: %d wochentag: %d",self.aktuellerRaum,self.aktuellesObjekt,self.aktuellerWochentag);
+   uint16_t i2cStartadresse=self.aktuellerRaum*RAUMPLANBREITE + self.aktuellesObjekt*TAGPLANBREITE+ self.aktuellerWochentag*0x08;
+   
+   uint8_t lb = i2cStartadresse & 0x00FF;
+   uint8_t hb = i2cStartadresse >> 8;
+   
+   // lbyte, hbyte werden als dez eingesetzt, nicht als hex. Aus Webinterface uebernommen.
+   
+   NSString* lbyte = [NSString stringWithFormat:@"%02d",lb];
+   NSString* hbyte = [NSString stringWithFormat:@"%02d",hb];
+   
+   
+   NSLog(@"wochentag: %d lbyte: %@ hbyte: %@ i2cStartadresse: %04X %d",self.aktuellerWochentag,lbyte,hbyte,i2cStartadresse,i2cStartadresse);
+   /*
+    // in WebInterface:
+   NSString* lbyte=[[[note userInfo]objectForKey:@"lbyte"]stringValue];
+	NSString* hbyte=[[[note userInfo]objectForKey:@"hbyte"]stringValue];
+   if ([lbyte length]==1)
+   {
+      lbyte = [@"0" stringByAppendingString:lbyte];
+   }
+   if ([hbyte length]==1)
+   {
+      hbyte = [@"0" stringByAppendingString:hbyte];
+   }
+*/
+   
+   NSString* DataString=@"data=";
+   for (int i=0;i<8;i++)
+   {
+      if (i<[StundenByteArray count])
+      {
+         DataString= [NSString stringWithFormat:@"%@%x",DataString,[[StundenByteArray objectAtIndex:i]intValue]];
+      }
+      else
+      {
+         DataString= [NSString stringWithFormat:@"%@%x",DataString,0xFF];
+      }
+      if (i< (8-1))
+      {
+         DataString = [DataString stringByAppendingString:@"+"];
+      }
+   }
+
+   NSString* HomeCentralString = [HomeCentralPfad stringByAppendingFormat:@"lbyte=%@&hbyte=%@&%@",lbyte,hbyte,DataString];
+   NSLog(@"HomeCentralString: %@",HomeCentralString);
+    HomeCentralURL = [NSURL URLWithString:HomeCentralString];
+   NSLog(@"HomeCentralURL: %@",HomeCentralURL);
+   
+  
+   // URL fuer Homeserver aufbauen
+   
+   // http://www.ruediheimlicher.ch/cgi-bin/eeprom.pl?pw=ideur00&perm=1&hbyte=00&lbyte=00&data=0+15+251+51+255+117+255+255&titel=Brenner&typ=0
+   
+   NSString* EEPROMDataString = [StundenByteArray componentsJoinedByString:@"+"];
+   //NSString* aktuellerWochentagString = [NSString stringWithFormat:@"%02d",self.aktuellerWochentag];
+   EEPROMDataString = [EEPROMDataString stringByAppendingFormat:@"+255+255"];
+   
+   
+   
+   //NSString* Datumzusatz = [NSString stringWithFormat:@"%@%@%@",self.aktuellesjahr, self.aktuellermonat, self.aktuellerWochentagString];
+   
+   NSString* HomeServerString = [HomeServerAdresseString stringByAppendingFormat:@"/cgi-bin/eeprom.pl?pw=ideur00&perm=%d&lbyte=%@&hbyte=%@&data=%@&titel=%@&typ=%d",permanent,lbyte,hbyte,EEPROMDataString,self.aktuellerObjektname,self.aktuellerObjekttyp];
+
+   
+// ohne perm
+//   NSString* HomeServerString = [HomeServerAdresseString stringByAppendingFormat:@"/cgi-bin/eeprom.pl?pw=ideur00&lbyte=%@&hbyte=%@&data=%@&titel=%@&typ=%d",lbyte,hbyte,EEPROMDataString,self.aktuellerObjektname,self.aktuellerObjekttyp];
+   NSLog(@"HomeServerString: %@",HomeServerString);
+   HomeServerURL = [NSURL URLWithString:HomeServerString];
+    NSLog(@"HomeServerURL: %@",HomeServerURL);
+   [self loadURL:HomeCentralURL];
+ 
+   
 }
+
+- (void)sendEEPROMDataAnHomeServer
+{
+   [self loadURL:HomeServerURL];
+}
+
 
 - (IBAction)reportTWITaste:(UISwitch *)sender
 {
@@ -427,6 +568,7 @@
       {
          //NSLog(@"Button Ja was selected.");
          [self setTWIState:NO]; // TWI ausschalten
+         
       }
       else if([title isEqualToString:@"Nein"])
       {
@@ -458,9 +600,12 @@
    if (status)
    {
       //NSLog(@"setTWIstate TWI einschalten");
+      self.twitimer.hidden=YES;
+      self.twitimer.text = @"";
+
       self.sendtaste.enabled= NO;
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
-      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralURL, TWIStatusSuffix];
+      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
       
       //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
       
@@ -472,14 +617,14 @@
       //NSLog(@"TWI ON html: %@\nerr: %@",html,err);
       
       [self loadURL:URL];
-
+      
    }
    else
    {
       NSLog(@"setTWIstate TWI ausschalten");
       
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
-      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralURL, TWIStatusSuffix];
+      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
       
       //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
       
@@ -493,6 +638,7 @@
       NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
       [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
       int sendResetDelay=1.0;
+      int twiresetdelay = 10.0;
       //NSLog(@"EEPROMReadDataAktion  confirmTimerDic: %@",[confirmTimerDic description]);
       
       confirmStatusTimer=[NSTimer scheduledTimerWithTimeInterval:sendResetDelay
@@ -500,8 +646,16 @@
                                                          selector:@selector(statusTimerFunktion:)
                                                          userInfo:confirmTimerDic
                                                           repeats:YES];
-
       
+      NSMutableDictionary* TWITimerDic=[[NSMutableDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInt:0],@"twitimeoutanzahl", nil];
+
+      TWIStatusTimer = [NSTimer scheduledTimerWithTimeInterval:twiresetdelay
+                                                      target:self
+                                                    selector:@selector(TWITimerFunktion:)
+                                                    userInfo:TWITimerDic
+                                                     repeats:YES];
+      self.twitimer.hidden=NO;
+      self.twitimer.text = [NSString stringWithFormat:@"%d",maxAnzahl];
    }
 }
 
@@ -522,7 +676,7 @@
             NSString* pw = [NSString stringWithUTF8String: PW];
             NSString* TWIStatus0URLSuffix = [NSString stringWithFormat:@"pw=%@&isstat0ok=1",pw];
             
-            TWIStatus0URL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralURL, TWIStatus0URLSuffix];
+            TWIStatus0URL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatus0URLSuffix];
             [statusTimerDic setObject:[NSNumber numberWithInt:0] forKey:@"local"];
             
             NSURL *URL = [NSURL URLWithString:TWIStatus0URL];
@@ -547,8 +701,8 @@
 				[tempDataDic setObject:@" " forKey:@"wait"];
 			}
 			
-			NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
-			[nc postNotificationName:@"StatusWait" object:self userInfo:tempDataDic];
+			//NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+			//[nc postNotificationName:@"StatusWait" object:self userInfo:tempDataDic];
 			
 		}
 		else
@@ -576,7 +730,38 @@
 	}
 }
 
-
+- (void)TWITimerFunktion:(NSTimer*) derTimer
+{
+	NSMutableDictionary* statusTimerDic=(NSMutableDictionary*) [derTimer userInfo];
+	//NSLog(@"statusTimerFunktion  maxAnzahl: %d  statusTimerDic: %@",maxAnzahl,[statusTimerDic description]);
+   
+	if ([statusTimerDic objectForKey:@"twitimeoutanzahl"])
+	{
+		int anz=[[statusTimerDic objectForKey:@"twitimeoutanzahl"] intValue];
+      
+		if (anz < maxAnzahl)
+		{
+			anz++;
+			self.twitimer.text = [NSString stringWithFormat:@"%d",(maxAnzahl - anz)];
+			[statusTimerDic setObject:[NSNumber numberWithInt:anz] forKey:@"twitimeoutanzahl"];
+         
+         
+			
+		}
+		else
+		{
+			
+			NSLog(@"TWITimerFunktion statusTimer invalidate");
+			// Misserfolg an AVRClient senden
+         [self setTWIState:YES];
+			self.twitimer.hidden=NO;
+			[derTimer invalidate];
+			self.twitimer.hidden=YES;
+			self.twitaste.on=YES;
+		}
+		
+	}
+}
 
 - (IBAction)reportStundenTaste:(rToggleTaste*)sender
 {
@@ -630,9 +815,9 @@
          break;
     }
    //NSLog(@"reportStundenTaste: ON nach: %d",ON);
-   //NSLog(@"reportStundenTaste aktuellerstundencodearray vor: %@",[self.aktuellerstundencodearray description]);
+   NSLog(@"reportStundenTaste aktuellerstundencodearray vor: %@",[self.aktuellerstundencodearray description]);
    [self.aktuellerstundencodearray replaceObjectAtIndex:tastenstunde withObject: [NSNumber numberWithInt:ON]];
-   //NSLog(@"reportStundenTaste aktuellerstundencodearray nach: %@",[self.aktuellerstundencodearray description]);
+   NSLog(@"reportStundenTaste aktuellerstundencodearray nach: %@",[self.aktuellerstundencodearray description]);
 
   //NSLog(@"reportStundenTaste: ON nach: %d",[[self.aktuellerstundencodearray objectAtIndex:tastenstunde]intValue]);
    self.tagplananzeige.datenarray = self.aktuellerstundencodearray;
@@ -640,7 +825,7 @@
 
 }
 
-- (NSMutableArray*)StundenByteArrayVonByteArray:(NSArray*)bytearray
+- (NSMutableArray*)StundenCodeArrayVonByteArray:(NSArray*)bytearray
 {
    /*
     Codierung:
@@ -695,14 +880,107 @@
    return StundenByteArray;
 }
 
+- (NSArray*)StundenByteArrayVonStundenCodeArray:(NSArray*)stundencodearray
+{
+	NSMutableArray* tempByteArray=[[NSMutableArray alloc]initWithCapacity:0];
+	int i, k=3;
+	uint8_t Stundenbyte=0;
+	NSString* StundenbyteString=[NSString string];
+	for (i=0;i<[stundencodearray count];i++)
+	{
+		uint8_t Stundencode=[[stundencodearray objectAtIndex:i] intValue];
+		//NSLog(@"StundenByteArray i: %d Tag: %d Objekt: %d Stundencode: %02X",i,Wochentag, Objekt, Stundencode);
+		Stundencode=(Stundencode << 2*k);
+		//NSLog(@"Stundencode <<: %02X",Stundencode);
+		Stundenbyte |=Stundencode;
+		//NSLog(@"i: %d      Stundenbyte: %02X",i,Stundenbyte);
+		if (k==0)
+		{
+			
+			NSString* ByteString=[NSString stringWithFormat:@"%02X ",Stundenbyte];
+			//NSLog(@"      Stundenbyte: %02X ByteString: %@",Stundenbyte , ByteString);
+			StundenbyteString=[StundenbyteString stringByAppendingString:ByteString] ;
+			[tempByteArray addObject:[NSNumber numberWithInt:Stundenbyte]];
+			Stundenbyte=0;
+			k=3;
+		}
+		else
+		{
+			k--;
+		}
+		
+	}// for i
+	//NSLog(@"raum: %d Tag: %d objekt: %d StundenbyteString: %@ tempByteArray: %@",Raum,Wochentag, Objekt,StundenbyteString,[tempByteArray description]);
+   //NSLog(@"StundenbyteString: %@ tempByteArray: %@",StundenbyteString,[tempByteArray description]);
+	return tempByteArray;
+}
+
+
+- (void)EEPROMisWriteOKRequest
+{
+   //NSLog(@"EEPROMisWriteOKRequest ");
+   // Zaehler fuer Anzahl Versuche einsetzen
+   NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+   [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
+   int sendResetDelay=4.0;
+   //NSLog(@"EEPROMReadDataAktion  confirmTimerDic: %@",[confirmTimerDic description]);
+   confirmTimer=[NSTimer scheduledTimerWithTimeInterval:sendResetDelay
+                                                  target:self
+                                                selector:@selector(confirmTimerFunktion:)
+                                                userInfo:confirmTimerDic
+                                                 repeats:YES];
+   
+	
+}
+
+- (void)confirmTimerFunktion:(NSTimer*) derTimer
+{
+	NSMutableDictionary* confirmTimerDic=(NSMutableDictionary*) [derTimer userInfo];
+	//NSLog(@"confirmTimerFunktion  confirmTimerDic: %@",[confirmTimerDic description]);
+   
+	if ([confirmTimerDic objectForKey:@"anzahl"])
+	{
+		
+		int anz=[[confirmTimerDic objectForKey:@"anzahl"] intValue];
+		if (anz < maxAnzahl)
+		{
+         NSString* TWIReadDataURLSuffix = [NSString stringWithFormat:@"pw=%s&iswriteok=1",PW];
+         NSString* TWIReadDataURL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIReadDataURLSuffix];
+         NSURL *URL = [NSURL URLWithString:TWIReadDataURL];
+         NSLog(@"confirmTimerFunktion  URL: %@",URL);
+         [self loadURL:URL];
+         anz++;
+         [confirmTimerDic setObject:[NSNumber numberWithInt:anz] forKey:@"anzahl"];
+		}
+		else
+		{
+			NSLog(@"confirmTimerFunktion confirmTimer invalidate");
+			
+         // Misserfolg an AVRClient senden
+			NSMutableDictionary* tempDataDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+			[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"iswriteok"];
+			NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+			[nc postNotificationName:@"FinishLoad" object:self userInfo:tempDataDic];
+			
+			[derTimer invalidate]; // Anfragen stop
+		}
+		
+		
+	}
+}
+
+
 
 - (void)loadURL:(NSURL *)URL
 {
 	//NSLog(@"loadURL: %@",URL);
-	NSURLRequest *HCRequest = [ [NSURLRequest alloc] initWithURL: URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:3.0];
-   //	[[NSURLCache sharedURLCache] removeAllCachedResponses];
+	NSMutableURLRequest *HCRequest = [[NSMutableURLRequest alloc] initWithURL: URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:4.0];
+   //NSMutableURLRequest *HCRequest= [NSMutableURLRequest requestWithURL:URL];
+   [HCRequest setHTTPMethod:@"GET"];
+   //[HCRequest setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+   [[NSURLCache sharedURLCache] removeAllCachedResponses];
    //	NSLog(@"Cache mem: %d",[[NSURLCache sharedURLCache]memoryCapacity]);
-   //	[[NSURLCache sharedURLCache] removeCachedResponseForRequest:HCRequest];
+   [[NSURLCache sharedURLCache] removeCachedResponseForRequest:HCRequest];
    //	NSLog(@"loadURL:Vor loadRequest");
 	if (HCRequest)
 	{
@@ -718,32 +996,46 @@
    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
+- (void)status0Aktion
+{
+   self.sendtaste.enabled= YES;
+   self.sendtaste.hidden=NO;
+
+}
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
    //NSLog(@"webViewDidFinishLoad");
    NSRange CheckRange;
 	NSString* Code_String= @"okcode=";
 	//NSString* Status0_String= @"status0";
-   NSString* Status0_String= @"status0+"; // Status 0 ist bestaetigt
+   NSString* Status0_String= @"status0+";             // Status 0 ist bestaetigt
 
-	NSString* Status1_String= @"status1";
+	NSString* Status1_String= @"status1";              // Status 1 ein
+   NSString* EEPROM1_String= @"eeprom+";              // EEPROM laden bestaetigt
+   NSString* EEPROM0_String= @"eeprom-";              // EEPROM laden misslungen
+   
+   NSString* EEPROM_Write_Adresse_String= @"wadr";    // Write-Adresse ist angekommen
+   NSString* EEPROM_Write_OK_String= @"write+";       // schreiben auf HomeCentral ist gelungen
+   NSString* EEPROM_Write_NOT_OK_String= @"write-";   // EEPROm schreiben ist nicht gelungen
 
+   NSString* EEPROM_Write_HomeServer_OK_String= @"homeserver+";   // EEPROM auf Homeserver schreiben ist gelungen
+   
    NSString *HTML_Inhalt = [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.textContent"];
    NSLog(@"HTML_Inhalt: %@",HTML_Inhalt);
+   
    // Test, ob Webseite eine okcode-Antwort ist
 	CheckRange = [HTML_Inhalt rangeOfString:Code_String];
-	if (CheckRange.location < NSNotFound)
+	if (CheckRange.location < NSNotFound) // es ist eine OK-Antwort
 	{
-		//NSLog(@"didFinishLoadForFrame: okcode= ist da");
-      // isstatus0ok vorhanden??
-		
-		//NSString* status0_String= @"status0+";
+      // Status0+ erhalten?
 		CheckRange = [HTML_Inhalt rangeOfString:Status0_String];
 		if (CheckRange.location < NSNotFound)
 		{
 			//NSLog(@"didFinishLoadForFrame: status0+ ist da");
-         self.sendtaste.enabled= YES;
-         self.sendtaste.hidden=NO;
+         [self performSelector:@selector(status0Aktion) withObject:nil afterDelay:2];
+         //self.sendtaste.enabled= YES;
+         //self.sendtaste.hidden=NO;
 		//	[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"status0"];
 			if ([confirmStatusTimer isValid])
              {
@@ -755,12 +1047,67 @@
 		//	[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"status0"];
 		}
       
+      // eeprom+ erhalten?
+		CheckRange = [HTML_Inhalt rangeOfString:EEPROM1_String];
+		if (CheckRange.location < NSNotFound)
+		{
+         NSLog(@"webViewDidFinishLoad: eeprom+ ist da ");
+      
+      }
+      
+      // eeprom laden nicht gelungen
+		CheckRange = [HTML_Inhalt rangeOfString:EEPROM0_String];
+		if (CheckRange.location < NSNotFound)
+		{
+			NSLog(@"webViewDidFinishLoad: eeprom- ist da ");
+			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"eeprom-"];
+		}
+      
+      // wadr da?
+		CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_Adresse_String];
+		if (CheckRange.location < NSNotFound)
+		{
+			NSLog(@"webViewDidFinishLoad: wadr ist da");
+			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"wadrok"];
+         [self performSelector:@selector(EEPROMisWriteOKRequest) withObject:nil afterDelay:1.0];
+         //[self EEPROMisWriteOKRequest]; // EEPROM write starten
+		}
+      
+      // eeprom+ da?
+      CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_OK_String];
+		if (CheckRange.location < NSNotFound)
+		{
+			NSLog(@"webViewDidFinishLoad: write+ ist da");
+			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"writeok"];
+			[confirmTimer invalidate]; // Schreiben OK, Ladeversuche stop
+         [self performSelector:@selector(sendEEPROMDataAnHomeServer) withObject:nil afterDelay:1.0];
+         //[self sendEEPROMDataAnHomeServer];
+      }
+      
+      CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_NOT_OK_String];
+		if (CheckRange.location < NSNotFound)
+		{
+			NSLog(@"webViewDidFinishLoad: write- ist da");
+			//[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"writeok"];
+		}
+      
       // end isstatus0ok
-
+   } // if okcode
+   
+   CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_HomeServer_OK_String];
+   if (CheckRange.location < NSNotFound)
+   {
+      NSLog(@"webViewDidFinishLoad: homeserver+ ist da");
+      //[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"writeok"];
    }
    
-   
    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+   NSLog(@"didFailLoadWithError: error: %@",[error description]);
+
 }
 
 @end
