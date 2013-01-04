@@ -198,6 +198,14 @@
    
    //NSLog(@"Year: %@, Month: %@, Day: %@, Hour: %@, Minute: %@, Second: %@", myYearString, myMonthString, myDayString, myHourString, myMinuteString, mySecondString);
    
+   self.statusanzeige.anzahlelemente = 4;
+   self.statusanzeige.typ=0;
+   self.statusanzeige.code=0;
+   NSArray* StatusanzeigeArray = [NSArray arrayWithObjects:@"TWI OFF",@"Adresse",@"Daten",@"Send OK", nil];
+   self.statusanzeige.legendearray = StatusanzeigeArray;
+   [self.statusanzeige setNeedsDisplay];
+   
+ 
 }
 
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
@@ -403,7 +411,7 @@
       [(UIButton*)[self.tagplanfeld viewWithTag:100+10*stunde]setSelected:NO];
       [(UIButton*)[self.tagplanfeld viewWithTag:100+10*stunde+1]setSelected:NO];
    }
-
+[self restartTWITimer];
 }
 
 
@@ -414,6 +422,7 @@
    self.objektstepper.value = 0;
    self.aktuellerRaum = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
+   [self restartTWITimer];
 }
 
 
@@ -422,7 +431,7 @@
    self.aktuellesObjekt = (int)sender.value;
    NSLog(@"reportObjektStepper %d",(int)sender.value);
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
-
+   [self restartTWITimer];
 }
 
 
@@ -433,6 +442,7 @@
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag
          );
+   [self restartTWITimer];
 }
 
 - (IBAction)reportResetTaste:(id)sender
@@ -441,7 +451,7 @@
    [self.aktuellerstundencodearray setArray: self.oldstundencodearray];
 
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
-
+   [self restartTWITimer];
 }
 
 - (IBAction)reportSendTaste:(UIButton *)sender
@@ -533,12 +543,16 @@
    HomeServerURL = [NSURL URLWithString:HomeServerString];
     NSLog(@"HomeServerURL: %@",HomeServerURL);
    [self loadURL:HomeCentralURL];
- 
+   [self restartTWITimer];
+   [sender setEnabled:NO];
    
 }
 
 - (void)sendEEPROMDataAnHomeServer
 {
+   self.statusanzeige.code |= DATAOK;
+   [self.statusanzeige setNeedsDisplay];
+
    [self loadURL:HomeServerURL];
 }
 
@@ -617,6 +631,10 @@
       //NSLog(@"TWI ON html: %@\nerr: %@",html,err);
       
       [self loadURL:URL];
+      if (TWIStatusTimer && [TWIStatusTimer isValid])
+      {
+         [TWIStatusTimer invalidate];
+      }
       
    }
    else
@@ -629,7 +647,7 @@
       //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
       
       NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
-      NSLog(@"TWI aus URL: %@",URL);
+      //NSLog(@"TWI aus URL: %@",URL);
       
       //NSError* err=0;
      // NSString *html = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&err];
@@ -638,7 +656,7 @@
       NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
       [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
       int sendResetDelay=1.0;
-      int twiresetdelay = 10.0;
+      
       //NSLog(@"EEPROMReadDataAktion  confirmTimerDic: %@",[confirmTimerDic description]);
       
       confirmStatusTimer=[NSTimer scheduledTimerWithTimeInterval:sendResetDelay
@@ -646,17 +664,7 @@
                                                          selector:@selector(statusTimerFunktion:)
                                                          userInfo:confirmTimerDic
                                                           repeats:YES];
-      
-      NSMutableDictionary* TWITimerDic=[[NSMutableDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInt:0],@"twitimeoutanzahl", nil];
-
-      TWIStatusTimer = [NSTimer scheduledTimerWithTimeInterval:twiresetdelay
-                                                      target:self
-                                                    selector:@selector(TWITimerFunktion:)
-                                                    userInfo:TWITimerDic
-                                                     repeats:YES];
-      self.twitimer.hidden=NO;
-      self.twitimer.text = [NSString stringWithFormat:@"%d",maxAnzahl];
-   }
+    }
 }
 
 - (void)statusTimerFunktion:(NSTimer*) derTimer
@@ -738,7 +746,7 @@
 	if ([statusTimerDic objectForKey:@"twitimeoutanzahl"])
 	{
 		int anz=[[statusTimerDic objectForKey:@"twitimeoutanzahl"] intValue];
-      
+      //NSLog(@"TWITimerFunktion statusTimer anz: %d",anz);
 		if (anz < maxAnzahl)
 		{
 			anz++;
@@ -763,6 +771,19 @@
 	}
 }
 
+- (void)restartTWITimer
+{
+   //NSLog(@"restartTWITimer");
+   if (TWIStatusTimer && [TWIStatusTimer isValid])
+   {
+      [[TWIStatusTimer userInfo]setObject:[NSNumber numberWithInt:0] forKey:@"twitimeoutanzahl" ];
+      //NSMutableDictionary* tempDic = [TWIStatusTimer userInfo];
+      //NSLog(@"restartTWITimer tempDic vor: %@",[tempDic description]);
+      //[tempDic setObject:[NSNumber numberWithInt:0] forKey:@"twitimeoutanzahl" ];
+       //NSLog(@"restartTWITimer tempDic nach: %@",[tempDic description]);
+   }
+}
+
 - (IBAction)reportStundenTaste:(rToggleTaste*)sender
 {
    
@@ -785,24 +806,43 @@
    int ON = [[self.aktuellerstundencodearray objectAtIndex:tastenstunde]intValue];
    //NSLog(@"reportStundenTaste: ON vor: %d",[[self.aktuellerstundencodearray objectAtIndex:tastenstunde]intValue]);
    //NSLog(@"reportStundenTaste: ON vor: %d",ON);
-   switch (sender.tag%2)
+   switch(self.aktuellerObjekttyp)
    {
-      case 0:// Taste links
+      case 0:
       {
-         //NSLog(@"reportStundenTaste: links");
-         if (sender.selected==YES)
+         switch (sender.tag%2)
          {
-            ON |= 0x02;
+            case 0:// Taste links
+            {
+               //NSLog(@"reportStundenTaste: links");
+               if (sender.selected==YES)
+               {
+                  ON |= 0x02;
+               }
+               else
+               {
+                  ON &= ~0x02;
+               }
+            }
+               break;
+            case 1:// Taste rechts
+            {
+               //NSLog(@"reportStundenTaste: rechts");
+               if (sender.selected==YES)
+               {
+                  ON |= 0x01;
+               }
+               else
+               {
+                  ON &= ~0x01;
+               }
+            }
+               break;
          }
-         else
-         {
-            ON &= ~0x02;
-         }
-      }
-         break;
-      case 1:// Taste rechts
+
+      }break;
+      case 1:
       {
-         NSLog(@"reportStundenTaste: rechts");
          if (sender.selected==YES)
          {
             ON |= 0x01;
@@ -811,17 +851,24 @@
          {
             ON &= ~0x01;
          }
-      }
-         break;
-    }
+
+         
+         
+      }break;
+   }
+
+   
    //NSLog(@"reportStundenTaste: ON nach: %d",ON);
-   NSLog(@"reportStundenTaste aktuellerstundencodearray vor: %@",[self.aktuellerstundencodearray description]);
+   //NSLog(@"reportStundenTaste aktuellerstundencodearray vor: %@",[self.aktuellerstundencodearray description]);
+   //NSLog(@"stundenbytearray vor: %@",[self StundenByteArrayVonStundenCodeArray:self.aktuellerstundencodearray]);
    [self.aktuellerstundencodearray replaceObjectAtIndex:tastenstunde withObject: [NSNumber numberWithInt:ON]];
-   NSLog(@"reportStundenTaste aktuellerstundencodearray nach: %@",[self.aktuellerstundencodearray description]);
+   //NSLog(@"reportStundenTaste aktuellerstundencodearray nach: %@",[self.aktuellerstundencodearray description]);
 
   //NSLog(@"reportStundenTaste: ON nach: %d",[[self.aktuellerstundencodearray objectAtIndex:tastenstunde]intValue]);
    self.tagplananzeige.datenarray = self.aktuellerstundencodearray;
    [self.tagplananzeige setNeedsDisplay];
+   //NSLog(@"stundenbytearray nach: %@",[self StundenByteArrayVonStundenCodeArray:self.aktuellerstundencodearray]);
+   [self restartTWITimer];
 
 }
 
@@ -918,6 +965,9 @@
 
 - (void)EEPROMisWriteOKRequest
 {
+   self.statusanzeige.code |= ADRESSEOK;
+   [self.statusanzeige setNeedsDisplay];
+
    //NSLog(@"EEPROMisWriteOKRequest ");
    // Zaehler fuer Anzahl Versuche einsetzen
    NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
@@ -998,8 +1048,20 @@
 
 - (void)status0Aktion
 {
+   self.statusanzeige.code |= TWIOFF;
+   [self.statusanzeige setNeedsDisplay];
    self.sendtaste.enabled= YES;
-   self.sendtaste.hidden=NO;
+   int twiresetdelay = 2.0;
+   NSMutableDictionary* TWITimerDic=[[NSMutableDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInt:0],@"twitimeoutanzahl", nil];
+   
+   TWIStatusTimer = [NSTimer scheduledTimerWithTimeInterval:twiresetdelay
+                                                     target:self
+                                                   selector:@selector(TWITimerFunktion:)
+                                                   userInfo:TWITimerDic
+                                                    repeats:YES];
+   
+   self.twitimer.hidden=NO;
+   self.twitimer.text = [NSString stringWithFormat:@"%d",maxAnzahl];
 
 }
 
@@ -1033,10 +1095,9 @@
 		if (CheckRange.location < NSNotFound)
 		{
 			//NSLog(@"didFinishLoadForFrame: status0+ ist da");
-         [self performSelector:@selector(status0Aktion) withObject:nil afterDelay:2];
-         //self.sendtaste.enabled= YES;
-         //self.sendtaste.hidden=NO;
-		//	[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"status0"];
+         self.sendtaste.hidden=NO; // sendtaste zeigen
+         [self performSelector:@selector(status0Aktion) withObject:nil afterDelay:3];
+
 			if ([confirmStatusTimer isValid])
              {
                 [confirmStatusTimer invalidate];
@@ -1069,7 +1130,7 @@
 		{
 			NSLog(@"webViewDidFinishLoad: wadr ist da");
 			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"wadrok"];
-         [self performSelector:@selector(EEPROMisWriteOKRequest) withObject:nil afterDelay:1.0];
+         [self performSelector:@selector(EEPROMisWriteOKRequest) withObject:nil afterDelay:0.5];
          //[self EEPROMisWriteOKRequest]; // EEPROM write starten
 		}
       
@@ -1097,6 +1158,10 @@
    CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_HomeServer_OK_String];
    if (CheckRange.location < NSNotFound)
    {
+      self.statusanzeige.code |= SENDOK;
+      [self.statusanzeige setNeedsDisplay];
+      [self.sendtaste setEnabled:YES];
+
       NSLog(@"webViewDidFinishLoad: homeserver+ ist da");
       //[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"writeok"];
    }

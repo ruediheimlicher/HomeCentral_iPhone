@@ -11,6 +11,13 @@
 #import "rVariableStore.h"
 #import "rToggleTaste.h"
 #import "rTagplanAnzeige.h"
+#import "rStatusanzeige.h"
+
+#define TWIOFF          0x01
+#define ADRESSEOK       0x02;
+#define DATAOK          0x04;
+#define SENDOK          0x08;
+
 
 @interface rHomeController : UIViewController <UIAlertViewDelegate,UIWebViewDelegate>
 {
@@ -64,7 +71,8 @@
 @property (weak, nonatomic) IBOutlet UIWebView *                  webfenster;
 
 @property (weak, nonatomic) IBOutlet UIButton *                   sendtaste;
-@property (weak, nonatomic) IBOutlet UILabel *twitimer;
+@property (weak, nonatomic) IBOutlet UILabel *                    twitimer;
+@property (weak, nonatomic) IBOutlet rStatusanzeige *             statusanzeige;
 
 
 - (IBAction)reportResetTaste:(id)sender;
@@ -90,6 +98,6 @@
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag;
 - (void)clearTagplan;
 - (void)setTWIState:(int)status;
-
+- (void)restartTWITimer;
 - (void)loadURL:(NSURL *)URL;
 @end
