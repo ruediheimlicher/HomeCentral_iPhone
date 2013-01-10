@@ -28,7 +28,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-   NSLog(@"Statusanzeige drawRect");
+   //NSLog(@"Statusanzeige drawRect");
    UIColor* hintergrund = self.backgroundColor;
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextSetStrokeColorWithColor(context, [[UIColor blueColor] CGColor]);
@@ -40,7 +40,7 @@
       return;
    }
    float positionabstand = (self.frame.size.width -2*offset)/self.anzahlelemente;
-   NSLog(@"positionabstand: %.2f elemente: %d",positionabstand,self.anzahlelemente);
+   //NSLog(@"positionabstand: %.2f elemente: %d",positionabstand,self.anzahlelemente);
    //UIColor *oncolor = (0.0, 0.0, 1.0, 0.8);
    int bitpos=1;
    for (int pos=0;pos<self.anzahlelemente;pos++)

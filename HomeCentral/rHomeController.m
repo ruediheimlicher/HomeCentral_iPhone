@@ -210,6 +210,7 @@
 
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
 {
+   
    // eventuell TWI-Timer reseten
    if ([TWIStatusTimer isValid])
    {
@@ -423,6 +424,8 @@
    self.aktuellerRaum = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    [self restartTWITimer];
+   self.statusanzeige.code = 0x01;
+   [self.statusanzeige setNeedsDisplay];
 }
 
 
@@ -559,6 +562,8 @@
 
 - (IBAction)reportTWITaste:(UISwitch *)sender
 {
+   self.statusanzeige.code=0;
+   [self.statusanzeige setNeedsDisplay];
    //NSLog(@"reportTWITaste state: %d",sender.state);
    if (sender.on)
    {
@@ -997,7 +1002,7 @@
          NSString* TWIReadDataURLSuffix = [NSString stringWithFormat:@"pw=%s&iswriteok=1",PW];
          NSString* TWIReadDataURL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIReadDataURLSuffix];
          NSURL *URL = [NSURL URLWithString:TWIReadDataURL];
-         NSLog(@"confirmTimerFunktion  URL: %@",URL);
+         //NSLog(@"confirmTimerFunktion  URL: %@",URL);
          [self loadURL:URL];
          anz++;
          [confirmTimerDic setObject:[NSNumber numberWithInt:anz] forKey:@"anzahl"];
@@ -1084,7 +1089,7 @@
    NSString* EEPROM_Write_HomeServer_OK_String= @"homeserver+";   // EEPROM auf Homeserver schreiben ist gelungen
    
    NSString *HTML_Inhalt = [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.textContent"];
-   NSLog(@"HTML_Inhalt: %@",HTML_Inhalt);
+   //NSLog(@"HTML_Inhalt: %@",HTML_Inhalt);
    
    // Test, ob Webseite eine okcode-Antwort ist
 	CheckRange = [HTML_Inhalt rangeOfString:Code_String];
@@ -1120,7 +1125,7 @@
 		CheckRange = [HTML_Inhalt rangeOfString:EEPROM0_String];
 		if (CheckRange.location < NSNotFound)
 		{
-			NSLog(@"webViewDidFinishLoad: eeprom- ist da ");
+			//NSLog(@"webViewDidFinishLoad: eeprom- ist da ");
 			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"eeprom-"];
 		}
       
@@ -1128,7 +1133,7 @@
 		CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_Adresse_String];
 		if (CheckRange.location < NSNotFound)
 		{
-			NSLog(@"webViewDidFinishLoad: wadr ist da");
+			//NSLog(@"webViewDidFinishLoad: wadr ist da");
 			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"wadrok"];
          [self performSelector:@selector(EEPROMisWriteOKRequest) withObject:nil afterDelay:0.5];
          //[self EEPROMisWriteOKRequest]; // EEPROM write starten
@@ -1148,7 +1153,7 @@
       CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_NOT_OK_String];
 		if (CheckRange.location < NSNotFound)
 		{
-			NSLog(@"webViewDidFinishLoad: write- ist da");
+			//NSLog(@"webViewDidFinishLoad: write- ist da");
 			//[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"writeok"];
 		}
       
@@ -1159,6 +1164,7 @@
    if (CheckRange.location < NSNotFound)
    {
       self.statusanzeige.code |= SENDOK;
+      
       [self.statusanzeige setNeedsDisplay];
       [self.sendtaste setEnabled:YES];
 
