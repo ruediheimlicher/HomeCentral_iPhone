@@ -44,7 +44,7 @@
    NSArray* lastDataArray = [[StromDicVonHeute objectForKey:@"laststromdata"]componentsSeparatedByString:@"\t"];
    //NSArray* lastDataArray = [[[self StromDataDicVonHeute]objectForKey:@"laststromdata"]componentsSeparatedByString:@"\t"];
    //NSLog(@"Strom lastDataArray: %@",[lastDataArray description]);
-   NSLog(@"Strom leistungaktuell: %@",[lastDataArray lastObject]);
+   //NSLog(@"Strom leistungaktuell: %@",[lastDataArray lastObject]);
    self.leistungaktuell.text = [NSString stringWithFormat:@"%d W",[[lastDataArray lastObject]intValue]];
    self.datum.text = [NSString stringWithFormat:@"%2d.%02d.20%d",[[lastDataArray objectAtIndex:2]intValue],[[lastDataArray objectAtIndex:1]intValue],[[lastDataArray objectAtIndex:0]intValue]];
    self.zeit.text = [NSString stringWithFormat:@"%d:%02d:%02d",[[lastDataArray objectAtIndex:3]intValue],[[lastDataArray objectAtIndex:4]intValue],[[lastDataArray objectAtIndex:5]intValue]];
@@ -53,7 +53,7 @@
    self.lastminute = 60*[[lastDataArray objectAtIndex:3]intValue]+[[lastDataArray objectAtIndex:4]intValue];
    // Stromdaten von heute
    //NSArray* StromArray = [StromDicVonHeute objectForKey:@"stromdata"];
-   NSLog(@"Strom anzeigeseg: %d",self.anzeigeseg.selectedSegmentIndex);
+   //NSLog(@"Strom anzeigeseg: %d",self.anzeigeseg.selectedSegmentIndex);
    //NSLog(@"Strom StromArray: %@",[[StromArray objectAtIndex:0] description]);
    
    NSLog(@"IP von Strom: %@",[[rVariableStore sharedInstance] IP]);
@@ -90,7 +90,7 @@
    int endx = 60*endstd + endmin;
    int diffx = endx - startx;
    
-   NSLog(@"art: %d offsetx: %d endx: %d diffx: %d",art,startx,endx,diffx);
+   //NSLog(@"art: %d offsetx: %d endx: %d diffx: %d",art,startx,endx,diffx);
    self.zoomfaktorx = 1;
    switch (self.anzeigeseg.selectedSegmentIndex)
    {
@@ -108,7 +108,7 @@
    self.lastzoomfaktorx = self.zoomfaktorx;
    
    float zoomfaktory = (self.diagrammview.bounds.size.height)/8000;  // max Leistung
-   NSLog(@"Segment: %d DiagrammDatenDicVon zoomfaktorx: %.2f",self.anzeigeseg.selectedSegmentIndex,self.zoomfaktorx);
+   //NSLog(@"Segment: %d DiagrammDatenDicVon zoomfaktorx: %.2f",self.anzeigeseg.selectedSegmentIndex,self.zoomfaktorx);
    [DiagrammdatenDic setObject:[NSNumber numberWithInt:startx ] forKey:@"startx"];
 
    [DiagrammdatenDic setObject:[NSNumber numberWithFloat:self.zoomfaktorx ] forKey:@"zoomfaktorx"];
@@ -163,7 +163,7 @@
 
 - (IBAction)reportAnzeigeSeg:(UISegmentedControl *)sender
 {
-   NSLog(@"\nreportAnzeigeSeg segment: %d",sender.selectedSegmentIndex);
+   //NSLog(@"\nreportAnzeigeSeg segment: %d",sender.selectedSegmentIndex);
    [self switchAnzeigeSeg:sender.selectedSegmentIndex];
    return;
    
@@ -191,7 +191,7 @@
          
          [DiagrammDatenDic setObject:[NSNumber numberWithInt:seg] forKey:@"art"];
          
-         NSLog(@"switchAnzeigeSeg 0 lastminute: %d lastzoomfaktorx: %.2f offset: %.2f",self.lastminute,self.lastzoomfaktorx,self.lastminute*self.lastzoomfaktorx);
+         //NSLog(@"switchAnzeigeSeg 0 lastminute: %d lastzoomfaktorx: %.2f offset: %.2f",self.lastminute,self.lastzoomfaktorx,self.lastminute*self.lastzoomfaktorx);
          
          CGPoint rightOffset = CGPointMake(self.lastminute*self.lastzoomfaktorx-0.8*self.diagrammscroller.bounds.size.width,0);
 
@@ -284,7 +284,7 @@
    self.datum.text = [NSString stringWithFormat:@"%2d.%02d.20%d",[[lastDataArray objectAtIndex:2]intValue],[[lastDataArray objectAtIndex:1]intValue],[[lastDataArray objectAtIndex:0]intValue]];
    self.zeit.text = [NSString stringWithFormat:@"%d:%02d:%02d",[[lastDataArray objectAtIndex:3]intValue],[[lastDataArray objectAtIndex:4]intValue],[[lastDataArray objectAtIndex:5]intValue]];
    
-   NSLog(@"\refreshData segment: %d",self.anzeigeseg.selectedSegmentIndex);
+   //NSLog(@"\refreshData segment: %d",self.anzeigeseg.selectedSegmentIndex);
    
    [self switchAnzeigeSeg:self.anzeigeseg.selectedSegmentIndex];
    return;
@@ -379,7 +379,7 @@
          [StromDataDic setObject:StromDataArray  forKey:@"stromdata"];
          
          [StromDataDic setObject:[StromDataArray lastObject] forKey:@"laststromdata"];
-         NSLog(@"last: %@",[[StromDataArray lastObject]description]);
+         //NSLog(@"last: %@",[[StromDataArray lastObject]description]);
          // Strommonitor laden
          //return StromDataDic;
 		}
@@ -446,7 +446,7 @@
          }
          //NSLog(@"StromDataArray nach: %@",[[StromDataArray lastObject]description]);
          //NSLog(@"StromMonitorDataArray nach: %@",[StromDataArray description]);
-         NSLog(@"StromMonitorDataArray count: %d",[StromDataArray count]);
+         //NSLog(@"StromMonitorDataArray count: %d",[StromDataArray count]);
          [StromDataDic setObject:StromDataArray  forKey:@"strommonitor"];
          
       }

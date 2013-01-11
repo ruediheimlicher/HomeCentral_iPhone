@@ -443,26 +443,26 @@
    
    self.aktuellerWochentag = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
-   NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag
-         );
+   //NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag);
    [self restartTWITimer];
 }
 
 - (IBAction)reportResetTaste:(id)sender
 {
+   NSString *WochenplanString = [self readWochenplan];
+   self.wochenplanarray = [WochenplanString componentsSeparatedByString:@"\n"];
    
    [self.aktuellerstundencodearray setArray: self.oldstundencodearray];
-
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    [self restartTWITimer];
 }
 
 - (IBAction)reportSendTaste:(UIButton *)sender
 {
-   NSLog(@"reportSendTaste");
+   //NSLog(@"reportSendTaste");
    
    int permanent=3;
-   NSLog(@"reportSendTaste aktuellerstundencodearray: %@",[self.aktuellerstundencodearray description]);
+   //NSLog(@"reportSendTaste aktuellerstundencodearray: %@",[self.aktuellerstundencodearray description]);
    NSArray* StundenByteArray = [self StundenByteArrayVonStundenCodeArray:[self aktuellerstundencodearray]];
    //NSLog(@"reportSendTaste StundenByteArray: %@",[StundenByteArray description]);
    /*
@@ -487,7 +487,7 @@
    NSString* hbyte = [NSString stringWithFormat:@"%02d",hb];
    
    
-   NSLog(@"wochentag: %d lbyte: %@ hbyte: %@ i2cStartadresse: %04X %d",self.aktuellerWochentag,lbyte,hbyte,i2cStartadresse,i2cStartadresse);
+   //NSLog(@"wochentag: %d lbyte: %@ hbyte: %@ i2cStartadresse: %04X %d",self.aktuellerWochentag,lbyte,hbyte,i2cStartadresse,i2cStartadresse);
    /*
     // in WebInterface:
    NSString* lbyte=[[[note userInfo]objectForKey:@"lbyte"]stringValue];
@@ -520,9 +520,9 @@
    }
 
    NSString* HomeCentralString = [HomeCentralPfad stringByAppendingFormat:@"lbyte=%@&hbyte=%@&%@",lbyte,hbyte,DataString];
-   NSLog(@"HomeCentralString: %@",HomeCentralString);
+   //NSLog(@"HomeCentralString: %@",HomeCentralString);
     HomeCentralURL = [NSURL URLWithString:HomeCentralString];
-   NSLog(@"HomeCentralURL: %@",HomeCentralURL);
+   //NSLog(@"HomeCentralURL: %@",HomeCentralURL);
    
   
    // URL fuer Homeserver aufbauen
@@ -542,9 +542,9 @@
    
 // ohne perm
 //   NSString* HomeServerString = [HomeServerAdresseString stringByAppendingFormat:@"/cgi-bin/eeprom.pl?pw=ideur00&lbyte=%@&hbyte=%@&data=%@&titel=%@&typ=%d",lbyte,hbyte,EEPROMDataString,self.aktuellerObjektname,self.aktuellerObjekttyp];
-   NSLog(@"HomeServerString: %@",HomeServerString);
+   //NSLog(@"HomeServerString: %@",HomeServerString);
    HomeServerURL = [NSURL URLWithString:HomeServerString];
-    NSLog(@"HomeServerURL: %@",HomeServerURL);
+    //NSLog(@"HomeServerURL: %@",HomeServerURL);
    [self loadURL:HomeCentralURL];
    [self restartTWITimer];
    [sender setEnabled:NO];
@@ -644,7 +644,7 @@
    }
    else
    {
-      NSLog(@"setTWIstate TWI ausschalten");
+      //NSLog(@"setTWIstate TWI ausschalten");
       
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
@@ -1117,7 +1117,7 @@
 		CheckRange = [HTML_Inhalt rangeOfString:EEPROM1_String];
 		if (CheckRange.location < NSNotFound)
 		{
-         NSLog(@"webViewDidFinishLoad: eeprom+ ist da ");
+         //NSLog(@"webViewDidFinishLoad: eeprom+ ist da ");
       
       }
       
@@ -1143,7 +1143,7 @@
       CheckRange = [HTML_Inhalt rangeOfString:EEPROM_Write_OK_String];
 		if (CheckRange.location < NSNotFound)
 		{
-			NSLog(@"webViewDidFinishLoad: write+ ist da");
+			//NSLog(@"webViewDidFinishLoad: write+ ist da");
 			//[tempDataDic setObject:[NSNumber numberWithInt:1] forKey:@"writeok"];
 			[confirmTimer invalidate]; // Schreiben OK, Ladeversuche stop
          [self performSelector:@selector(sendEEPROMDataAnHomeServer) withObject:nil afterDelay:1.0];
@@ -1168,7 +1168,7 @@
       [self.statusanzeige setNeedsDisplay];
       [self.sendtaste setEnabled:YES];
 
-      NSLog(@"webViewDidFinishLoad: homeserver+ ist da");
+      //NSLog(@"webViewDidFinishLoad: homeserver+ ist da");
       //[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"writeok"];
    }
    

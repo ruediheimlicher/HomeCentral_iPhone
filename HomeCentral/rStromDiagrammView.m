@@ -45,7 +45,7 @@
 - (void)drawRect:(CGRect)rect
 {
    // Drawing code
-   NSLog(@"Strom drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
+   //NSLog(@"Strom drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
    
    int art = 0;
    if ([DataDic objectForKey:@"art"])
@@ -107,7 +107,7 @@
    }
    
    
-   NSLog(@"intervallx: %.2f zoomfaktorx: %.2f intervall: %.2f startx: %d",[[DataDic objectForKey:@"intervallx"]floatValue],[[DataDic objectForKey:@"zoomfaktorx"]floatValue],intervall,startx);
+   //NSLog(@"intervallx: %.2f zoomfaktorx: %.2f intervall: %.2f startx: %d",[[DataDic objectForKey:@"intervallx"]floatValue],[[DataDic objectForKey:@"zoomfaktorx"]floatValue],intervall,startx);
 
    self.randunten = kGraphBottom; // Abstand Diagramm zum View
    
@@ -133,7 +133,7 @@
    
    float linieoben = eckeunteny - self.diagrammhoehe - self.randunten;
    float linieunten = eckeunteny - self.randunten;
-   NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f art: %d",eckeunteny,linieoben,linieunten,art);
+   //NSLog(@"eckeunteny: %.2f linieoben: %.2f linieunten: %.2f art: %d",eckeunteny,linieoben,linieunten,art);
 
    int startstd = startx/60;
    int startmin = startx%60;
@@ -157,7 +157,7 @@
    }
   
    
-   NSLog(@"startstd: %d startmin %d",startstd,startmin);
+   //NSLog(@"startstd: %d startmin %d",startstd,startmin);
    
    int anzsenkrecht = self.diagrammbreite/intervall;
    
@@ -224,10 +224,6 @@
    if ([self.datadic objectForKey:@"linearray"])
    {
       
-      //CGContextRef linecontext = UIGraphicsGetCurrentContext();
-      
-      //CGContextTranslateCTM (context,10,10);
-      
       NSArray* tempLineArray = [self.datadic objectForKey:@"linearray"];
       //     NSLog(@"tempLineArray da: %@",[[self.datadic objectForKey:@"linearray"] description]);
       if (tempLineArray.count)
@@ -270,16 +266,22 @@
                //NSLog(@"SolarDiagrammView drawRect startx: %.1f \t starty: %.1f",startx,starty);
                float x=startx;
                float y=starty;
-
+               
+               //CGContextMoveToPoint(templinecontext,startx,starty);
                
                CGContextMoveToPoint(templinecontext,startx,starty);
                //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
                starty = self.bounds.size.height-starty;
+               CGContextSetLineWidth(templinecontext, 1.6);
+               
                for (int index=1;index < [tempDataArray count];index++)
                {
+                  
                   x = self.randlinks+[[[tempDataArray objectAtIndex:index]objectForKey:@"x"]floatValue];
                   y = self.bounds.size.height-self.randunten-[[[tempDataArray objectAtIndex:index]objectForKey:@"y"]floatValue];
-
+                  
+                  CGContextMoveToPoint(templinecontext,x,linieunten);
+                  
                   //NSLog(@"index: %d\t x: %.1f \t y: %.1f",index,x,y);
                   CGContextAddLineToPoint(templinecontext,x,y);
                }// for index
