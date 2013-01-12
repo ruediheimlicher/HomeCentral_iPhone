@@ -160,7 +160,7 @@
    HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
 
    self.webfenster.delegate = self;
-   maxAnzahl = 12;
+   maxAnzahl = 10;
    [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.sendtaste setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
@@ -621,6 +621,8 @@
       //NSLog(@"setTWIstate TWI einschalten");
       self.twitimer.hidden=YES;
       self.twitimer.text = @"";
+      [self.ladeindikator stopAnimating];
+      self.ladeindikator.hidden = YES;
 
       self.sendtaste.enabled= NO;
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
@@ -645,6 +647,10 @@
    else
    {
       //NSLog(@"setTWIstate TWI ausschalten");
+      
+      [self.ladeindikator startAnimating];
+      self.ladeindikator.hidden = NO;
+
       
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
@@ -705,12 +711,12 @@
 			if (anz%2==0)// gerade
 			{
             //[self loadURL:URL];
-            self.sendtaste.hidden=NO;
+            //self.sendtaste.hidden=NO;
 				[tempDataDic setObject:@"*" forKey:@"wait"];
 			}
 			else
 			{
-            self.sendtaste.hidden=YES;
+            //self.sendtaste.hidden=YES;
 				[tempDataDic setObject:@" " forKey:@"wait"];
 			}
 			
@@ -1056,6 +1062,10 @@
    self.statusanzeige.code |= TWIOFF;
    [self.statusanzeige setNeedsDisplay];
    self.sendtaste.enabled= YES;
+   [self.ladeindikator stopAnimating];
+   self.ladeindikator.hidden = YES;
+
+   
    int twiresetdelay = 2.0;
    NSMutableDictionary* TWITimerDic=[[NSMutableDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInt:0],@"twitimeoutanzahl", nil];
    

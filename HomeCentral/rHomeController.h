@@ -74,6 +74,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *                    twitimer;
 @property (weak, nonatomic) IBOutlet rStatusanzeige *             statusanzeige;
 
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *ladeindikator;
 
 - (IBAction)reportResetTaste:(id)sender;
 

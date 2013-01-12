@@ -712,7 +712,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" id="lwK-8b-7D0" customClass="rTagplanAnzeige">
-                                <rect key="frame" x="11" y="165" width="300" height="28"/>
+                                <rect key="frame" x="10" y="165" width="300" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.61551839815887943" green="1" blue="0.65600562448707156" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
@@ -730,15 +730,15 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gWd-AN-Ojo">
-                                <rect key="frame" x="225" y="316" width="85" height="13"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gWd-AN-Ojo">
+                                <rect key="frame" x="12" y="360" width="85" height="13"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="E3m-Tr-uTg">
-                                <rect key="frame" x="154" y="333" width="79" height="27"/>
+                                <rect key="frame" x="154" y="339" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="reportTWITaste:" destination="fc2-zf-OXd" eventType="touchUpInside" id="bZu-eB-61i"/>
@@ -752,7 +752,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zXz-ij-I5D">
-                                <rect key="frame" x="248" y="333" width="62" height="28"/>
+                                <rect key="frame" x="255" y="318" width="55" height="39"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <state key="normal" title="send">
@@ -767,20 +767,20 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="rlw-SY-bKe">
-                                <rect key="frame" x="10" y="368" width="300" height="33"/>
+                                <rect key="frame" x="10" y="375" width="300" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <webView contentMode="scaleToFill" id="xBN-z9-r6R">
-                                        <rect key="frame" x="7" y="0.0" width="286" height="33"/>
+                                        <rect key="frame" x="0.0" y="1" width="300" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </webView>
                                 </subviews>
                             </scrollView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="anz" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="d1u-kQ-oUi">
-                                <rect key="frame" x="194" y="312" width="25" height="21"/>
+                                <rect key="frame" x="195" y="315" width="25" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -789,12 +789,18 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.85995662795283989" green="1" blue="0.78108604297326012" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="gray" id="agn-VG-7qk">
+                                <rect key="frame" x="197" y="314" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" red="0.99256616710000001" green="0.025422191520000002" blue="0.081877852459999997" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.79924074482297969" green="1" blue="0.9311304261498039" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="EE" id="y3H-y7-zHb"/>
                     <connections>
                         <outlet property="ipfeld" destination="gWd-AN-Ojo" id="AZ2-aK-tgz"/>
+                        <outlet property="ladeindikator" destination="agn-VG-7qk" id="cVI-UG-HVM"/>
                         <outlet property="objektname" destination="EDi-Hp-QNa" id="tWv-ch-QPg"/>
                         <outlet property="objektstepper" destination="eaP-Fa-e0R" id="IlT-cD-5GN"/>
                         <outlet property="raumseg" destination="bDY-ng-tkC" id="cB4-Qw-zrK"/>
@@ -845,6 +851,164 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="pumpe_grau.jpg" width="57" height="57"/>
         <image name="wolke.gif" width="100" height="71"/>
     </resources>
+    <classes>
+        <class className="rAbszisse" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rAbszisse.h"/>
+        </class>
+        <class className="rBoilerView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rBoilerView.h"/>
+        </class>
+        <class className="rBrowserController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rBrowserController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="webadresse" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="webfenster" candidateClass="UIWebView"/>
+            </relationships>
+        </class>
+        <class className="rDiagrammView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rDiagrammView.h"/>
+        </class>
+        <class className="rEingabeController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rEingabeController.h"/>
+            <relationships>
+                <relationship kind="action" name="reportAktualisieren:"/>
+                <relationship kind="action" name="reportBackgroundTouched:"/>
+                <relationship kind="action" name="reportDatumPicker:"/>
+                <relationship kind="action" name="reportHeute:"/>
+                <relationship kind="action" name="reportLogin:"/>
+                <relationship kind="action" name="reportTextFieldReturn:"/>
+                <relationship kind="outlet" name="BenutzerPasswortfeld" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="Benutzernamefeld" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="DatumPicker" candidateClass="UIDatePicker"/>
+                <relationship kind="outlet" name="Datumfeld" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="HomeButton" candidateClass="UITabBarItem"/>
+                <relationship kind="outlet" name="LoginTaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="PickerDatumfeld" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="datumfeld" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="pickerdatumfeld" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="rHomeController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rHomeController.h"/>
+            <relationships>
+                <relationship kind="action" name="reportClear:"/>
+                <relationship kind="action" name="reportObjektStepper:"/>
+                <relationship kind="action" name="reportOnOff:"/>
+                <relationship kind="action" name="reportRaumSeg:"/>
+                <relationship kind="action" name="reportResetTaste:"/>
+                <relationship kind="action" name="reportSendTaste:" candidateClass="UIButton"/>
+                <relationship kind="action" name="reportStundenTaste:"/>
+                <relationship kind="action" name="reportTWITaste:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="reportWochentag:"/>
+                <relationship kind="action" name="reportWochentagSeg:"/>
+                <relationship kind="outlet" name="ipfeld" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ladeindikator" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="objektname" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="objektstepper" candidateClass="UIStepper"/>
+                <relationship kind="outlet" name="onofftaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="raumseg" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="resettaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="sendtaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="statusanzeige" candidateClass="rStatusanzeige"/>
+                <relationship kind="outlet" name="stundentaste" candidateClass="rToggleTaste"/>
+                <relationship kind="outlet" name="tagplananzeige" candidateClass="rTagplanAnzeige"/>
+                <relationship kind="outlet" name="tagplanfeld" candidateClass="UIView"/>
+                <relationship kind="outlet" name="tagplanscroller" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="taste0" candidateClass="rToggleTaste"/>
+                <relationship kind="outlet" name="twitaste" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="twitimer" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="webfenster" candidateClass="UIWebView"/>
+                <relationship kind="outlet" name="wochentag" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="wochentagseg" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="wochentagstepper" candidateClass="UIStepper"/>
+            </relationships>
+        </class>
+        <class className="rOrdinate" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rOrdinate.h"/>
+        </class>
+        <class className="rScrollViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rScrollViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="diagrammscroller" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="diagrammview" candidateClass="rDiagrammView"/>
+                <relationship kind="outlet" name="scrollbild" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="scroller" candidateClass="UIScrollView"/>
+            </relationships>
+        </class>
+        <class className="rSolarController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rSolarController.h"/>
+            <relationships>
+                <relationship kind="action" name="reportDiagrammTaste:"/>
+                <relationship kind="action" name="reportRefresh:"/>
+                <relationship kind="action" name="reportTextFieldGo:"/>
+                <relationship kind="action" name="switch2Strom:"/>
+                <relationship kind="outlet" name="AussentempFeld" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="BM" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="BO" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="BU" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="KR" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="KT" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="KV" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="Pumpe" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="RefreshTaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="abszisse" candidateClass="rAbszisse"/>
+                <relationship kind="outlet" name="anlage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="backtaste" candidateClass="UINavigationItem"/>
+                <relationship kind="outlet" name="bm" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="bo" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="boilerfeld" candidateClass="rBoilerView"/>
+                <relationship kind="outlet" name="bu" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="diagrammscroller" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="diagrammtaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="diagrammview" candidateClass="rSolarDiagrammView"/>
+                <relationship kind="outlet" name="heizung" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="kr" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="kt" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="kv" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ordinate" candidateClass="rOrdinate"/>
+                <relationship kind="outlet" name="pumpe" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="solardata" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="urlfeld" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="webfenster" candidateClass="UIWebView"/>
+                <relationship kind="outlet" name="wolke" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="rSolarDiagrammController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rSolarDiagrammController.h"/>
+        </class>
+        <class className="rSolarDiagrammView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rSolarDiagrammView.h"/>
+        </class>
+        <class className="rStatusanzeige" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rStatusanzeige.h"/>
+        </class>
+        <class className="rStromController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rStromController.h"/>
+            <relationships>
+                <relationship kind="action" name="reportAnzeigeSeg:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="reportRefresh:"/>
+                <relationship kind="outlet" name="RefreshTaste" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="WebFeld" candidateClass="UIWebView"/>
+                <relationship kind="outlet" name="anzeigeseg" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="data" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="datum" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="diagrammscroller" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="diagrammview" candidateClass="rStromDiagrammView"/>
+                <relationship kind="outlet" name="leistungaktuell" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ordinate" candidateClass="rOrdinate"/>
+                <relationship kind="outlet" name="zeit" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="rStromDiagrammView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rStromDiagrammView.h"/>
+        </class>
+        <class className="rTagplanAnzeige" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rTagplanAnzeige.h"/>
+        </class>
+        <class className="rToggleTaste" superclassName="UIButton">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/rToggleTaste.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
