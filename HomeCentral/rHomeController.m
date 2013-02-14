@@ -419,12 +419,24 @@
 
 - (IBAction)reportRaumSeg:(UISegmentedControl*)sender
 {
+   NSLog(@"reportRaumSeg %d",(int)sender.selectedSegmentIndex);
    self.aktuellesObjekt = 0;
    self.objektstepper.value = 0;
    self.aktuellerRaum = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    [self restartTWITimer];
-   self.statusanzeige.code = 0x01;
+   
+   if (self.twitaste.on == YES)
+   {
+      NSLog(@"reportRaumSeg twitaste YES");
+      self.statusanzeige.code = 0x00;
+   }
+   else
+   {
+      NSLog(@"reportRaumSeg twitaste NO");
+      self.statusanzeige.code = 0x01;
+   }
+   
    [self.statusanzeige setNeedsDisplay];
 }
 
@@ -435,6 +447,18 @@
    NSLog(@"reportObjektStepper %d",(int)sender.value);
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    [self restartTWITimer];
+   if (self.twitaste.on == YES)
+   {
+      NSLog(@"reportRaumSeg twitaste YES");
+      self.statusanzeige.code = 0x00;
+   }
+   else
+   {
+      NSLog(@"reportRaumSeg twitaste NO");
+      self.statusanzeige.code = 0x01;
+   }
+
+   [self.statusanzeige setNeedsDisplay];
 }
 
 
@@ -443,8 +467,22 @@
    
    self.aktuellerWochentag = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
+   
    //NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag);
    [self restartTWITimer];
+   if (self.twitaste.on == YES)
+   {
+      NSLog(@"reportRaumSeg twitaste YES");
+      self.statusanzeige.code = 0x00;
+   }
+   else
+   {
+      NSLog(@"reportRaumSeg twitaste NO");
+      self.statusanzeige.code = 0x01;
+   }
+
+   [self.statusanzeige setNeedsDisplay];
+
 }
 
 - (IBAction)reportResetTaste:(id)sender
@@ -520,7 +558,7 @@
    }
 
    NSString* HomeCentralString = [HomeCentralPfad stringByAppendingFormat:@"lbyte=%@&hbyte=%@&%@",lbyte,hbyte,DataString];
-   //NSLog(@"HomeCentralString: %@",HomeCentralString);
+   NSLog(@"HomeCentralString: %@",HomeCentralString);
     HomeCentralURL = [NSURL URLWithString:HomeCentralString];
    //NSLog(@"HomeCentralURL: %@",HomeCentralURL);
    
@@ -751,6 +789,10 @@
 
 - (void)TWITimerFunktion:(NSTimer*) derTimer
 {
+   /*
+   Zaehlt vorwaerts und schaltet bei Erreichen von maxAnzahl den TWI wieder ein.
+    Angezeigt wird die restliche Anzahl von Intervallen (rueckwaerts)!
+   */
 	NSMutableDictionary* statusTimerDic=(NSMutableDictionary*) [derTimer userInfo];
 	//NSLog(@"statusTimerFunktion  maxAnzahl: %d  statusTimerDic: %@",maxAnzahl,[statusTimerDic description]);
    
@@ -777,6 +819,10 @@
 			[derTimer invalidate];
 			self.twitimer.hidden=YES;
 			self.twitaste.on=YES;
+         self.statusanzeige.code=0;
+         [self.statusanzeige setNeedsDisplay];
+
+         
 		}
 		
 	}
@@ -856,11 +902,11 @@
       {
          if (sender.selected==YES)
          {
-            ON |= 0x01;
+            ON |= 0x02; // Taste links
          }
          else
          {
-            ON &= ~0x01;
+            ON &= ~0x02;
          }
 
          
@@ -969,7 +1015,7 @@
 		
 	}// for i
 	//NSLog(@"raum: %d Tag: %d objekt: %d StundenbyteString: %@ tempByteArray: %@",Raum,Wochentag, Objekt,StundenbyteString,[tempByteArray description]);
-   //NSLog(@"StundenbyteString: %@ tempByteArray: %@",StundenbyteString,[tempByteArray description]);
+   //NSLog(@"StundenByteArrayVonStundenCodeArray StundenbyteString: %@ tempByteArray: %@",StundenbyteString,[tempByteArray description]);
 	return tempByteArray;
 }
 
