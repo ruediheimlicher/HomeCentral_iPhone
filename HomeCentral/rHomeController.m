@@ -588,6 +588,7 @@
    [self loadURL:HomeCentralURL];
    [self restartTWITimer];
    [sender setEnabled:NO];
+   self.statusanzeige.code = 0x01;
    
 }
 
@@ -848,6 +849,9 @@
    
    //NSLog(@"reportStundenTaste: selected vor: %d tag: %d",sender.selected,sender.tag);
    sender.selected = !sender.selected;
+   
+   
+   
    int tastenON = sender.selected;
    int tastenstunde =0;
    switch(self.aktuellerObjekttyp)
