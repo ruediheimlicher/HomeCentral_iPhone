@@ -220,7 +220,8 @@
    int zeile = 56* raum + 7*objekt + wochentag;
    
    NSArray* ZeilenArray = [[self.wochenplanarray objectAtIndex:zeile]componentsSeparatedByString:@"\t"];
-   //NSLog(@"setTagplanInRaum ZeilenArray: %@",[ZeilenArray description]);
+   NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
+   //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[ZeilenArray description]);
    if ([ZeilenArray count]>4)
    {
       // Array mit 6 Bytes fuer je 4 Tasten. Int-Werte
@@ -231,15 +232,17 @@
       //NSMutableArray* StundenByteArray = [self StundenCodeArrayVonByteArray:ZeilenDataArray];
       
       self.aktuellerstundencodearray  = [self StundenCodeArrayVonByteArray:ZeilenDataArray];
+      
+      
       self.tagplananzeige.datenarray = self.aktuellerstundencodearray;
-//      self.ganzstundetagplananzeige.datenarray = self.aktuellerstundencodearray;
-//      [self.ganzstundetagplananzeige setNeedsDisplay];
+//    self.ganzstundetagplananzeige.datenarray = self.aktuellerstundencodearray;
+//    [self.ganzstundetagplananzeige setNeedsDisplay];
       [self.tagplananzeige setNeedsDisplay];
       
       //[self.tagplandic setObject:self.aktuellerstundencodearray forKey:@"stundencodearray"];
       
       
-      //NSLog(@"StundenByteArray: %@",[self.aktuellerstundencodearray description]);
+      NSLog(@"StundenByteArray: %@",[self.aktuellerstundencodearray description]);
       
       if ([ZeilenArray count]>13)
       {
@@ -253,8 +256,6 @@
          self.objektname.text = @"Kein_Name";
       }
       //[self.tagplandic setObject:self.objektname.text forKey:@"objektname"];
-
-      
       
       if ([ZeilenArray count]>14)
       {
@@ -320,6 +321,7 @@
                
             case 1: // nur ganze Stunden
             {
+               NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
                [[self.tagplanfeld viewWithTag:htaste0tag]setHidden:YES];
                [[self.tagplanfeld viewWithTag:htaste1tag]setHidden:YES];
                [[self.tagplanfeld viewWithTag:gtastetag]setHidden:NO];
@@ -428,12 +430,12 @@
    
    if (self.twitaste.on == YES)
    {
-      NSLog(@"reportRaumSeg twitaste YES");
+      //NSLog(@"reportRaumSeg twitaste YES");
       self.statusanzeige.code = 0x00;
    }
    else
    {
-      NSLog(@"reportRaumSeg twitaste NO");
+      //NSLog(@"reportRaumSeg twitaste NO");
       self.statusanzeige.code = 0x01;
    }
    
@@ -449,12 +451,12 @@
    [self restartTWITimer];
    if (self.twitaste.on == YES)
    {
-      NSLog(@"reportRaumSeg twitaste YES");
+      //NSLog(@"reportRaumSeg twitaste YES");
       self.statusanzeige.code = 0x00;
    }
    else
    {
-      NSLog(@"reportRaumSeg twitaste NO");
+      //NSLog(@"reportRaumSeg twitaste NO");
       self.statusanzeige.code = 0x01;
    }
 
@@ -472,12 +474,12 @@
    [self restartTWITimer];
    if (self.twitaste.on == YES)
    {
-      NSLog(@"reportRaumSeg twitaste YES");
+      //NSLog(@"reportRaumSeg twitaste YES");
       self.statusanzeige.code = 0x00;
    }
    else
    {
-      NSLog(@"reportRaumSeg twitaste NO");
+      //NSLog(@"reportRaumSeg twitaste NO");
       self.statusanzeige.code = 0x01;
    }
 
@@ -906,7 +908,9 @@
          }
          else
          {
-            ON &= ~0x02;
+            
+       //     ON &= ~0x02;
+            ON = 0;
          }
 
          
