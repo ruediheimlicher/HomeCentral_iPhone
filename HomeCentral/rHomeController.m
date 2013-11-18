@@ -36,6 +36,24 @@
 - (void)viewDidLoad
 {
    [super viewDidLoad];
+   
+
+   
+   [[NSNotificationCenter defaultCenter] addObserver:self
+                                            selector:@selector(backgroundaktion:)
+                                                name:@"EnterBackground"
+                                              object:nil];
+    
+   [[NSNotificationCenter defaultCenter] addObserver:self
+                                            selector:@selector(resignaktion:)
+                                                name:@"UIApplicationWillResignActiveNotification"
+                                              object:nil];
+   [[NSNotificationCenter defaultCenter] addObserver:self
+                                            selector:@selector(beendenaktion:)
+                                                name:@"Beenden"
+                                              object:nil];
+
+   
    //[UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
    self.ipfeld.text = [[rVariableStore sharedInstance] IP];
 
@@ -77,7 +95,8 @@
    tagplanframe.size.width = 24*stundenabstand + 100;
    self.tagplanfeld.frame = tagplanframe;
    self.tagplanscroller.contentSize = self.tagplanfeld.frame.size;
-   
+   self.tagplanscroller.alwaysBounceVertical = NO;
+   self.tagplanscroller.alwaysBounceHorizontal = NO;
    
    // Felder fuer die Stunden aufbauen
    for (int stunde=0;stunde<24;stunde++)
@@ -208,6 +227,40 @@
  
 }
 
+- (void)backgroundaktion:(NSNotification*)note
+{
+   NSLog(@"backgroundaktion on: %d",self.twitaste.on);
+   
+   if (self.twitaste.on == 0)
+   {
+      NSLog(@"twitaste ist off");
+      [self setTWIState:YES];
+   }
+   else
+   {
+       NSLog(@"twitaste ist on");
+   }
+   
+}
+
+- (void)resignaktion:(NSNotification*)note
+{
+   NSLog(@"resignaktion on: %d",self.twitaste.on);
+
+   [self setTWIState:YES];
+   
+   NSLog(@"resignaktion nach setTWIstate on: %d",self.twitaste.on);
+}
+
+- (void)beendenktion:(NSNotification*)note
+{
+   NSLog(@"beendenktion on: %d",self.twitaste.on);
+   
+   [self setTWIState:YES];
+   NSLog(@"beendenktion nach setTWIstate on: %d",self.twitaste.on);
+}
+
+
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
 {
    
@@ -220,7 +273,7 @@
    int zeile = 56* raum + 7*objekt + wochentag;
    
    NSArray* ZeilenArray = [[self.wochenplanarray objectAtIndex:zeile]componentsSeparatedByString:@"\t"];
-   NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
+   //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
    //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[ZeilenArray description]);
    if ([ZeilenArray count]>4)
    {
@@ -242,7 +295,7 @@
       //[self.tagplandic setObject:self.aktuellerstundencodearray forKey:@"stundencodearray"];
       
       
-      NSLog(@"StundenByteArray: %@",[self.aktuellerstundencodearray description]);
+      //NSLog(@"StundenByteArray: %@",[self.aktuellerstundencodearray description]);
       
       if ([ZeilenArray count]>13)
       {
@@ -284,6 +337,7 @@
 }
 
 
+
 - (void)setTagPlanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag mitDaten:(NSArray*)stundencodearray
 {
    //int bytezeile = 56*raum + 7*objekt + wochentag;// zeile: 56*$raum + 7*$objekt + $wochentag // aus eeprom.pl
@@ -321,7 +375,7 @@
                
             case 1: // nur ganze Stunden
             {
-               NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
+               //NSLog(@"stundenwert: %d htaste0tag: %d",stundenwert,htaste0tag);
                [[self.tagplanfeld viewWithTag:htaste0tag]setHidden:YES];
                [[self.tagplanfeld viewWithTag:htaste1tag]setHidden:YES];
                [[self.tagplanfeld viewWithTag:gtastetag]setHidden:NO];
@@ -335,6 +389,7 @@
    }
    [self.tagplanfeld setNeedsDisplay];
 }
+
 
 - (NSString*)readWochenplan
 {
@@ -421,7 +476,7 @@
 
 - (IBAction)reportRaumSeg:(UISegmentedControl*)sender
 {
-   NSLog(@"reportRaumSeg %d",(int)sender.selectedSegmentIndex);
+   //NSLog(@"reportRaumSeg %d",(int)sender.selectedSegmentIndex);
    self.aktuellesObjekt = 0;
    self.objektstepper.value = 0;
    self.aktuellerRaum = sender.selectedSegmentIndex;
@@ -446,7 +501,7 @@
 - (IBAction)reportObjektStepper:(UIStepper*)sender
 {
    self.aktuellesObjekt = (int)sender.value;
-   NSLog(@"reportObjektStepper %d",(int)sender.value);
+   //NSLog(@"reportObjektStepper %d",(int)sender.value);
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    [self restartTWITimer];
    if (self.twitaste.on == YES)
@@ -494,6 +549,7 @@
    
    [self.aktuellerstundencodearray setArray: self.oldstundencodearray];
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
+   self.hexdata.text = @"";
    [self restartTWITimer];
 }
 
@@ -558,7 +614,7 @@
          DataString = [DataString stringByAppendingString:@"+"];
       }
    }
-
+   self.hexdata.text = DataString;
    NSString* HomeCentralString = [HomeCentralPfad stringByAppendingFormat:@"lbyte=%@&hbyte=%@&%@",lbyte,hbyte,DataString];
    NSLog(@"HomeCentralString: %@",HomeCentralString);
     HomeCentralURL = [NSURL URLWithString:HomeCentralString];
@@ -577,12 +633,12 @@
    
    //NSString* Datumzusatz = [NSString stringWithFormat:@"%@%@%@",self.aktuellesjahr, self.aktuellermonat, self.aktuellerWochentagString];
    
-   NSString* HomeServerString = [HomeServerAdresseString stringByAppendingFormat:@"/cgi-bin/eeprom.pl?pw=ideur00&perm=%d&lbyte=%@&hbyte=%@&data=%@&titel=%@&typ=%d",permanent,lbyte,hbyte,EEPROMDataString,self.aktuellerObjektname,self.aktuellerObjekttyp];
+   NSString* HomeServerString = [HomeServerAdresseString stringByAppendingFormat:@"/cgi-bin/eeprom.pl?pw=ideur00&perm=%d&lbyte=%@&hbyte=%@&data=%@&titel=%@&tagbalkentyp=%d",permanent,lbyte,hbyte,EEPROMDataString,self.aktuellerObjektname,self.aktuellerObjekttyp];
 
    
 // ohne perm
 //   NSString* HomeServerString = [HomeServerAdresseString stringByAppendingFormat:@"/cgi-bin/eeprom.pl?pw=ideur00&lbyte=%@&hbyte=%@&data=%@&titel=%@&typ=%d",lbyte,hbyte,EEPROMDataString,self.aktuellerObjektname,self.aktuellerObjekttyp];
-   //NSLog(@"HomeServerString: %@",HomeServerString);
+   NSLog(@"HomeServerString: %@",HomeServerString);
    HomeServerURL = [NSURL URLWithString:HomeServerString];
     //NSLog(@"HomeServerURL: %@",HomeServerURL);
    [self loadURL:HomeCentralURL];
@@ -654,9 +710,12 @@
    }
 }
 
+
+
 - (void)setTWIState:(int)status
 {
-    //NSLog(@"setTWIstate status: %d",status);
+    NSLog(@"setTWIstate status: %d",status);
+   
    if (status)
    {
       //NSLog(@"setTWIstate TWI einschalten");
@@ -687,7 +746,7 @@
    }
    else
    {
-      //NSLog(@"setTWIstate TWI ausschalten");
+      NSLog(@"setTWIstate TWI ausschalten");
       
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
@@ -908,7 +967,7 @@
       {
          if (sender.selected==YES)
          {
-            ON |= 0x02; // Taste links
+            ON |= 0x03; // Stundentaste, ganze Stunde ON
          }
          else
          {
@@ -1244,5 +1303,6 @@
    NSLog(@"didFailLoadWithError: error: %@",[error description]);
 
 }
+
 
 @end

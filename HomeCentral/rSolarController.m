@@ -320,7 +320,7 @@
    NSLog(@"reportTextFieldReturn eingabe: %@",[self.urlfeld text]);
    [sender resignFirstResponder];
    NSString* url = self.urlfeld.text;
-   if (url == @"home")
+   if ([url isEqualToString: @"home"])
    {
       NSLog(@"reportTextFieldGo NO");
       [super dismissModalViewControllerAnimated:YES];
