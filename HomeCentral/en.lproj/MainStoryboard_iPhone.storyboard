@@ -160,7 +160,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Web" id="G5W-yQ-vIj"/>
+                    <tabBarItem key="tabBarItem" title="Web" id="G5W-yQ-vIj">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-20"/>
+                    </tabBarItem>
                     <connections>
                         <outlet property="Webfenster" destination="ozs-tJ-WNS" id="adq-Cw-Ryg"/>
                     </connections>
@@ -313,7 +315,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         </subviews>
                         <color key="backgroundColor" red="0.78131315379232957" green="0.99744897959183676" blue="0.72849625665155116" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Strom" id="Y3y-mc-wMf"/>
+                    <tabBarItem key="tabBarItem" title="Strom" id="Y3y-mc-wMf">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-20"/>
+                    </tabBarItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="RefreshTaste" destination="1nY-3O-W77" id="c5E-b1-gQh"/>
@@ -472,7 +476,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Solar" id="wx6-5V-3p5"/>
+                    <tabBarItem key="tabBarItem" title="Solar" id="wx6-5V-3p5">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-20"/>
+                    </tabBarItem>
                     <connections>
                         <outlet property="AussentempFeld" destination="Zwh-8u-sbn" id="xwe-ui-d1f"/>
                         <outlet property="RefreshTaste" destination="BgY-eq-1em" id="C9j-VH-TMI"/>
@@ -569,7 +575,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         </subviews>
                         <color key="backgroundColor" red="0.19328373222894091" green="1" blue="0.30749288505307426" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Home" id="Mee-iO-jbq"/>
+                    <tabBarItem key="tabBarItem" title="Home" id="Mee-iO-jbq">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-20"/>
+                    </tabBarItem>
                     <connections>
                         <outlet property="ipfeld" destination="1SU-bh-c6N" id="7h5-1R-iGb"/>
                     </connections>
@@ -598,18 +606,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </subviews>
                                 <color key="backgroundColor" red="0.70438873445316741" green="0.69499307657895304" blue="0.97393176020408168" alpha="1" colorSpace="calibratedRGB"/>
                             </scrollView>
-                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="7" id="eaP-Fa-e0R">
-                                <rect key="frame" x="216" y="127" width="94" height="23"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <action selector="reportObjektStepper:" destination="fc2-zf-OXd" eventType="valueChanged" id="Aja-3z-K81"/>
-                                </connections>
-                            </stepper>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="bDY-ng-tkC">
-                                <rect key="frame" x="10" y="12" width="300" height="29"/>
+                                <rect key="frame" x="10" y="35" width="300" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
-                                    <segment title="HZ"/>
+                                    <segment title="HZ" width="40"/>
                                     <segment title="WS"/>
                                     <segment title="WZ"/>
                                     <segment title="B"/>
@@ -623,7 +624,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </segmentedControl>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="3d1-yb-e6a">
-                                <rect key="frame" x="10" y="69" width="300" height="29"/>
+                                <rect key="frame" x="10" y="82" width="300" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="MO"/>
@@ -723,39 +724,47 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <webView contentMode="scaleToFill" id="xBN-z9-r6R">
-                                        <rect key="frame" x="0.0" y="1" width="300" height="24"/>
+                                        <rect key="frame" x="0.0" y="3" width="300" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </webView>
                                 </subviews>
                             </scrollView>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="anz" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="d1u-kQ-oUi">
-                                <rect key="frame" x="172" y="325" width="25" height="21"/>
+                                <rect key="frame" x="172" y="327" width="25" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" id="g8r-Id-kUd" customClass="rStatusanzeige">
-                                <rect key="frame" x="10" y="290" width="300" height="18"/>
+                                <rect key="frame" x="10" y="292" width="300" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.85995662795283989" green="1" blue="0.78108604297326012" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="gray" id="agn-VG-7qk">
-                                <rect key="frame" x="174" y="326" width="20" height="20"/>
+                                <rect key="frame" x="174" y="329" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="color" red="0.99256616710000001" green="0.025422191520000002" blue="0.081877852459999997" alpha="1" colorSpace="calibratedRGB"/>
                             </activityIndicatorView>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" id="dGE-xk-34T">
+                                <rect key="frame" x="211" y="126" width="94" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <action selector="reportObjektStepper:" destination="dXL-OD-xTL" eventType="touchUpInside" id="KQY-k3-2GE"/>
+                                </connections>
+                            </stepper>
                         </subviews>
                         <color key="backgroundColor" red="0.79924074482297969" green="1" blue="0.9311304261498039" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="EE" id="y3H-y7-zHb"/>
+                    <tabBarItem key="tabBarItem" title="Plan" id="y3H-y7-zHb">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-20"/>
+                    </tabBarItem>
                     <connections>
                         <outlet property="hexdata" destination="LK2-ax-XiS" id="bTG-FB-hv2"/>
                         <outlet property="ipfeld" destination="gWd-AN-Ojo" id="AZ2-aK-tgz"/>
                         <outlet property="ladeindikator" destination="agn-VG-7qk" id="cVI-UG-HVM"/>
                         <outlet property="objektname" destination="EDi-Hp-QNa" id="tWv-ch-QPg"/>
-                        <outlet property="objektstepper" destination="eaP-Fa-e0R" id="IlT-cD-5GN"/>
                         <outlet property="raumseg" destination="bDY-ng-tkC" id="cB4-Qw-zrK"/>
                         <outlet property="sendtaste" destination="zXz-ij-I5D" id="jPD-HK-wcR"/>
                         <outlet property="statusanzeige" destination="g8r-Id-kUd" id="Xjx-0f-4oY"/>

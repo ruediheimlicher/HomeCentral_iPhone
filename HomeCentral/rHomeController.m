@@ -476,7 +476,7 @@
 
 - (IBAction)reportRaumSeg:(UISegmentedControl*)sender
 {
-   //NSLog(@"reportRaumSeg %d",(int)sender.selectedSegmentIndex);
+   NSLog(@"reportRaumSeg %d",(int)sender.selectedSegmentIndex);
    self.aktuellesObjekt = 0;
    self.objektstepper.value = 0;
    self.aktuellerRaum = sender.selectedSegmentIndex;
@@ -499,19 +499,19 @@
 
 
 - (IBAction)reportObjektStepper:(UIStepper*)sender
-{
+{ NSLog(@"reportObjektStepper %d",(int)sender.value);
    self.aktuellesObjekt = (int)sender.value;
-   //NSLog(@"reportObjektStepper %d",(int)sender.value);
+  
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    [self restartTWITimer];
    if (self.twitaste.on == YES)
    {
-      //NSLog(@"reportRaumSeg twitaste YES");
+      NSLog(@"reportRaumSeg twitaste YES");
       self.statusanzeige.code = 0x00;
    }
    else
    {
-      //NSLog(@"reportRaumSeg twitaste NO");
+      NSLog(@"reportRaumSeg twitaste NO");
       self.statusanzeige.code = 0x01;
    }
 
@@ -525,7 +525,7 @@
    self.aktuellerWochentag = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    
-   //NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag);
+   NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag);
    [self restartTWITimer];
    if (self.twitaste.on == YES)
    {
