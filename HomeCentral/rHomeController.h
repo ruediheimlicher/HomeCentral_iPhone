@@ -87,7 +87,7 @@
 - (IBAction)reportStundenTaste:(id)sender;
 
 - (IBAction)reportWochentagSeg:(id)sender;
-- (IBAction)reportWochentag:(id)sender;
+//- (IBAction)reportWochentag:(id)sender;
 
 - (IBAction)reportRaumSeg:(id)sender;
 - (IBAction)reportOnOff:(id)sender;

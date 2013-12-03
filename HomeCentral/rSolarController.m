@@ -323,7 +323,7 @@
    if ([url isEqualToString: @"home"])
    {
       NSLog(@"reportTextFieldGo NO");
-      [super dismissModalViewControllerAnimated:YES];
+      [super dismissViewControllerAnimated:YES completion:NULL];
       //do close window magic here!!
       return ;
    }
@@ -879,15 +879,18 @@
       NSLog(@"shouldStartLoadWithRequest YES");
       return YES;
    }
-   if ([[request URL] absoluteString] == @"http://home/")
+   if ([[[request URL] absoluteString] isEqualToString: @"http://home/"])
    {
       NSLog(@"shouldStartLoadWithRequest NO");
-      [super dismissModalViewControllerAnimated:YES];
+      [super dismissViewControllerAnimated:YES completion:NULL];
       //do close window magic here!!
       return NO;
    }
    if ([[[request URL] absoluteString] isEqualToString:@"plus.google.com/"])
-   { [super dismissModalViewControllerAnimated:YES]; return NO; }
+   {
+      [super dismissViewControllerAnimated:YES completion:NULL];
+      return NO;
+   }
    
    NSLog(@"shouldStartLoadWithRequest YES %@",[request URL]);
    [[UIApplication sharedApplication] openURL:[request URL]];

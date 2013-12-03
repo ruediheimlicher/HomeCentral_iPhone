@@ -250,8 +250,8 @@
    
    [self.diagrammview setNeedsDisplay];
    
-   float b = 20;
-   int teile = 8;
+   float breite = 20;
+   int ordinatenteile = 8;
    
    
    NSMutableDictionary* OrdinateDic = [[NSMutableDictionary alloc]initWithCapacity:0];
@@ -262,9 +262,9 @@
    [OrdinateDic setObject:[NSNumber numberWithFloat:randunten] forKey:@"randunten"];
    
    [OrdinateDic setObject:[NSNumber numberWithFloat:diagrammhoehe] forKey:@"diagrammhoehe"];
-   [OrdinateDic setObject:[NSNumber numberWithInt:b] forKey:@"breite"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:breite] forKey:@"breite"];
    [OrdinateDic setObject:[NSNumber numberWithInt:intervally] forKey:@"intervally"];
-   [OrdinateDic setObject:[NSNumber numberWithInt:teile] forKey:@"teile"];
+   [OrdinateDic setObject:[NSNumber numberWithInt:ordinatenteile] forKey:@"teile"];
    [OrdinateDic setObject:[NSNumber numberWithInt:startwert] forKey:@"startwert"];
    [OrdinateDic setObject:@"kW" forKey:@"einheit"];
    [OrdinateDic setObject:[NSNumber numberWithInt:0] forKey:@"red"]; // nur gerade Werte anzeigen
