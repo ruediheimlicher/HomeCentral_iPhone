@@ -65,7 +65,7 @@
    float botemp=60.5;
    self.bo.text = [NSString stringWithFormat:@"%.1f°C",botemp];
 	// Do any additional setup after loading the view.
-   NSURL* stromURL = [NSURL URLWithString:@"http://www.ruediheimlicher.ch"];
+//   NSURL* stromURL = [NSURL URLWithString:@"http://www.ruediheimlicher.ch"];
    //   int erfolg = [[UIApplication sharedApplication] openURL:stromURL];
    //  NSLog(@"erfolg: %d",erfolg);
    //[self.webfenster loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.ruediheimlicher.ch/"]]];
@@ -357,7 +357,7 @@
    NSMutableDictionary* SolarDataDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    NSCharacterSet* CharOK=[NSCharacterSet alphanumericCharacterSet];
    
-	NSString* returnString=[NSString string];
+//	NSString* returnString=[NSString string];
 	if (isDownloading)
 	{
 		return nil;//[self cancel];
@@ -371,7 +371,7 @@
 		NSError* AussentempWebFehler=NULL;
 		NSString* AussentempDataString=[NSString stringWithContentsOfURL:AussentempURL usedEncoding: Aussentempenc error:&AussentempWebFehler];
       //NSLog(@"SolarDataVonHeute AussentempDataString: %@",AussentempDataString);
-      NSArray* TemperaturDatenArray = [AussentempDataString componentsSeparatedByString:@"\n"];
+//      NSArray* TemperaturDatenArray = [AussentempDataString componentsSeparatedByString:@"\n"];
       //NSLog(@"SolarDataVonHeute TemperaturDatenArray: %@",[TemperaturDatenArray description]);
       
       NSString* AussentemperaturString = [[AussentempDataString componentsSeparatedByString:@"\n"]objectAtIndex:5];
@@ -406,13 +406,13 @@
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
          return nil;
-			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
+//			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			
-			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
-			NSString* s2=[ErrorArray objectAtIndex:2];
-			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
-			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
-			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
+//			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
+//			NSString* s2=[ErrorArray objectAtIndex:2];
+//			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
+//			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
+//			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
 		}
 		if ([DataString length])
 		{
@@ -506,13 +506,13 @@
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
          return nil;
-			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
+//			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			
-			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
-			NSString* s2=[ErrorArray objectAtIndex:2];
-			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
-			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
-			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
+//			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
+//			NSString* s2=[ErrorArray objectAtIndex:2];
+//			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
+//			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
+//			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
 		}
 		if ([DataString length])
 		{
@@ -621,17 +621,17 @@
    //NSLog(@"Solar DiagrammDatenDicVon erste Zeile: %@",[[DatenArray objectAtIndex:0] description]);
    int startminute = [[[DatenArray objectAtIndex:0]objectAtIndex:0]intValue]/60;
    
-   int offsetstd = startminute/60;
-   int offsetmin = startminute%60;
-   int offsetlinks = 60*offsetstd + offsetmin;
+//   int offsetstd = startminute/60;
+//   int offsetmin = startminute%60;
+//   int offsetlinks = 60*offsetstd + offsetmin;
    //NSLog(@" offsetstd: %d offsetmin: %d diffx: %d",offsetstd,offsetmin,randlinks);
    //NSLog(@"Solar DiagrammDatenDicVon letzte Zeile array: %@",[[DatenArray lastObject] description]);
    int endminute = [[[DatenArray lastObject]objectAtIndex:0]intValue]/60;
 
-   int endstd =  endminute/60;;
-   int endmin =  endminute%60;
-   int endx = 60*endstd + endmin;
-   int diffx = endx - randlinks;
+//   int endstd =  endminute/60;;
+ //  int endmin =  endminute%60;
+//   int endx = 60*endstd + endmin;
+//   int diffx = endx - randlinks;
    
    self.zoomfaktorx = (self.diagrammview.bounds.size.width - randlinks)/1440; // Minuten des Tages
    //NSLog(@"width: %.1f zoomfaktorx: %.2f",self.diagrammview.bounds.size.width,zoomfaktorx );
@@ -721,7 +721,7 @@
          // Linien konfig
          */
          // KV
-         float x = [[[ZeitArray objectAtIndex:i]lastObject ]floatValue]; // Zeit Minute
+//         float x = [[[ZeitArray objectAtIndex:i]lastObject ]floatValue]; // Zeit Minute
          
          float y = [[[DatenArray objectAtIndex:i] objectAtIndex:dataindex]intValue]/2*self.zoomfaktory;
          //fprintf(stderr,"%d\t%d\t%2.2f\t%2.2f\n",dataindex,i,x,y);
@@ -760,7 +760,7 @@
    // *
    int codeindex = 7;
    int lastheizungstate=0; // letzten status speichern, Linie eventuell unterbrechen
-   int lastpumpestate=0;
+//   int lastpumpestate=0;
    
    
    NSMutableArray* tempHeizungDataArray = [[NSMutableArray alloc]initWithCapacity:0];
@@ -769,7 +769,7 @@
    //fprintf(stderr,"ix:\ti:\tx:\ty:\n");
    for (int i=0;i<[DatenArray count];i++)
    {
-      float x = [[[ZeitArray objectAtIndex:i]lastObject ]floatValue]; // Zeit Minute
+//      float x = [[[ZeitArray objectAtIndex:i]lastObject ]floatValue]; // Zeit Minute
       
       int tempcode = [[[DatenArray objectAtIndex:i] objectAtIndex:codeindex]intValue];
       

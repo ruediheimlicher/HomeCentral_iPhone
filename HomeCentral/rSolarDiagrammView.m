@@ -63,7 +63,7 @@
       self.randlinks = [[DataDic objectForKey:@"randlinks"]intValue];
    }
       
-   float  eckeuntenx = [[DataDic objectForKey:@"eckeuntenx"]floatValue]; // Koordinate x Ecke des DiagrammView
+//   float  eckeuntenx = [[DataDic objectForKey:@"eckeuntenx"]floatValue]; // Koordinate x Ecke des DiagrammView
    //float  eckeunteny = [[DataDic objectForKey:@"eckeunteny"]floatValue]; // Koordinate y
    
    //NSLog(@"randlinks: %d",self.randlinks); // Abstand Diagramm zum View
@@ -417,7 +417,7 @@
             CGContextMoveToPoint(templinecontext,startx,starty);
             //NSLog(@"startx: %.1f \t starty: %.1f",startx,starty);
             
-            int heizungyoff=-100;
+//            int heizungyoff=-100;
             int lastON=0;
             int yON=self.bounds.size.height-220;
             float x=startx;

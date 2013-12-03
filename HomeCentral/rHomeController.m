@@ -191,29 +191,29 @@
    
    //Day
    [df setDateFormat:@"dd"];
-   NSString* myDayString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+//   NSString* myDayString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    self.aktuellertag = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    
    //Month
    [df setDateFormat:@"MM"]; //MM will give you numeric "03", MMM will give you "Mar"
-   NSString* myMonthString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+//   NSString* myMonthString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    self.aktuellermonat = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    
    //Year
    [df setDateFormat:@"yy"];
-   NSString* myYearString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+//   NSString* myYearString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    self.aktuellesjahr = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    //Hour
    [df setDateFormat:@"hh"];
-   NSString* myHourString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+//   NSString* myHourString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    
    //Minute
    [df setDateFormat:@"mm"];
-   NSString* myMinuteString = [NSString stringWithFormat:@"%@",[df stringFromDate:currDate]];
+//   NSString* myMinuteString = [NSString stringWithFormat:@"%@",[df stringFromDate:currDate]];
    
    //Second
    [df setDateFormat:@"ss"];
-   NSString* mySecondString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
+//   NSString* mySecondString = [NSString stringWithFormat:@"%@", [df stringFromDate:currDate]];
    
    //NSLog(@"Year: %@, Month: %@, Day: %@, Hour: %@, Minute: %@, Second: %@", myYearString, myMonthString, myDayString, myHourString, myMinuteString, mySecondString);
    
@@ -426,7 +426,7 @@
 
 -(void)IPAktion:(NSNotification*)note
 {
-   NSString* IP = [[rVariableStore sharedInstance] IP];
+//   NSString* IP = [[rVariableStore sharedInstance] IP];
    NSLog(@"IPAktion IP: %@",[[note userInfo]description]);
    //self.ipfeld.text = @"*";
 }
@@ -550,6 +550,7 @@
    [self.aktuellerstundencodearray setArray: self.oldstundencodearray];
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    self.hexdata.text = @"";
+   self.testdata.text = @"";
    [self restartTWITimer];
 }
 
@@ -728,8 +729,8 @@
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
       
-      //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
-      
+      NSLog(@"TWIStatusAktion >ON TWIStatusURL: %@",TWIStatusURLString);
+      self.testdata.text = [NSString stringWithFormat:@"ON %@",TWIStatusURLString];
       NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
       //NSLog(@"TWI ein URL: %@",URL);
      
@@ -755,8 +756,9 @@
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
       
-      //NSLog(@"TWIStatusAktion TWIStatusURL: %@",TWIStatusURLString);
-      
+      NSLog(@"TWIStatusAktion >OFF TWIStatusURL: %@",TWIStatusURLString);
+      self.testdata.text = [NSString stringWithFormat:@"OF %@",TWIStatusURLString];
+
       NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
       //NSLog(@"TWI aus URL: %@",URL);
       
@@ -786,6 +788,9 @@
 	if ([statusTimerDic objectForKey:@"anzahl"])
 	{
 		int anz=[[statusTimerDic objectForKey:@"anzahl"] intValue];
+      
+      
+      
       NSString* TWIStatus0URL;
 		if (anz < maxAnzahl)
 		{
@@ -797,8 +802,9 @@
             
             TWIStatus0URL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatus0URLSuffix];
             [statusTimerDic setObject:[NSNumber numberWithInt:0] forKey:@"local"];
-            
+            self.testdata.text = [NSString stringWithFormat:@"timer anz %d",anz];
             NSURL *URL = [NSURL URLWithString:TWIStatus0URL];
+            
             //NSLog(@"statusTimerFunktion  URL: %@",URL);
             [self loadURL:URL];
 			}
@@ -828,7 +834,9 @@
 		{
 			
 			NSLog(@"statusTimerFunktion statusTimer invalidate");
+         self.testdata.text = [NSString stringWithFormat:@"TWI error"];
 			// Misserfolg an AVRClient senden
+         
 			NSMutableDictionary* tempDataDic=[[NSMutableDictionary alloc]initWithCapacity:0];
 			[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"isstatusok"];
          if ([statusTimerDic objectForKey:@"local"] && [[statusTimerDic objectForKey:@"local"]intValue]==1 )
@@ -911,7 +919,7 @@
    
    
    
-   int tastenON = sender.selected;
+ //  int tastenON = sender.selected;
    int tastenstunde =0;
    switch(self.aktuellerObjekttyp)
    {
@@ -1201,7 +1209,7 @@
 	//NSString* Status0_String= @"status0";
    NSString* Status0_String= @"status0+";             // Status 0 ist bestaetigt
 
-	NSString* Status1_String= @"status1";              // Status 1 ein
+//	NSString* Status1_String= @"status1";              // Status 1 ein
    NSString* EEPROM1_String= @"eeprom+";              // EEPROM laden bestaetigt
    NSString* EEPROM0_String= @"eeprom-";              // EEPROM laden misslungen
    

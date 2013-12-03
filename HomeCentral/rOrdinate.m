@@ -162,8 +162,8 @@ char* itoa(int val, int base)
    CGContextMoveToPoint(context, startx,starty);
    float y = 0;
    float x = 0;
-   NSNumber *celcius = @21;
-   NSNumber *pi = @3.14159265359;
+//   NSNumber *celcius = @21;
+//   NSNumber *pi = @3.14159265359;
     for (int i=0;i<self.teile+1;i++)
    {
       int wert = self.startwert+i*self.intervall;

@@ -77,6 +77,7 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *    ladeindikator;
 
 @property (weak, nonatomic) IBOutlet UILabel *                    hexdata;
+@property (weak, nonatomic) IBOutlet UILabel *                    testdata;
 
 - (IBAction)reportResetTaste:(id)sender;
 

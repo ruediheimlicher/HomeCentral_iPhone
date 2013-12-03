@@ -77,7 +77,7 @@
    
    std = [[index objectAtIndex:0]intValue]; // Lage der Daten im DatenArray
    min = [[index objectAtIndex:1]intValue];
-   data = [[index objectAtIndex:2]intValue];
+   dataindex = [[index objectAtIndex:2]intValue];
    art = [[index lastObject]intValue];
    
    
@@ -115,7 +115,7 @@
    [DiagrammdatenDic setObject:[NSNumber numberWithFloat:zoomfaktory ] forKey:@"zoomfaktory"];
    
    //zoomfaktorx=1;
-   //NSLog(@"DiagrammDatenDicVon std: %d min: %d data: %d offsetstd: %d offsetmin: %d offsetx: %d",std,min,data,offsetstd,offsetmin,offsetx);
+   //NSLog(@"DiagrammDatenDicVon std: %d min: %d dataindex: %d offsetstd: %d offsetmin: %d offsetx: %d",std,min,dataindex,offsetstd,offsetmin,offsetx);
    for (int k=0;k<[DatenArray count];k++)// Datenarray
    {
       
@@ -130,7 +130,7 @@
             //NSLog(@"last Data k: %d x vor: %.2f",k,x);
          }
          x *= self.zoomfaktorx;
-         float y = [[tempZeilenArray objectAtIndex:data]intValue]*zoomfaktory;
+         float y = [[tempZeilenArray objectAtIndex:dataindex]intValue]*zoomfaktory;
          NSDictionary* tempDataDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:x],@"x",[NSNumber numberWithFloat:y],@"y", nil];
          
          [tempDataArray addObject:tempDataDic];
@@ -179,8 +179,8 @@
       {
          std=3;
          min=4;
-         data=6;
-         NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:seg], nil];
+         dataindex=6;
+         NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:dataindex],[NSNumber numberWithInt:seg], nil];
          // index wird als letztes Element eingefuegt, um Darstellungsart zu uebertragen
          CGRect feld = self.diagrammview.frame;
          feld.size.width = 900.0;
@@ -207,9 +207,9 @@
 
          std=1;
          min=2;
-         data=4;
+         dataindex=4;
          
-         NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:data],[NSNumber numberWithInt:seg], nil];
+         NSArray* IndexArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:std],[NSNumber numberWithInt:min],[NSNumber numberWithInt:dataindex],[NSNumber numberWithInt:seg], nil];
          
          NSArray* StromArray = [StromDicVonHeute objectForKey:@"strommonitor"];
          
@@ -310,7 +310,7 @@
    NSMutableDictionary* StromDataDic = [[NSMutableDictionary alloc]initWithCapacity:0];
    NSCharacterSet* CharOK=[NSCharacterSet alphanumericCharacterSet];
    
-	NSString* returnString=[NSString string];
+//	NSString* returnString=[NSString string];
 	//if (isDownloading)
 	{
       //	return nil;//[self cancel];
@@ -341,13 +341,13 @@
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
          return nil;
-			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
+//			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			
-			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
-			NSString* s2=[ErrorArray objectAtIndex:2];
-			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
-			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
-			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
+//			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
+//			NSString* s2=[ErrorArray objectAtIndex:2];
+//			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
+//			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
+//			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
       }
 		if ([DataString length])
 		{
@@ -413,13 +413,13 @@
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
          return nil;
-			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
+//			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			
-			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
-			NSString* s2=[ErrorArray objectAtIndex:2];
-			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
-			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
-			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
+//			NSString* s1=[NSString stringWithFormat:@"URL: \n%@",URL];
+//			NSString* s2=[ErrorArray objectAtIndex:2];
+//			int AnfIndex=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]rangeOfString:@"\""].location;
+//			NSString* s3=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]substringFromIndex:AnfIndex];
+//			NSString* InformationString=[NSString stringWithFormat:@"%@\n%@\nFehler: %@",s1,s2,s3];
 		}
 		
       if ([DataString length])

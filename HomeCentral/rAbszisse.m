@@ -93,8 +93,8 @@
  CGContextSetLineWidth(context, 0.4);
  CGContextSetStrokeColorWithColor(context, [[UIColor grayColor] CGColor]);
 
-   float startx = self.eckeuntenx;
-   float starty = self.eckeunteny;
+//   float startx = self.eckeuntenx;
+//   float starty = self.eckeunteny;
    //NSLog(@"Abszisse startx: %.1f starty: %.1f",startx,starty);
 
 

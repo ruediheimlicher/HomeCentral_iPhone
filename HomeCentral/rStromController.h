@@ -22,7 +22,7 @@
    NSString*            lastStromDataString;
    int std;
    int min;
-   int data;
+   int dataindex;
    int art;
    int randlinks;
    int randrechts;

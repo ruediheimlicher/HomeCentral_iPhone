@@ -76,7 +76,7 @@
    CGContextSetTextMatrix (xcontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
    
   
-   char* x_achse = "0 1 2 3\0";
+//   char* x_achse = "0 1 2 3\0";
    //NSLog(@"%s l: %zd",x_achse,strlen(x_achse));
    //CGContextShowTextAtPoint(xcontext,kOffsetX +10,kOffsetY+20,x_achse,strlen(x_achse));
    CGContextStrokePath(xcontext);
