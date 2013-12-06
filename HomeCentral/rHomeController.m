@@ -8,14 +8,39 @@
 
 #import "rHomeController.h"
 #import "rEingabeController.h"
-
+#import "Reachability.h"
 #define PW "ideur00"
 
 #define TAGPLANBREITE		0x40	// 64 Bytes, 2 page im EEPROM
 
 #define RAUMPLANBREITE		0x200	// 512 Bytes
+@implementation TWIControl
 
+-(void)setCustomState {
+   customState |= kUIControlStateCustomState;
+   [self stateWasUpdated];
+}
 
+-(void)unsetCustomState {
+   customState &= ~kUIControlStateCustomState;
+   [self stateWasUpdated];
+}
+- (UIControlState)state {
+   return [super state] | customState;
+}
+
+- (void)stateWasUpdated {
+   if ([self state])
+   {
+   [self setCustomState];
+   }
+   else
+   {
+      [self unsetCustomState];
+   }
+   // Add your custom code here to respond to the change in state
+}
+@end
 @interface rHomeController ()
 
 @end
@@ -53,7 +78,6 @@
                                                 name:@"Beenden"
                                               object:nil];
 
-   
    //[UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
    self.ipfeld.text = [[rVariableStore sharedInstance] IP];
 
@@ -179,7 +203,7 @@
    HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
 
    self.webfenster.delegate = self;
-   maxAnzahl = 10;
+   maxAnzahl = 15;
    [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.sendtaste setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
@@ -223,7 +247,25 @@
    NSArray* StatusanzeigeArray = [NSArray arrayWithObjects:@"TWI OFF",@"Adresse",@"Daten",@"Send OK", nil];
    self.statusanzeige.legendearray = StatusanzeigeArray;
    [self.statusanzeige setNeedsDisplay];
+   self.lastTWIState=1;
+/*
    
+   Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+   
+	// Set the blocks
+	reach.reachableBlock = ^(Reachability*reach)
+	{
+		NSLog(@"REACHABLE!");
+	};
+   
+	reach.unreachableBlock = ^(Reachability*reach)
+	{
+		NSLog(@"UNREACHABLE!");
+	};
+   
+	// Start the notifier, which will cause the reachability object to retain itself!
+	[reach startNotifier];
+*/
  
 }
 
@@ -666,12 +708,47 @@
    if (sender.on)
    {
       [self setTWIState:YES];// TWI einschalten
+      
    }
    else
    {
-      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
-                            [alert show];
+      [self.ladeindikator startAnimating];
+      self.ladeindikator.hidden = NO;
+      
 
+      
+      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
+      [alert show];
+
+      /*
+      Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+      
+      // Set the blocks
+      reach.reachableBlock = ^(Reachability*reach)
+      {
+         NSLog(@"REACHABLE!");
+         //self.twialarm.hidden=YES;
+    //     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
+    //     [alert show];
+         [self setTWIState:NO];
+      
+      };
+      
+      reach.unreachableBlock = ^(Reachability*reach)
+      {
+         NSLog(@"UNREACHABLE!");
+        // self.twialarm.hidden=NO;
+      //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+       //  [alert show];
+         
+      };
+      
+      // Start the notifier, which will cause the reachability object to retain itself!
+      [reach startNotifier];
+      
+      
+      //
+       */
    }
 }
 
@@ -690,8 +767,11 @@
       else if([title isEqualToString:@"Nein"])
       {
          //NSLog(@"TWI nicht ausschalten.");
-         self.twitaste.on=YES;
+         //self.twitaste.on=YES;
          // Nichts tun
+         [self.ladeindikator stopAnimating];
+         self.ladeindikator.hidden = YES;
+
       }
       return;
    }
@@ -709,9 +789,64 @@
       }
       return;
    }
+   if ([[alertView title]isEqualToString:@"Keine Verbindung zum Internet"])
+   {
+      NSLog(@"Keine Verbindung.");
+      
+     // [[self twitaste] setCustomState:NO];
+
+      [self.ladeindikator stopAnimating];
+      self.ladeindikator.hidden = YES;
+      /*
+      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI ON" message:@"TWI-Schalter schliessen!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+      [alert show];
+       */
+
+   }
+   /*
+   if ([[alertView title]isEqualToString:@"TWI-Schalter schliessen!"])
+   {
+      NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+      [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
+
+      NSTimer* TWITimer=[NSTimer scheduledTimerWithTimeInterval:4.0
+                                                          target:self
+                                                        selector:@selector(TWIstatusTimerFunktion:)
+                                                        userInfo:confirmTimerDic
+                                                         repeats:YES];
+
+   }
+*/
 }
 
-
+- (void)TWIstatusTimerFunktion:(NSTimer*) derTimer
+{
+   NSMutableDictionary* statusTimerDic=(NSMutableDictionary*) [derTimer userInfo];
+	//NSLog(@"statusTimerFunktion  maxAnzahl: %d  statusTimerDic: %@",maxAnzahl,[statusTimerDic description]);
+   
+	if ([statusTimerDic objectForKey:@"anzahl"])
+	{
+		int anz=[[statusTimerDic objectForKey:@"anzahl"] intValue];
+      
+      if (self.twitaste.on)
+      {
+         [derTimer invalidate];
+         return;
+      }
+      
+		if (anz < maxAnzahl)
+		{
+			anz++;
+			if (anz>10)
+			{
+            
+ 			}
+			
+			[statusTimerDic setObject:[NSNumber numberWithInt:anz] forKey:@"anzahl"];
+         
+      }
+}
+}
 
 - (void)setTWIState:(int)status
 {
@@ -743,6 +878,7 @@
       {
          [TWIStatusTimer invalidate];
       }
+      self.testdata.text = @"";
       
    }
    else
@@ -751,7 +887,49 @@
       
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
+      
+      Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+      
+      // Set the blocks
+      
+      reach.reachableBlock = ^(Reachability*reach)
+      {
+         NSLog(@"REACHABLE!");
+         //self.twialarm.hidden=YES;
+         //     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
+         //     [alert show];
+         //[self setTWIState:NO];
+         
+      };
+      
+      reach.unreachableBlock = ^(Reachability*reach)
+      {
+         NSLog(@"UNREACHABLE!");
+         NSString* message = @"UNREACHABLE!";
+         self.testdata.text = [NSString stringWithFormat:@"OF %@",message];
+         
+      };
+      
+      // Start the notifier, which will cause the reachability object to retain itself!
+      [reach startNotifier];
 
+      NSLog(@"currentReachabilityString: %@",[reach currentReachabilityString]);
+      
+      if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
+      {
+         self.twialarm.hidden=YES;
+         //NSLog(@"keine Verbindung");
+         [self.ladeindikator stopAnimating];
+
+         self.ladeindikator.hidden = YES;
+         self.twitaste.on=YES;
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+          [alert show];
+
+         return;
+      }
+      else
+      {
       
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
@@ -777,6 +955,7 @@
                                                          selector:@selector(statusTimerFunktion:)
                                                          userInfo:confirmTimerDic
                                                           repeats:YES];
+      }
     }
 }
 
@@ -803,6 +982,7 @@
             TWIStatus0URL =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatus0URLSuffix];
             [statusTimerDic setObject:[NSNumber numberWithInt:0] forKey:@"local"];
             self.testdata.text = [NSString stringWithFormat:@"timer anz %d",anz];
+            
             NSURL *URL = [NSURL URLWithString:TWIStatus0URL];
             
             //NSLog(@"statusTimerFunktion  URL: %@",URL);
@@ -835,6 +1015,10 @@
 			
 			NSLog(@"statusTimerFunktion statusTimer invalidate");
          self.testdata.text = [NSString stringWithFormat:@"TWI error"];
+         [self.ladeindikator stopAnimating];
+         self.ladeindikator.hidden = YES;
+         self.twitaste.on=YES;
+         
 			// Misserfolg an AVRClient senden
          
 			NSMutableDictionary* tempDataDic=[[NSMutableDictionary alloc]initWithCapacity:0];
@@ -849,8 +1033,16 @@
             
          }
 			self.sendtaste.hidden=NO;
+         
+         
 			[derTimer invalidate];
-			
+         self.testdata.text = [NSString stringWithFormat:@""];
+
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung mit HomeCentral!" message:@"'Mobile Daten muss' aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+         alert.cancelButtonIndex = -1;
+         
+         [alert show];
+
 			
 		}
 		
@@ -1308,8 +1500,9 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-   NSLog(@"didFailLoadWithError: error: %@",[error description]);
+   NSLog(@"didFailLoadWithError: error: %@  %ld",[error description],(long)[error code]);
 
+   
 }
 
 

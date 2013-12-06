@@ -12,6 +12,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+   
+   [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                          [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:18.0], NSFontAttributeName, nil]];
+
    //NSLog(@"didFinishLaunchingWithOptions: %@",[launchOptions description]);
     // Override point for customization after application launch.
    NSString* DataSuffix=@"ip.txt";

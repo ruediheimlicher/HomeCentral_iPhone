@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+
 #import "rVariableStore.h"
 #import "rToggleTaste.h"
 #import "rTagplanAnzeige.h"
@@ -18,6 +20,15 @@
 #define DATAOK          0x04;
 #define SENDOK          0x08;
 
+#define kUIControlStateCustomState (1 << 16)
+
+@interface TWIControl : UIControl {
+   UIControlState customState;
+}
+-(void)setCustomState;
+-(void)unsetCustomState;
+- (void)stateWasUpdated;
+@end
 
 @interface rHomeController : UIViewController <UIAlertViewDelegate,UIWebViewDelegate>
 {
@@ -68,6 +79,8 @@
 @property (nonatomic, readwrite) NSString*                        aktuellertag;
 
 @property (strong, nonatomic) IBOutlet UISwitch *                 twitaste;
+@property (nonatomic, readwrite) int                              lastTWIState;
+
 @property (weak, nonatomic) IBOutlet UIWebView *                  webfenster;
 
 @property (weak, nonatomic) IBOutlet UIButton *                   sendtaste;
@@ -77,7 +90,11 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *    ladeindikator;
 
 @property (weak, nonatomic) IBOutlet UILabel *                    hexdata;
-@property (weak, nonatomic) IBOutlet UILabel *                    testdata;
+@property (weak, nonatomic) IBOutlet UITextField *                testdata;
+@property (weak, nonatomic) IBOutlet UITextField *                twialarm;
+
+
+
 
 - (IBAction)reportResetTaste:(id)sender;
 

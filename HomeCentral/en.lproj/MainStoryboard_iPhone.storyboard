@@ -240,7 +240,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Data" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aH8-aK-vW6">
-                                <rect key="frame" x="31" y="404" width="282" height="21"/>
+                                <rect key="frame" x="35" y="404" width="269" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -720,11 +720,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="rlw-SY-bKe">
-                                <rect key="frame" x="10" y="374" width="300" height="24"/>
+                                <rect key="frame" x="10" y="376" width="300" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <webView contentMode="scaleToFill" id="xBN-z9-r6R">
-                                        <rect key="frame" x="0.0" y="-4" width="300" height="93"/>
+                                        <rect key="frame" x="0.0" y="-6" width="300" height="93"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </webView>
@@ -743,7 +743,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <color key="backgroundColor" red="0.85995662795283989" green="1" blue="0.78108604297326012" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="gray" id="agn-VG-7qk">
-                                <rect key="frame" x="174" y="329" width="20" height="20"/>
+                                <rect key="frame" x="176" y="329" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="color" red="0.99256616710000001" green="0.025422191520000002" blue="0.081877852459999997" alpha="1" colorSpace="calibratedRGB"/>
                             </activityIndicatorView>
@@ -754,13 +754,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="reportObjektStepper:" destination="dXL-OD-xTL" eventType="touchUpInside" id="KQY-k3-2GE"/>
                                 </connections>
                             </stepper>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Debug" lineBreakMode="wordWrap" baselineAdjustment="none" minimumFontSize="7" id="ePm-ci-YA2">
-                                <rect key="frame" x="12" y="399" width="298" height="31"/>
+                            <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" minimumFontSize="9" id="9vJ-Bl-Gok">
+                                <rect key="frame" x="10" y="401" width="300" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="9"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.79924074482297969" green="1" blue="0.9311304261498039" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -778,7 +777,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="tagplananzeige" destination="lwK-8b-7D0" id="NDn-gC-krf"/>
                         <outlet property="tagplanfeld" destination="Vvf-Mq-191" id="hkv-5z-5ka"/>
                         <outlet property="tagplanscroller" destination="J45-RZ-TYJ" id="qoJ-GZ-OD0"/>
-                        <outlet property="testdata" destination="ePm-ci-YA2" id="hPa-Um-ya9"/>
+                        <outlet property="testdata" destination="9vJ-Bl-Gok" id="uwh-lh-LZx"/>
                         <outlet property="twitaste" destination="E3m-Tr-uTg" id="pCN-h6-fWN"/>
                         <outlet property="twitimer" destination="d1u-kQ-oUi" id="uhQ-lA-SHC"/>
                         <outlet property="webfenster" destination="xBN-z9-r6R" id="3Y8-Rh-kBp"/>
