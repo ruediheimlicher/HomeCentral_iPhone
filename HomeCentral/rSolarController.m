@@ -445,7 +445,7 @@
 		}
 		else
 		{
-			NSLog(@"Keine Daten");
+			NSLog(@"lastSolarDataDic Keine Daten");
 			//[self setErrString:@"DataVonHeute: keine Daten"];
 		}
       
@@ -583,7 +583,7 @@
 		}
 		else
 		{
-			NSLog(@"Keine Daten");
+			NSLog(@"SolarDicVonHeute Keine Daten");
 			//[self setErrString:@"DataVonHeute: keine Daten"];
 		}
 		

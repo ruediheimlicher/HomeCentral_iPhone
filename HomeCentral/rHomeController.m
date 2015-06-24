@@ -203,7 +203,7 @@
    HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
 
    self.webfenster.delegate = self;
-   maxAnzahl = 15;
+   maxAnzahl = 32;
    [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.sendtaste setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
@@ -315,7 +315,7 @@
    int zeile = 56* raum + 7*objekt + wochentag;
    
    NSArray* ZeilenArray = [[self.wochenplanarray objectAtIndex:zeile]componentsSeparatedByString:@"\t"];
-   //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
+   NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
    //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[ZeilenArray description]);
    if ([ZeilenArray count]>4)
    {
@@ -437,9 +437,9 @@
 {
    NSString* ServerPfad =@"http://www.ruediheimlicher.ch/Data/eepromdaten/";
    NSString* DataSuffix=@"eepromdaten.txt";
-   //NSLog(@"readWochenplan  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
+   NSLog(@"readWochenplan  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
    NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
-   //NSLog(@"readWochenplan URL: %@",URL);
+   NSLog(@"readWochenplan URL: %@",URL);
    NSStringEncoding *  enc=0;
    NSError* WebFehler=NULL;
    NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
@@ -504,7 +504,7 @@
 
 - (void)clearTagplan
 {
-   NSLog(@"clearWochenplan");
+   NSLog(@"clearTagplan");
    // Felder fuer die Stunden aufbauen
    for (int stunde=0;stunde<24;stunde++)
    {
@@ -661,7 +661,7 @@
    NSString* HomeCentralString = [HomeCentralPfad stringByAppendingFormat:@"lbyte=%@&hbyte=%@&%@",lbyte,hbyte,DataString];
    NSLog(@"HomeCentralString: %@",HomeCentralString);
     HomeCentralURL = [NSURL URLWithString:HomeCentralString];
-   //NSLog(@"HomeCentralURL: %@",HomeCentralURL);
+   NSLog(@"HomeCentralURL: %@",HomeCentralURL);
    
   
    // URL fuer Homeserver aufbauen
@@ -702,6 +702,9 @@
 
 - (IBAction)reportTWITaste:(UISwitch *)sender
 {
+   self.hexdata.text = @"";
+   self.testdata.text = @"";
+
    self.statusanzeige.code=0;
    [self.statusanzeige setNeedsDisplay];
    //NSLog(@"reportTWITaste state: %d",sender.state);
@@ -714,8 +717,6 @@
    {
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
-      
-
       
       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
       [alert show];
@@ -888,10 +889,11 @@
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
       
-      Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+      Reachability* reach = [Reachability reachabilityWithHostname:@"ruediheimlicher.dyndns.org"];
       
       // Set the blocks
       
+      NSLog(@"currentReachabilityString: %@",reach.currentReachabilityString);
       reach.reachableBlock = ^(Reachability*reach)
       {
          NSLog(@"REACHABLE!");
@@ -900,6 +902,21 @@
          //     [alert show];
          //[self setTWIState:NO];
          
+         
+         if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
+         {
+            self.twialarm.hidden=YES;
+            NSLog(@"in reachableBlock: keine Verbindung");
+            [self.ladeindikator stopAnimating];
+            
+            self.ladeindikator.hidden = YES;
+            self.twitaste.on=YES;
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"in reachableBlock: : +Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+            [alert show];
+            
+            return;
+         }
+
       };
       
       reach.unreachableBlock = ^(Reachability*reach)
@@ -918,12 +935,12 @@
       if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
       {
          self.twialarm.hidden=YES;
-         //NSLog(@"keine Verbindung");
+         NSLog(@"keine Verbindung");
          [self.ladeindikator stopAnimating];
 
          self.ladeindikator.hidden = YES;
          self.twitaste.on=YES;
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"*Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
           [alert show];
 
          return;
@@ -957,6 +974,7 @@
                                                           repeats:YES];
       }
     }
+   
 }
 
 - (void)statusTimerFunktion:(NSTimer*) derTimer
@@ -1335,8 +1353,12 @@
 			[tempDataDic setObject:[NSNumber numberWithInt:0] forKey:@"iswriteok"];
 			NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
 			[nc postNotificationName:@"FinishLoad" object:self userInfo:tempDataDic];
-			
 			[derTimer invalidate]; // Anfragen stop
+         
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"EEPROM write" message:@"Schreiben auf EEPROM ist misslungen" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+         [alert show];
+
+         
 		}
 		
 		

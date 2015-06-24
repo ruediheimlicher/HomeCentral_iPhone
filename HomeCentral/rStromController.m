@@ -385,7 +385,7 @@
 		}
 		else
 		{
-			NSLog(@"Keine Daten");
+			NSLog(@"StromDataDicVonHeute Keine Daten an URL %@",URL);
 			//[self setErrString:@"DataVonHeute: keine Daten"];
 		}
       
@@ -452,7 +452,7 @@
       }
       else
 		{
-			NSLog(@"Keine Daten");
+			NSLog(@"StromDataDicVonHeuteKeine Daten  an URL %@",URL);
 			//[self setErrString:@"DataVonHeute: keine Daten"];
 		}
 
