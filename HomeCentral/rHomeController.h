@@ -67,7 +67,7 @@
 @property (nonatomic, readwrite) int                              aktuellerRaum;
 @property (nonatomic, readwrite) int                              aktuellesObjekt;
 @property (nonatomic, readwrite) NSString*                        aktuellerObjektname;
-@property (nonatomic, readwrite) int                              aktuellerWochentag;
+@property (nonatomic, readwrite) long                              aktuellerWochentag;
 @property (nonatomic, readwrite) int                              aktuellerObjekttyp;
 @property (nonatomic, readwrite) NSMutableArray*                  aktuellerstundencodearray;
 @property (nonatomic, readwrite) NSArray*                         oldstundencodearray;

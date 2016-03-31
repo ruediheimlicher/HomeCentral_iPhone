@@ -25,6 +25,7 @@
 
 - (void)viewDidLoad
 {
+   // http://stackoverflow.com/questions/31254725/transport-security-has-blocked-a-cleartext-http/32560433#32560433
     [super viewDidLoad];
    self.websitename = @"ruediheimlicher.dyndns.org";
 	// Do any additional setup after loading the view.

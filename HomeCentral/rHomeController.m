@@ -84,15 +84,18 @@
    self.WochentagArray = [NSArray arrayWithObjects:@"MO",@"DI",@"MI",@"DO",@"FR",@"SA", @"SO",nil];
    self.aktuellerRaum =0;
    NSString *WochenplanString = [self readWochenplan];
+   NSLog(@"viewDidLoad DataString: %@",WochenplanString);
    self.wochenplanarray = [WochenplanString componentsSeparatedByString:@"\n"];
    //NSLog(@"wochenplanarray: %@",[self.wochenplanarray description]);
   
    
-    NSCalendar* heutekalender = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar* heutekalender = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
    [heutekalender setFirstWeekday:2];
    
-   int wochentagindex = [heutekalender ordinalityOfUnit:NSWeekdayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[NSDate date]]-1;
-   //NSLog(@"wochentagindex: %d",wochentagindex);
+//   int wochentagindex = [heutekalender ordinalityOfUnit:NSWeekdayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[NSDate date]]-1;
+   
+  NSUInteger wochentagindex = [heutekalender ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfYear forDate:[NSDate date]];
+   NSLog(@"wochentagindex: %lu",(unsigned long)wochentagindex);
    
    /*
    NSDateComponents *weekdayComponents =[heutekalender components:( NSWeekdayCalendarUnit) fromDate:[NSDate date]];
@@ -121,10 +124,16 @@
    self.tagplanscroller.contentSize = self.tagplanfeld.frame.size;
    self.tagplanscroller.alwaysBounceVertical = NO;
    self.tagplanscroller.alwaysBounceHorizontal = NO;
-   
+   int stunde,test=0;
+    for (stunde=0;stunde<24;stunde++)
+    {
+       test++;
+       //NSLog(@"stunde: %d test: %d",stunde,test);
+    }
    // Felder fuer die Stunden aufbauen
-   for (int stunde=0;stunde<24;stunde++)
+   for (stunde=0;stunde<24;stunde++)
    {
+      // NSLog(@"stunde: %d %d",stunde,6+stundenabstand*stunde);
       CGRect stundefeld = CGRectMake(6+stundenabstand*stunde, 50, 20, 20);
       UILabel* std = [[UILabel alloc]initWithFrame:stundefeld];
       std.text=[NSString stringWithFormat:@"%d",stunde];
@@ -200,7 +209,7 @@
    
    
    HomeCentralAdresseString = @"http://ruediheimlicher.dyndns.org";
-   HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
+   HomeServerAdresseString = @"https://www.ruediheimlicher.ch";
 
    self.webfenster.delegate = self;
    maxAnzahl = 32;
@@ -435,12 +444,12 @@
 
 - (NSString*)readWochenplan
 {
-   NSString* ServerPfad =@"http://www.ruediheimlicher.ch/Data/eepromdaten/";
+   NSString* ServerPfad =@"https://www.ruediheimlicher.ch/Data/eepromdaten/";
    NSString* DataSuffix=@"eepromdaten.txt";
    NSLog(@"readWochenplan  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
    NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
    NSLog(@"readWochenplan URL: %@",URL);
-   NSStringEncoding *  enc=0;
+   NSStringEncoding *  enc= nil;
    NSError* WebFehler=NULL;
    NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
    if (WebFehler)
@@ -496,8 +505,23 @@
 {
    NSLog(@"reportClear");
    // Felder fuer die Stunden aufbauen
+   /*
    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Clear" message:@"Tagplan löschen??" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
    [alert show];
+*/
+   UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Tagplan löschen?"
+                                                                  message:@""
+                                                           preferredStyle:UIAlertControllerStyleAlert];
+   
+   UIAlertAction* NEINAction = [UIAlertAction actionWithTitle:@"NEIN" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {}];
+   
+   [alert addAction:NEINAction];
+   UIAlertAction* JAAction = [UIAlertAction actionWithTitle:@"JA" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {}];
+   
+   [alert addAction:JAAction];
+   [self presentViewController:alert animated:YES completion:nil];
 
 }
 
@@ -607,9 +631,9 @@
    /*
    // Webserver:
     
-    HomeClientWriteStandardAktion HomeClientURLString: http://192.168.1.210/twi?pw=ideur00&wadr=0&lbyte=00&hbyte=00&data=0+f+fb+33+ff+75+ff+ff
+    HomeClientWriteStandardAktion HomeClientURLString: https://192.168.1.210/twi?pw=ideur00&wadr=0&lbyte=00&hbyte=00&data=0+f+fb+33+ff+75+ff+ff
     
-   sendEEPROM URL: http://www.ruediheimlicher.ch/cgi-bin/eeprom.pl?pw=ideur00&perm=1&hbyte=00&lbyte=00&data=0+15+251+51+255+117+255+255&titel=Brenner&typ=0
+   sendEEPROM URL: https://www.ruediheimlicher.ch/cgi-bin/eeprom.pl?pw=ideur00&perm=1&hbyte=00&lbyte=00&data=0+15+251+51+255+117+255+255&titel=Brenner&typ=0
    */
    
    // URL fuer HomeCentral aufbauen:
@@ -940,9 +964,19 @@
 
          self.ladeindikator.hidden = YES;
          self.twitaste.on=YES;
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"*Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
-          [alert show];
+         //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"*Mobile Daten muss //aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+          //[alert show];
 
+         
+         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Keine Verbindung zum Internet"
+                                                                        message:@"Mobile Daten muss aktiviert sein."
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+         
+         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * action) {}];
+         
+         [alert addAction:defaultAction];
+         [self presentViewController:alert animated:YES completion:nil];
          return;
       }
       else
@@ -1369,18 +1403,19 @@
 
 - (void)loadURL:(NSURL *)URL
 {
-	//NSLog(@"loadURL: %@",URL);
+	NSLog(@"loadURL: %@",URL);
+   // Aufgerufen von Plan
 	NSMutableURLRequest *HCRequest = [[NSMutableURLRequest alloc] initWithURL: URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:4.0];
    //NSMutableURLRequest *HCRequest= [NSMutableURLRequest requestWithURL:URL];
    [HCRequest setHTTPMethod:@"GET"];
    //[HCRequest setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-   [[NSURLCache sharedURLCache] removeAllCachedResponses];
+//   [[NSURLCache sharedURLCache] removeAllCachedResponses];
    //	NSLog(@"Cache mem: %d",[[NSURLCache sharedURLCache]memoryCapacity]);
-   [[NSURLCache sharedURLCache] removeCachedResponseForRequest:HCRequest];
-   //	NSLog(@"loadURL:Vor loadRequest");
+ //  [[NSURLCache sharedURLCache] removeCachedResponseForRequest:HCRequest];
+   NSLog(@"loadURL:Vor loadRequest");
 	if (HCRequest)
 	{
-      //NSLog(@"loadURL:Request OK");
+      NSLog(@"loadURL:Request OK");
       [self.webfenster  loadRequest:HCRequest];
 	}
 	

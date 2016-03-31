@@ -20,7 +20,7 @@
     // Override point for customization after application launch.
    NSString* DataSuffix=@"ip.txt";
    //NSLog(@"StromDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
-   NSString* ServerPfad =@"http://www.ruediheimlicher.ch/Data";
+   NSString* ServerPfad =@"https://www.ruediheimlicher.ch/Data";
    NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
    //NSLog(@"StromDataVonHeute URL: %@",URL);
    NSStringEncoding *  enc=0;

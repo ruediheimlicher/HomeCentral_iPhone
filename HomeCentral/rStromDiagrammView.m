@@ -123,6 +123,7 @@
    CGContextSetStrokeColorWithColor(context, [[UIColor grayColor] CGColor]);
    
    CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
+   
    CGContextSetTextMatrix (context, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
    CGContextSetTextDrawingMode(context, kCGTextFill);
 

@@ -69,7 +69,7 @@
    //   int erfolg = [[UIApplication sharedApplication] openURL:stromURL];
    //  NSLog(@"erfolg: %d",erfolg);
    //[self.webfenster loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.ruediheimlicher.ch/"]]];
-   ServerPfad =@"http://www.ruediheimlicher.ch/Data";
+   ServerPfad =@"https://www.ruediheimlicher.ch/Data";
    
    //self.solardata.text = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
    //NSLog(@"A");
@@ -398,6 +398,8 @@
 			NSArray* ErrorArray=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]componentsSeparatedByString:@" "];
 			NSLog(@"ErrorArray: %@",[ErrorArray description]);
          // Login-Alert zeigen
+         
+         /*
          UIAlertView *message = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in Download",@"Download misslungen")
                                                            message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
                                                           delegate:self
@@ -405,6 +407,18 @@
                                                  otherButtonTitles:@"OK", nil];
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
+         */
+         
+         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Fehler beim Download der letzten Solardaten"
+                                                                        message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+         
+         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * action) {}];
+         
+         [alert addAction:defaultAction];
+         [self presentViewController:alert animated:YES completion:nil];
+
          return nil;
 //			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			

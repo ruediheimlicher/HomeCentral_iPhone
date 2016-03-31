@@ -75,6 +75,7 @@
    
    
    // Login-Alert zeigen
+   /*
    UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Einloggen"
                                                      message:@"Name und Passwort für den Login"
                                                     delegate:self
@@ -82,6 +83,22 @@
                                            otherButtonTitles:@"Login", nil];
    [message setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
    [message show];
+   */
+   UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Einloggen"
+                                                                  message:@"Name und Passwort für den Login."
+                                                           preferredStyle:UIAlertControllerStyleAlert];
+   
+   UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {}];
+   
+   [alert addAction:defaultAction];
+   UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Abbrechen" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {}];
+   
+   [alert addAction:cancelAction];
+   
+   [self presentViewController:alert animated:YES completion:nil];
+
    
 
 }

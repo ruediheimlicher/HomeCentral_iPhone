@@ -37,7 +37,7 @@
    self.diagrammscroller.contentSize = self.diagrammview.frame.size;
    
 	// Do any additional setup after loading the view.
-   ServerPfad =@"http://www.ruediheimlicher.ch/Data/StromDaten";
+   ServerPfad =@"https://www.ruediheimlicher.ch/Data/StromDaten";
    
    StromDicVonHeute = [self StromDataDicVonHeute];
    
@@ -320,11 +320,11 @@
 		NSString* DataSuffix=@"StromDaten.txt";
 		//NSLog(@"StromDataVonHeute  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
 		NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
-		//NSLog(@"StromDataVonHeute URL: %@",URL);
+		NSLog(@"StromDataVonHeute URL: %@",URL);
 		NSStringEncoding *  enc=0;
 		NSError* WebFehler=NULL;
 		NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
-		//NSLog(@"DataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
+		NSLog(@"DataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
 		if (WebFehler)
 		{
 			//NSLog(@"SolarDataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
@@ -333,6 +333,7 @@
 			NSArray* ErrorArray=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]componentsSeparatedByString:@" "];
 			NSLog(@"ErrorArray: %@",[ErrorArray description]);
          // Login-Alert zeigen
+         /*
          UIAlertView *message = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in Download",@"Download misslungen")
                                                            message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
                                                           delegate:self
@@ -340,6 +341,20 @@
                                                  otherButtonTitles:@"OK", nil];
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
+         */
+         
+         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Fehler beim Download der Stromdaten von heute"
+                                                                        message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+         
+         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * action) {}];
+         
+         [alert addAction:defaultAction];
+         [self presentViewController:alert animated:YES completion:nil];
+
+         
+                  
          return nil;
 //			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			

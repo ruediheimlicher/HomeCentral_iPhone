@@ -48,7 +48,7 @@
       position = offset+positionabstand*pos;
       //if (pos%4 ==0)
       {
-         CGRect posfeld = CGRectMake(position, 1, 40, 12);
+         CGRect posfeld = CGRectMake(position, 4, 40, 12);
          UILabel* std = [[UILabel alloc]initWithFrame:posfeld];
          std.textAlignment =  NSTextAlignmentRight;
          [std setFont:[UIFont fontWithName:@"Helvetica" size:9
@@ -69,7 +69,7 @@
             float nenner = 1/255.0;
             
             //NSLog(@"typ 0 stundenwert: %d",stundenwert);
-            CGRect tastenfeld = CGRectMake(position, 1.0, 12.1, 12.1);
+            CGRect tastenfeld = CGRectMake(position, 4.0, 12.1, 12.1);
             
             CGContextAddRect(context, tastenfeld);     //X, Y, Width, Height
             if ((self.code & bitpos)>0)

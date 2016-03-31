@@ -67,9 +67,10 @@
     */
    
    CGContextRef xcontext = UIGraphicsGetCurrentContext();
-   CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
+   //CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
    CGContextSetTextDrawingMode(xcontext, kCGTextFill);
 
+   
    //CGContextTranslateCTM (xcontext,10,0);
    CGContextMoveToPoint(xcontext,kOffsetX,kOffsetY);
    //CGContextAddLineToPoint(xcontext, kOffsetX +10, kOffsetY+20);
