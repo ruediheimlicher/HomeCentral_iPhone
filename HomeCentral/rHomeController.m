@@ -84,7 +84,7 @@
    self.WochentagArray = [NSArray arrayWithObjects:@"MO",@"DI",@"MI",@"DO",@"FR",@"SA", @"SO",nil];
    self.aktuellerRaum =0;
    NSString *WochenplanString = [self readWochenplan];
-   NSLog(@"viewDidLoad DataString: %@",WochenplanString);
+   //NSLog(@"viewDidLoad DataString: %@",WochenplanString);
    self.wochenplanarray = [WochenplanString componentsSeparatedByString:@"\n"];
    //NSLog(@"wochenplanarray: %@",[self.wochenplanarray description]);
   
@@ -95,7 +95,7 @@
 //   int wochentagindex = [heutekalender ordinalityOfUnit:NSWeekdayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[NSDate date]]-1;
    
   NSUInteger wochentagindex = [heutekalender ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfYear forDate:[NSDate date]];
-   NSLog(@"wochentagindex: %lu",(unsigned long)wochentagindex);
+   //NSLog(@"wochentagindex: %lu",(unsigned long)wochentagindex);
    
    /*
    NSDateComponents *weekdayComponents =[heutekalender components:( NSWeekdayCalendarUnit) fromDate:[NSDate date]];
@@ -296,11 +296,11 @@
 
 - (void)resignaktion:(NSNotification*)note
 {
-   NSLog(@"resignaktion on: %d",self.twitaste.on);
+   //NSLog(@"resignaktion on: %d",self.twitaste.on);
 
    [self setTWIState:YES];
    
-   NSLog(@"resignaktion nach setTWIstate on: %d",self.twitaste.on);
+   //NSLog(@"resignaktion nach setTWIstate on: %d",self.twitaste.on);
 }
 
 - (void)beendenktion:(NSNotification*)note
@@ -324,7 +324,7 @@
    int zeile = 56* raum + 7*objekt + wochentag;
    
    NSArray* ZeilenArray = [[self.wochenplanarray objectAtIndex:zeile]componentsSeparatedByString:@"\t"];
-   NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
+   //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[[self.wochenplanarray objectAtIndex:zeile]description]);
    //NSLog(@"setTagplanInRaum: %d objekt: %d wochentag: %d ZeilenArray: %@",raum,objekt,wochentag,[ZeilenArray description]);
    if ([ZeilenArray count]>4)
    {
@@ -446,9 +446,9 @@
 {
    NSString* ServerPfad =@"https://www.ruediheimlicher.ch/Data/eepromdaten/";
    NSString* DataSuffix=@"eepromdaten.txt";
-   NSLog(@"readWochenplan  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
+   //NSLog(@"readWochenplan  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
    NSURL *URL = [NSURL URLWithString:[ServerPfad stringByAppendingPathComponent:DataSuffix]];
-   NSLog(@"readWochenplan URL: %@",URL);
+   //NSLog(@"readWochenplan URL: %@",URL);
    NSStringEncoding *  enc= nil;
    NSError* WebFehler=NULL;
    NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
@@ -572,12 +572,12 @@
    [self restartTWITimer];
    if (self.twitaste.on == YES)
    {
-      NSLog(@"reportRaumSeg twitaste YES");
+      //NSLog(@"reportRaumSeg twitaste YES");
       self.statusanzeige.code = 0x00;
    }
    else
    {
-      NSLog(@"reportRaumSeg twitaste NO");
+      //NSLog(@"reportRaumSeg twitaste NO");
       self.statusanzeige.code = 0x01;
    }
 
@@ -889,7 +889,7 @@
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
       
-      NSLog(@"TWIStatusAktion >ON TWIStatusURL: %@",TWIStatusURLString);
+      //NSLog(@"TWIStatusAktion >ON TWIStatusURL: %@",TWIStatusURLString);
       self.testdata.text = [NSString stringWithFormat:@"ON %@",TWIStatusURLString];
       NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
       //NSLog(@"TWI ein URL: %@",URL);
@@ -904,11 +904,11 @@
          [TWIStatusTimer invalidate];
       }
       self.testdata.text = @"";
-      
+      self.connection.text =@"";
    }
    else
    {
-      NSLog(@"setTWIstate TWI ausschalten");
+      //NSLog(@"setTWIstate TWI ausschalten");
       
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
@@ -918,19 +918,22 @@
       // Set the blocks
       
       NSLog(@"currentReachabilityString: %@",reach.currentReachabilityString);
+     
+      
       reach.reachableBlock = ^(Reachability*reach)
       {
-         NSLog(@"REACHABLE!");
+         //NSLog(@"REACHABLE!");
          //self.twialarm.hidden=YES;
          //     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
          //     [alert show];
          //[self setTWIState:NO];
          
          
+         /*
          if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
          {
             self.twialarm.hidden=YES;
-            NSLog(@"in reachableBlock: keine Verbindung");
+            //NSLog(@"in reachableBlock: keine Verbindung");
             [self.ladeindikator stopAnimating];
             
             self.ladeindikator.hidden = YES;
@@ -940,8 +943,25 @@
             
             return;
          }
+          */
 
       };
+      /*
+      if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
+      {
+         
+         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Keine Verbindung zum Internet"
+                                                                        message:@"Mobile Daten muss aktiviert sein."
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+         
+         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction * action) {}];
+         
+         [alert addAction:defaultAction];
+         [self presentViewController:alert animated:YES completion:nil];
+         
+      }
+      */
       
       reach.unreachableBlock = ^(Reachability*reach)
       {
@@ -956,6 +976,7 @@
 
       NSLog(@"currentReachabilityString: %@",[reach currentReachabilityString]);
       
+      self.connection.text =[reach currentReachabilityString];
       if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
       {
          self.twialarm.hidden=YES;

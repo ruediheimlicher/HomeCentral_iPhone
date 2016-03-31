@@ -580,14 +580,6 @@
                                     <view contentMode="scaleToFill" id="Vvf-Mq-191">
                                         <rect key="frame" x="0.0" y="8" width="534" height="271"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" minimumFontSize="9" id="9vJ-Bl-Gok">
-                                                <rect key="frame" x="0.0" y="246" width="300" height="17"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                        </subviews>
                                         <color key="backgroundColor" red="0.67599624165993411" green="0.98971619897959184" blue="0.73715162673986745" alpha="1" colorSpace="calibratedRGB"/>
                                     </view>
                                 </subviews>
@@ -610,8 +602,14 @@
                                     <action selector="reportRaumSeg:" destination="fc2-zf-OXd" eventType="valueChanged" id="agt-BQ-rPJ"/>
                                 </connections>
                             </segmentedControl>
+                            <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" minimumFontSize="9" id="9vJ-Bl-Gok">
+                                <rect key="frame" x="10" y="472" width="300" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gWd-AN-Ojo">
-                                <rect key="frame" x="12" y="412" width="139" height="19"/>
+                                <rect key="frame" x="12" y="412" width="153" height="19"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -695,7 +693,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <webView contentMode="scaleToFill" id="xBN-z9-r6R">
-                                        <rect key="frame" x="0.0" y="0.0" width="300" height="34"/>
+                                        <rect key="frame" x="0.0" y="3" width="300" height="34"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </webView>
@@ -709,7 +707,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="gray" id="agn-VG-7qk">
-                                <rect key="frame" x="176" y="358" width="20" height="20"/>
+                                <rect key="frame" x="176" y="360" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="color" red="0.99256616710000001" green="0.025422191520000002" blue="0.081877852459999997" alpha="1" colorSpace="calibratedRGB"/>
                             </activityIndicatorView>
@@ -741,6 +739,12 @@
                                     <action selector="reportWochentagSeg:" destination="fc2-zf-OXd" eventType="valueChanged" id="t4g-Gx-HPp"/>
                                 </connections>
                             </segmentedControl>
+                            <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" textAlignment="right" minimumFontSize="9" id="Ufa-Gc-XTm">
+                                <rect key="frame" x="177" y="414" width="123" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.79924074482297969" green="1" blue="0.9311304261498039" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -749,6 +753,7 @@
                     </tabBarItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="connection" destination="Ufa-Gc-XTm" id="WQM-Mi-cLU"/>
                         <outlet property="hexdata" destination="LK2-ax-XiS" id="bTG-FB-hv2"/>
                         <outlet property="ipfeld" destination="gWd-AN-Ojo" id="AZ2-aK-tgz"/>
                         <outlet property="ladeindikator" destination="agn-VG-7qk" id="cVI-UG-HVM"/>

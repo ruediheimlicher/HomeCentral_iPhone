@@ -92,6 +92,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *                    hexdata;
 @property (weak, nonatomic) IBOutlet UITextField *                testdata;
 @property (weak, nonatomic) IBOutlet UITextField *                twialarm;
+@property (weak, nonatomic) IBOutlet UITextField *                connection;
 
 
 
