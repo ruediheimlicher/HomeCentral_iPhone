@@ -664,7 +664,26 @@
       hbyte = [@"0" stringByAppendingString:hbyte];
    }
 */
+   NSString* DataString=@"&data=1"; // Data ankuendigen
+   // data anfuegen
+   int i=0;
+   for (i=0;i<8;i++) // 8 bytes uebertragen
+   {
+      if (i<[StundenByteArray count])
+      {
+         DataString= [NSString stringWithFormat:@"%@&d%d=%x",DataString,i,[[StundenByteArray objectAtIndex:i]intValue]];
+      }
+      else // auffuellen mit 0xff
+      {
+         DataString= [NSString stringWithFormat:@"%@&d%d=%x",DataString,i,0xff];
+         
+      }
+      
+   }// for i
    
+
+   
+   /*
    NSString* DataString=@"data=";
    for (int i=0;i<8;i++)
    {
@@ -681,10 +700,14 @@
          DataString = [DataString stringByAppendingString:@"+"];
       }
    }
+   */
+   
+   
    self.hexdata.text = DataString;
    NSString* HomeCentralString = [HomeCentralPfad stringByAppendingFormat:@"lbyte=%@&hbyte=%@&%@",lbyte,hbyte,DataString];
    NSLog(@"HomeCentralString: %@",HomeCentralString);
     HomeCentralURL = [NSURL URLWithString:HomeCentralString];
+   
    NSLog(@"HomeCentralURL: %@",HomeCentralURL);
    
   
@@ -692,7 +715,10 @@
    
    // http://www.ruediheimlicher.ch/cgi-bin/eeprom.pl?pw=ideur00&perm=1&hbyte=00&lbyte=00&data=0+15+251+51+255+117+255+255&titel=Brenner&typ=0
    
+   
    NSString* EEPROMDataString = [StundenByteArray componentsJoinedByString:@"+"];
+   
+   
    //NSString* aktuellerWochentagString = [NSString stringWithFormat:@"%02d",self.aktuellerWochentag];
    EEPROMDataString = [EEPROMDataString stringByAppendingFormat:@"+255+255"];
    
@@ -875,7 +901,7 @@
 
 - (void)setTWIState:(int)status
 {
-    NSLog(@"setTWIstate status: %d",status);
+   NSLog(@"setTWIstate status: %d",status);
    
    if (status)
    {
@@ -884,7 +910,7 @@
       self.twitimer.text = @"";
       [self.ladeindikator stopAnimating];
       self.ladeindikator.hidden = YES;
-
+      
       self.sendtaste.enabled= NO;
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
       NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
@@ -893,7 +919,7 @@
       self.testdata.text = [NSString stringWithFormat:@"ON %@",TWIStatusURLString];
       NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
       //NSLog(@"TWI ein URL: %@",URL);
-     
+      
       //NSError* err=0;
       //NSString *html = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&err];
       //NSLog(@"TWI ON html: %@\nerr: %@",html,err);
@@ -918,7 +944,7 @@
       // Set the blocks
       
       NSLog(@"currentReachabilityString: %@",reach.currentReachabilityString);
-     
+      
       
       reach.reachableBlock = ^(Reachability*reach)
       {
@@ -930,38 +956,38 @@
          
          
          /*
-         if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
-         {
-            self.twialarm.hidden=YES;
-            //NSLog(@"in reachableBlock: keine Verbindung");
-            [self.ladeindikator stopAnimating];
-            
-            self.ladeindikator.hidden = YES;
-            self.twitaste.on=YES;
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"in reachableBlock: : +Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
-            [alert show];
-            
-            return;
-         }
+          if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
+          {
+          self.twialarm.hidden=YES;
+          //NSLog(@"in reachableBlock: keine Verbindung");
+          [self.ladeindikator stopAnimating];
+          
+          self.ladeindikator.hidden = YES;
+          self.twitaste.on=YES;
+          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"in reachableBlock: : +Mobile Daten muss aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
+          [alert show];
+          
+          return;
+          }
           */
-
+         
       };
       /*
-      if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
-      {
-         
-         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Keine Verbindung zum Internet"
-                                                                        message:@"Mobile Daten muss aktiviert sein."
-                                                                 preferredStyle:UIAlertControllerStyleAlert];
-         
-         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                               handler:^(UIAlertAction * action) {}];
-         
-         [alert addAction:defaultAction];
-         [self presentViewController:alert animated:YES completion:nil];
-         
-      }
-      */
+       if ([[reach currentReachabilityString] isEqualToString:@"No Connection"])
+       {
+       
+       UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Keine Verbindung zum Internet"
+       message:@"Mobile Daten muss aktiviert sein."
+       preferredStyle:UIAlertControllerStyleAlert];
+       
+       UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {}];
+       
+       [alert addAction:defaultAction];
+       [self presentViewController:alert animated:YES completion:nil];
+       
+       }
+       */
       
       reach.unreachableBlock = ^(Reachability*reach)
       {
@@ -973,7 +999,7 @@
       
       // Start the notifier, which will cause the reachability object to retain itself!
       [reach startNotifier];
-
+      
       NSLog(@"currentReachabilityString: %@",[reach currentReachabilityString]);
       
       self.connection.text =[reach currentReachabilityString];
@@ -982,12 +1008,12 @@
          self.twialarm.hidden=YES;
          NSLog(@"keine Verbindung");
          [self.ladeindikator stopAnimating];
-
+         
          self.ladeindikator.hidden = YES;
          self.twitaste.on=YES;
          //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"*Mobile Daten muss //aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
-          //[alert show];
-
+         //[alert show];
+         
          
          UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Keine Verbindung zum Internet"
                                                                         message:@"Mobile Daten muss aktiviert sein."
@@ -1002,33 +1028,33 @@
       }
       else
       {
-      
-      NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
-      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
-      
-      NSLog(@"TWIStatusAktion >OFF TWIStatusURL: %@",TWIStatusURLString);
-      self.testdata.text = [NSString stringWithFormat:@"OF %@",TWIStatusURLString];
-
-      NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
-      //NSLog(@"TWI aus URL: %@",URL);
-      
-      //NSError* err=0;
-     // NSString *html = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&err];
-     // NSLog(@"TWI OFF html: %@\nerr: %@",html,err);
-       [self loadURL:URL];
-      NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
-      [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
-      int sendResetDelay=1.0;
-      
-      //NSLog(@"EEPROMReadDataAktion  confirmTimerDic: %@",[confirmTimerDic description]);
-      
-      confirmStatusTimer=[NSTimer scheduledTimerWithTimeInterval:sendResetDelay
-                                                           target:self
-                                                         selector:@selector(statusTimerFunktion:)
-                                                         userInfo:confirmTimerDic
-                                                          repeats:YES];
+         
+         NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"0"];
+         NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
+         
+         NSLog(@"TWIStatusAktion >OFF TWIStatusURL: %@",TWIStatusURLString);
+         self.testdata.text = [NSString stringWithFormat:@"OF %@",TWIStatusURLString];
+         
+         NSURL *URL = [NSURL URLWithString:TWIStatusURLString];
+         //NSLog(@"TWI aus URL: %@",URL);
+         
+         //NSError* err=0;
+         // NSString *html = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&err];
+         // NSLog(@"TWI OFF html: %@\nerr: %@",html,err);
+         [self loadURL:URL];
+         NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
+         [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
+         int sendResetDelay=1.0;
+         
+         //NSLog(@"EEPROMReadDataAktion  confirmTimerDic: %@",[confirmTimerDic description]);
+         
+         confirmStatusTimer=[NSTimer scheduledTimerWithTimeInterval:sendResetDelay
+                                                             target:self
+                                                           selector:@selector(statusTimerFunktion:)
+                                                           userInfo:confirmTimerDic
+                                                            repeats:YES];
       }
-    }
+   }
    
 }
 

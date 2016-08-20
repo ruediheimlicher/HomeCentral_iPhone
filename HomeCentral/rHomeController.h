@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import <SystemConfiguration/SystemConfiguration.h>
-
+#include <netdb.h>
 #import "rVariableStore.h"
 #import "rToggleTaste.h"
 #import "rTagplanAnzeige.h"
