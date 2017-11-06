@@ -13,7 +13,7 @@
 #import "rVariableStore.h"
 #import "rToggleTaste.h"
 #import "rTagplanAnzeige.h"
-#import "rStatusanzeige.h"
+#import "rStatusAnzeige.h"
 
 #define TWIOFF          0x01
 #define ADRESSEOK       0x02;

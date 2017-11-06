@@ -47,6 +47,18 @@
 
 @implementation rHomeController
 
+- (void)showMessage:(BOOL)animated
+{
+  // http://stackoverflow.com/questions/32804506/uialertcontroller-not-appearing-at-all
+   
+   UIAlertController *alertController = [UIAlertController  alertControllerWithTitle:@"Do not leave any Field Empty"  message:nil  preferredStyle:UIAlertControllerStyleAlert];
+   
+   [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+      [self dismissViewControllerAnimated:YES completion:nil];
+   }]];
+   [self presentViewController:alertController animated:YES completion:nil];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -190,7 +202,7 @@
    //self.tagplananzeige.typ=0;
    //self.ganzstundetagplananzeige.typ=1;
    
-   
+ //  [self showMessage:YES];
    [self.onofftaste setBackgroundImage:blueButtonImage forState:UIControlStateSelected];
    [self.onofftaste setBackgroundImage:defButtonImage forState:UIControlStateNormal];
    
@@ -275,7 +287,18 @@
 	// Start the notifier, which will cause the reachability object to retain itself!
 	[reach startNotifier];
 */
- 
+   /*
+   UIAlertController* alert_n = [UIAlertController alertControllerWithTitle:@"My Alert"
+                                                                    message:@"This is an alert."
+                                                             preferredStyle:UIAlertControllerStyleAlert];
+   
+   UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {}];
+   
+   [alert_n addAction:defaultAction];
+   
+   [self presentViewController:alert_n animated:YES completion:nil];
+*/
 }
 
 - (void)backgroundaktion:(NSNotification*)note
@@ -565,7 +588,10 @@
 
 
 - (IBAction)reportObjektStepper:(UIStepper*)sender
-{ NSLog(@"reportObjektStepper %d",(int)sender.value);
+{
+   NSLog(@"reportObjektStepper %d",(int)sender.value);
+   NSLog(@"reportObjektStepper aktuellerRaum: %d aktuellesObjekt: %d",self.aktuellerRaum,self.aktuellesObjekt);
+   
    self.aktuellesObjekt = (int)sender.value;
   
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
@@ -752,6 +778,7 @@
 
 - (IBAction)reportTWITaste:(UISwitch *)sender
 {
+   
    self.hexdata.text = @"";
    self.testdata.text = @"";
 
@@ -768,9 +795,40 @@
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
       
+      
+      UIAlertController* alert_n = [UIAlertController alertControllerWithTitle:@"TWI-Status"
+                                                                       message:@"TWI ausschalten?"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+      
+      UIAlertAction* NOAction = [UIAlertAction actionWithTitle:@"NEIN" style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction * action)
+      {
+         NSLog(@"TWI nicht ausschalten.");
+         //self.twitaste.on=YES;
+         // Nichts tun
+         [self.ladeindikator stopAnimating];
+         self.ladeindikator.hidden = YES;
+         
+         
+      }];
+      [alert_n addAction:NOAction];
+
+      UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"JA" style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction * action)
+                                      {
+                                         NSLog(@" TWI ausschalten");
+                                         [self setTWIState:NO]; // TWI ausschalten
+                             
+                                      }];
+      
+      [alert_n addAction:OKAction];
+      [self presentViewController:alert_n animated:YES completion:nil];
+      
+
+     /*
       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
       [alert show];
-
+*/
       /*
       Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
       
@@ -804,6 +862,7 @@
 }
 
 // Antworten auf Login-Button
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
    if ([[alertView title]isEqualToString:@"TWI-Status"])
@@ -1459,7 +1518,7 @@
 //   [[NSURLCache sharedURLCache] removeAllCachedResponses];
    //	NSLog(@"Cache mem: %d",[[NSURLCache sharedURLCache]memoryCapacity]);
  //  [[NSURLCache sharedURLCache] removeCachedResponseForRequest:HCRequest];
-   NSLog(@"loadURL:Vor loadRequest");
+   //NSLog(@"loadURL:Vor loadRequest");
 	if (HCRequest)
 	{
       NSLog(@"loadURL:Request OK");

@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Ruedi Heimlicher. All rights reserved.
 //
 
-#import "rStatusanzeige.h"
+#import "rStatusAnzeige.h"
 
 @implementation rStatusanzeige
 
