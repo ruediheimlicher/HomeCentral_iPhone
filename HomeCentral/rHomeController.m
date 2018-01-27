@@ -47,6 +47,7 @@
 
 @implementation rHomeController
 
+
 - (void)showMessage:(BOOL)animated
 {
   // http://stackoverflow.com/questions/32804506/uialertcontroller-not-appearing-at-all
@@ -58,6 +59,48 @@
    }]];
    [self presentViewController:alertController animated:YES completion:nil];
 }
+
+- (void)showDebug:(NSString*)warnung
+{
+   UIAlertController* alert_Debug = [UIAlertController alertControllerWithTitle:@"Debug-Status"
+                                                                        message:warnung
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+   UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action)
+                              {
+                                 NSLog(@"showDebug warnung: %@",warnung);
+                                 //[self setTWIState:NO]; // TWI ausschalten
+                                 
+                                 NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+                                 [nc postNotificationName:@"debugwarnung" object:self userInfo:[NSDictionary dictionaryWithObject:warnung forKey:@"debugwarnung"]];
+                                 
+                              }];
+   
+   [alert_Debug addAction:OKAction];
+   [self presentViewController:alert_Debug animated:YES completion:nil];
+}
+
+- (void)showWarnungMitTitel:(NSString*)titel mitWarnung:(NSString*)warnung
+{
+   UIAlertController* alert_Warnung = [UIAlertController alertControllerWithTitle:titel
+                                                                          message:warnung
+                                                                   preferredStyle:UIAlertControllerStyleAlert];
+   UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action)
+                              {
+                                 NSLog(@"showWarnungMitTitel titel: %@ warnung: %@",titel, warnung);
+                                 //[self setTWIState:NO]; // TWI ausschalten
+                                 
+                                 NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+                                 [nc postNotificationName:@"debugwarnungmittitel" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:titel,@"titel",warnung,@"debugwarnung",nil]];
+                                 
+                              }];
+   
+   [alert_Warnung addAction:OKAction];
+   [self presentViewController:alert_Warnung animated:YES completion:nil];
+   
+}
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -72,9 +115,13 @@
 
 - (void)viewDidLoad
 {
+   debugstring = @"debug: ";
+   NSString* loadstring = @"Start ";
+   NSLog(@"loadstring: %@",loadstring);
+   loadstring = [loadstring stringByAppendingString:@"A"];
+   NSLog(@"loadstring: %@",loadstring);
    [super viewDidLoad];
    
-
    
    [[NSNotificationCenter defaultCenter] addObserver:self
                                             selector:@selector(backgroundaktion:)
@@ -86,16 +133,20 @@
                                                 name:@"UIApplicationWillResignActiveNotification"
                                               object:nil];
    [[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(beendenaktion:)
+                                            selector:@selector(beendenAktion:)
                                                 name:@"Beenden"
                                               object:nil];
 
    //[UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
+   debugstring = [debugstring stringByAppendingString:@"A"];
+   loadstring = [loadstring stringByAppendingString:@"B"];
+   NSLog(@"loadstring: %@ debugstring: %@",loadstring,debugstring);
    self.ipfeld.text = [[rVariableStore sharedInstance] IP];
 
    self.WochentagArray = [NSArray arrayWithObjects:@"MO",@"DI",@"MI",@"DO",@"FR",@"SA", @"SO",nil];
    self.aktuellerRaum =0;
    NSString *WochenplanString = [self readWochenplan];
+   debugstring = [debugstring stringByAppendingString:@"B"];
    //NSLog(@"viewDidLoad DataString: %@",WochenplanString);
    self.wochenplanarray = [WochenplanString componentsSeparatedByString:@"\n"];
    //NSLog(@"wochenplanarray: %@",[self.wochenplanarray description]);
@@ -228,7 +279,10 @@
    [self.sendtaste setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
    [self.sendtaste setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
-   
+   debugstring = [debugstring stringByAppendingString:@"C"];
+   loadstring = [loadstring stringByAppendingString:@"B"];
+   NSLog(@"loadstring: %@ debugstring: %@",loadstring,debugstring);
+
    // Datum
    NSDate *currDate = [NSDate date];   //Current Date
    
@@ -269,6 +323,7 @@
    self.statusanzeige.legendearray = StatusanzeigeArray;
    [self.statusanzeige setNeedsDisplay];
    self.lastTWIState=1;
+ //  [self showDebug:@"viewDidLoad"];
 /*
    
    Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
@@ -299,6 +354,20 @@
    
    [self presentViewController:alert_n animated:YES completion:nil];
 */
+   debugstring = [debugstring stringByAppendingString:@"D"];
+   loadstring = [loadstring stringByAppendingString:@"C"];
+   NSLog(@"loadstring: %@ debugstring: %@",loadstring,debugstring);
+
+   // NSLog(@"viewdidLoad debugstring: %@",debugstring);
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+   NSLog(@"viewDidAppear");
+   NSString* message = [NSString stringWithFormat:@"viewDidAppear debugstring: %@",debugstring];
+   NSLog(@"viewDidAppear message: %@",message);
+   [self showDebug:message];
+   
 }
 
 - (void)backgroundaktion:(NSNotification*)note
@@ -326,7 +395,7 @@
    //NSLog(@"resignaktion nach setTWIstate on: %d",self.twitaste.on);
 }
 
-- (void)beendenktion:(NSNotification*)note
+- (void)beendenAktion:(NSNotification*)note
 {
    NSLog(@"beendenktion on: %d",self.twitaste.on);
    
@@ -337,7 +406,7 @@
 
 - (NSMutableArray*)setTagplanInRaum:(int)raum fuerObjekt:(int)objekt anWochentag:(int)wochentag
 {
-   
+   [self showDebug:@"setTagplanInRaum"];
    // eventuell TWI-Timer reseten
    if ([TWIStatusTimer isValid])
    {
@@ -467,6 +536,7 @@
 
 - (NSString*)readWochenplan
 {
+   //[self showDebug:@"readWochenplan"];
    NSString* ServerPfad =@"https://www.ruediheimlicher.ch/Data/eepromdaten/";
    NSString* DataSuffix=@"eepromdaten.txt";
    //NSLog(@"readWochenplan  DownloadPfad: %@ DataSuffix: %@",ServerPfad,DataSuffix);
@@ -528,10 +598,6 @@
 {
    NSLog(@"reportClear");
    // Felder fuer die Stunden aufbauen
-   /*
-   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Clear" message:@"Tagplan löschen??" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
-   [alert show];
-*/
    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Tagplan löschen?"
                                                                   message:@""
                                                            preferredStyle:UIAlertControllerStyleAlert];
@@ -825,10 +891,6 @@
       [self presentViewController:alert_n animated:YES completion:nil];
       
 
-     /*
-      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI-Status" message:@"TWI ausschalten?" delegate:self cancelButtonTitle:@"Nein" otherButtonTitles:@"Ja",nil];
-      [alert show];
-*/
       /*
       Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
       
@@ -861,73 +923,6 @@
    }
 }
 
-// Antworten auf Login-Button
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-   if ([[alertView title]isEqualToString:@"TWI-Status"])
-   {
-      NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-      if([title isEqualToString:@"Ja"])
-      {
-         //NSLog(@"Button Ja was selected.");
-         [self setTWIState:NO]; // TWI ausschalten
-         
-      }
-      else if([title isEqualToString:@"Nein"])
-      {
-         //NSLog(@"TWI nicht ausschalten.");
-         //self.twitaste.on=YES;
-         // Nichts tun
-         [self.ladeindikator stopAnimating];
-         self.ladeindikator.hidden = YES;
-
-      }
-      return;
-   }
-   if ([[alertView title]isEqualToString:@"Clear"])
-   {
-      NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-      if([title isEqualToString:@"Ja"])
-      {
-         NSLog(@"Clear: Button Ja was selected.");
-         [self clearTagplan]; // Tagplan löschen
-      }
-      else
-      {
-         return;
-      }
-      return;
-   }
-   if ([[alertView title]isEqualToString:@"Keine Verbindung zum Internet"])
-   {
-      NSLog(@"Keine Verbindung.");
-      
-     // [[self twitaste] setCustomState:NO];
-
-      [self.ladeindikator stopAnimating];
-      self.ladeindikator.hidden = YES;
-      /*
-      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TWI ON" message:@"TWI-Schalter schliessen!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
-      [alert show];
-       */
-
-   }
-   /*
-   if ([[alertView title]isEqualToString:@"TWI-Schalter schliessen!"])
-   {
-      NSMutableDictionary* confirmTimerDic=[[NSMutableDictionary alloc]initWithCapacity:0];
-      [confirmTimerDic setObject:[NSNumber numberWithInt:0]forKey:@"anzahl"];
-
-      NSTimer* TWITimer=[NSTimer scheduledTimerWithTimeInterval:4.0
-                                                          target:self
-                                                        selector:@selector(TWIstatusTimerFunktion:)
-                                                        userInfo:confirmTimerDic
-                                                         repeats:YES];
-
-   }
-*/
-}
 
 - (void)TWIstatusTimerFunktion:(NSTimer*) derTimer
 {
@@ -1196,11 +1191,8 @@
 			[derTimer invalidate];
          self.testdata.text = [NSString stringWithFormat:@""];
 
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung mit HomeCentral!" message:@"'Mobile Daten muss' aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
-         alert.cancelButtonIndex = -1;
-         
-         [alert show];
-
+         [self showWarnungMitTitel:@"Keine Verbindung mit HomeCentral!" mitWarnung:@"Mobile Daten muss' aktiviert sein"];
+ 
 			
 		}
 		

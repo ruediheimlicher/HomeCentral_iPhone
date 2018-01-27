@@ -144,8 +144,20 @@ char* itoa(int val, int base)
    //NSLog(@"Ordinate drawRect bounds w: %.1f\t h: %.1f" ,self.bounds.size.width,self.bounds.size.height);
     //NSLog(@"Ordinate drawRect diagrammhoehe: %.1f\t offsetx: %.1f" ,self.diagrammhoehe,self.offsetx);
    //NSLog(@"Ordinate drawRect teile: %d",self.teile);
+   
+   UIColor* itemColor=[UIColor blackColor];
+   UIFont *ordinateFont = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
+   NSDictionary* tempAttr=[NSDictionary dictionaryWithObjectsAndKeys:itemColor, NSForegroundColorAttributeName,ordinateFont,NSFontAttributeName,nil];
+
+   
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,8,0);
+   /*
+   CGFontRef schrift =  CGFontCreateWithFontName((CFStringRef)@"Helvetica");
+   // https://stackoverflow.com/questions/467404/how-to-create-a-font-with-cgfontcreatewithfontname
+   CGContextSetFont(context,schrift);
+   CGContextSetFontSize(context,10);
+   
    CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
    CGContextSetTextDrawingMode(context, kCGTextFill);
    //CGContextTranslateCTM (xcontext,10,0);
@@ -154,7 +166,9 @@ char* itoa(int val, int base)
    CGContextSetLineWidth(context, 0.4);
    CGContextSetStrokeColorWithColor(context, [[UIColor grayColor] CGColor]);
    //NSLog(@"drawRect eckeunteny: %.1f",self.eckeunteny);
-
+*/
+  
+   
    float startx = self.offsetx;
    float starty = self.eckeunteny+2-self.randunten;
    //NSLog(@"Ordinate startx: %.1f starty: %.1f",startx,starty);
@@ -183,7 +197,8 @@ char* itoa(int val, int base)
          x += 5;
       }
       
-     // NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",wert] attributes:attributes];
+
+      NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",wert] attributes:tempAttr];
       
       CGContextBeginPath(context);
       //char* c = itoa(wert,10);
@@ -192,15 +207,26 @@ char* itoa(int val, int base)
       {
          case 0:
          {
-            y = starty - i*(self.diagrammhoehe/(self.teile));
-            CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
+            y = starty - 8 - i*(self.diagrammhoehe/(self.teile));
+            /*
+            CGMutablePathRef path = CGPathCreateMutable();
+            //CTFramesetterRef ctFramesetting = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)wertstring);
+            CTFramesetterRef rahmensetting = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)wertstring);
+            CTFrameRef rahmen = CTFramesetterCreateFrame(rahmensetting, CFRangeMake(0, wertstring.length), path, NULL);
+            // https://stackoverflow.com/questions/25249860/ios-draw-a-text-at-a-point-in-a-rectangle
+             */
+           [wertstring drawAtPoint:CGPointMake(x,y)]; 
+            
+           // CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
+         
          }break;
          case 1: // nur gerade
          {
             if (i%2==0)
             {
-               y = starty - i*(self.diagrammhoehe/(self.teile));
-               CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
+               y = starty - 8 - i*(self.diagrammhoehe/(self.teile));
+               [wertstring drawAtPoint:CGPointMake(x,y)]; 
+               //CGContextShowTextAtPoint(context,x ,y,cLegende,strlen(cLegende));
             }
          }break;
       } // switch
@@ -219,7 +245,10 @@ char* itoa(int val, int base)
       const char* cEinheit = malloc(4);
       cEinheit = [self.einheit UTF8String];
       //NSLog(@"cEinheit: %s",cEinheit);
-      CGContextShowTextAtPoint(context,self.offsetx+5 ,y-15,cEinheit,strlen(cEinheit));
+      NSMutableAttributedString* einheitstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",self.einheit] attributes:tempAttr];
+      
+      [einheitstring drawAtPoint:CGPointMake(self.offsetx+5,y-15)]; 
+//      CGContextShowTextAtPoint(context,self.offsetx+5 ,y-15,cEinheit,strlen(cEinheit));
       CGContextStrokePath(context);
       
    }

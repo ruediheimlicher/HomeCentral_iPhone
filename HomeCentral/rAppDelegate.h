@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreText/CoreText.h>
 #import "rVariableStore.h"
 
 @interface rAppDelegate : UIResponder <UIApplicationDelegate>

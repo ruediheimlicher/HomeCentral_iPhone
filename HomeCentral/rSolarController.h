@@ -80,6 +80,9 @@
 @property (nonatomic,readwrite) float zoomfaktorx;
 @property (nonatomic,readwrite) float zoomfaktory;
 
+
+- (void)showDebug:(NSString*)warnung;
+
 - (IBAction)reportDiagrammTaste:(id)sender;
 
 

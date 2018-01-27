@@ -14,6 +14,50 @@
 
 @implementation rSolarController
 
+- (void)showDebug:(NSString*)warnung
+{
+   UIAlertController* alert_Debug = [UIAlertController alertControllerWithTitle:@"Debug-Status"
+                                                                     message:warnung
+                                                              preferredStyle:UIAlertControllerStyleAlert];
+   UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action)
+                              {
+                                 NSLog(@"showDebug warnung: %@",warnung);
+                                 //[self setTWIState:NO]; // TWI ausschalten
+                                 
+                                 NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+                                 [nc postNotificationName:@"debugwarnung" object:self userInfo:[NSDictionary dictionaryWithObject:warnung forKey:@"debugwarnung"]];
+                                 
+                              }];
+   
+   [alert_Debug addAction:OKAction];
+   [self presentViewController:alert_Debug animated:YES completion:nil];
+
+}
+
+- (void)showWarnungMitTitel:(NSString*)titel mitWarnung:(NSString*)warnung
+{
+   UIAlertController* alert_Warnung = [UIAlertController alertControllerWithTitle:titel
+                                                                        message:warnung
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+   UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action)
+                              {
+                                 NSLog(@"showWarnungMitTitel titel: %@ warnung: %@",titel, warnung);
+                                 //[self setTWIState:NO]; // TWI ausschalten
+                                 
+                                 NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+                                 [nc postNotificationName:@"debugwarnungmittitel" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:titel,@"titel",warnung,@"debugwarnung",nil]];
+                                 
+                              }];
+   
+   [alert_Warnung addAction:OKAction];
+   [self presentViewController:alert_Warnung animated:YES completion:nil];
+   
+}
+
+
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -72,9 +116,13 @@
    ServerPfad =@"https://www.ruediheimlicher.ch/Data";
    
    //self.solardata.text = [[self SolarDataDicVonHeute] objectForKey:@"lastsolardata"];
-   //NSLog(@"A");
+   NSLog(@"Solar A");
+   //[self showDebug:@"Solar A"];
    [self loadLastData];
+   [self showDebug:@"Solar loadLastData"];
    return;
+   
+   
    NSString* lastsolardataString = [[self lastSolarDataDic] objectForKey:@"lastsolardata"];
    self.solardata.text = lastsolardataString;
    //NSLog(@"lastsolardata: %@",lastsolardataString);
@@ -512,6 +560,8 @@
 			NSArray* ErrorArray=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]componentsSeparatedByString:@" "];
 			NSLog(@"ErrorArray: %@",[ErrorArray description]);
          // Login-Alert zeigen
+         NSString* ErrorString = [ErrorArray componentsJoinedByString:@"\n"];
+         /*
          UIAlertView *message = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in Download",@"Download misslungen")
                                                            message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
                                                           delegate:self
@@ -519,6 +569,9 @@
                                                  otherButtonTitles:@"OK", nil];
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
+         */
+         [self showWarnungMitTitel:@"Download misslungen" mitWarnung:ErrorString];
+         
          return nil;
 //			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			
@@ -870,7 +923,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-   NSLog(@"viewWillAppear");
+   NSLog(@"SolarController viewWillAppear");
+   
 	self.webfenster.delegate = self;	// setup the delegate as the web view is shown
    
    

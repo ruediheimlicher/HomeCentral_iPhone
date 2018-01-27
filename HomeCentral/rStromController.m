@@ -14,6 +14,25 @@
 
 @implementation rStromController
 
+- (void)showDebug:(NSString*)warnung
+{
+   UIAlertController* alert_Debug = [UIAlertController alertControllerWithTitle:@"Debug-Status"
+                                                                        message:warnung
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+   UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action)
+                              {
+                                 NSLog(@"showDebug warnung: %@",warnung);
+                                 //[self setTWIState:NO]; // TWI ausschalten
+                                 
+                                 NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+                                 [nc postNotificationName:@"debugwarnung" object:self userInfo:[NSDictionary dictionaryWithObject:warnung forKey:@"debugwarnung"]];
+                                 
+                              }];
+   
+   [alert_Debug addAction:OKAction];
+   [self presentViewController:alert_Debug animated:YES completion:nil];
+}
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -324,7 +343,7 @@
 		NSStringEncoding *  enc=0;
 		NSError* WebFehler=NULL;
 		NSString* DataString=[NSString stringWithContentsOfURL:URL usedEncoding: enc error:&WebFehler];
-		NSLog(@"DataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
+		//NSLog(@"DataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
 		if (WebFehler)
 		{
 			//NSLog(@"SolarDataVonHeute WebFehler: :%@",[[WebFehler userInfo]description]);
@@ -420,6 +439,8 @@
 			NSArray* ErrorArray=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]componentsSeparatedByString:@" "];
 			NSLog(@"ErrorArray: %@",[ErrorArray description]);
          // Login-Alert zeigen
+         [self showDebug:@"StromDataDicVonHeute: Download misslungen"];
+         /*
          UIAlertView *message = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in Download",@"Download misslungen")
                                                            message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
                                                           delegate:self
@@ -427,6 +448,7 @@
                                                  otherButtonTitles:@"OK", nil];
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
+          */
          return nil;
 //			NSString* MessageText= NSLocalizedString(@"Error in Download",@"Download misslungen");
 			

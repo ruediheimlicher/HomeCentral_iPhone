@@ -104,7 +104,8 @@
 }
 
 // Antworten auf Login-Button
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+/*
+ - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
    if([title isEqualToString:@"Login"])
@@ -113,10 +114,10 @@
       NSLog(@"Benutzername: %@",[[alertView textFieldAtIndex:0]text] );
       self.Benutzernamefeld.text = [alertView textFieldAtIndex:0].text;
       self.BenutzerPasswortfeld.text = [alertView textFieldAtIndex:1].text;
-      /*
+      
        - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion
 
-       */
+       
       
    }
    else if([title isEqualToString:@"Abbrechen"])
@@ -151,7 +152,7 @@
       return NO;
    }
 }
-
+*/
 - (IBAction)reportAktualisieren:(id)sender
 {
    NSLog(@"reportAktualisieren");

@@ -116,13 +116,21 @@
       self.randunten = [[DataDic objectForKey:@"randunten"]floatValue];
    }
    
+   UIColor* itemColor=[UIColor blackColor];
+   UIFont *ordinateFont = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
+   
+   NSDictionary* tempAttr=[NSDictionary dictionaryWithObjectsAndKeys:itemColor, NSForegroundColorAttributeName,ordinateFont,NSFontAttributeName,nil];
+   
+   
+   
+ 
    CGContextRef context = UIGraphicsGetCurrentContext();
    //CGContextTranslateCTM (context,10,0);
    
    CGContextSetLineWidth(context, 0.4);
    CGContextSetStrokeColorWithColor(context, [[UIColor grayColor] CGColor]);
    
-   CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
+   //CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
    
    CGContextSetTextMatrix (context, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
    CGContextSetTextDrawingMode(context, kCGTextFill);
@@ -173,7 +181,12 @@
       const char* cName = [Stundestring UTF8String];
       //NSLog(@"linie: %d  x: %.2f cName: %s linieoben: %.2f",i ,x,cName,linieoben);
       
-      CGContextShowTextAtPoint(context,x-(strlen(cName)*3), linieoben-5,cName,strlen(cName));
+   //   CGContextShowTextAtPoint(context,x-(strlen(cName)*3), linieoben-5,cName,strlen(cName));
+      NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",i+startstd] attributes:tempAttr];
+      
+      [wertstring drawAtPoint:CGPointMake(x-(strlen(cName)*3),linieoben-12)]; 
+
+   
    }
    CGContextStrokePath(context);
    
@@ -208,8 +221,9 @@
    CGContextStrokePath(context);
    
    CGContextRef xcontext = UIGraphicsGetCurrentContext();
-   CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
-   CGContextSetTextDrawingMode(xcontext, kCGTextFill);
+   
+  // CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
+  // CGContextSetTextDrawingMode(xcontext, kCGTextFill);
    
    //CGContextTranslateCTM (xcontext,10,0);
    CGContextMoveToPoint(xcontext,kOffsetX,kOffsetY);
@@ -219,7 +233,8 @@
    //char* x_achse = "0 1 2 3\0";
    //NSLog(@"%s l: %zd",x_achse,strlen(x_achse));
    //CGContextShowTextAtPoint(xcontext,kOffsetX +10,kOffsetY+20,x_achse,strlen(x_achse));
-   CGContextStrokePath(xcontext);
+   
+   //CGContextStrokePath(xcontext);
    
    //NSLog(@"drawrect self.datadic: %@",[self.datadic description]);
    if ([self.datadic objectForKey:@"linearray"])

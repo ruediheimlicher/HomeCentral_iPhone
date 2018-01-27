@@ -81,17 +81,33 @@
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
+   
+   
+   UIColor* itemColor=[UIColor blackColor];
+   UIFont *ordinateFont = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
+   
+   NSDictionary* tempAttr=[NSDictionary dictionaryWithObjectsAndKeys:itemColor, NSForegroundColorAttributeName,ordinateFont,NSFontAttributeName,nil];
+   
+  // int wert = 10;
+   
+ //  NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",wert] attributes:tempAttr];
+   
+  // [wertstring drawAtPoint:CGPointMake(x,y)]; 
+
+   /*
 // NSLog(@"Abszisse drawRect h: %.1f\t eckeuntenx: %.1f eckeunteny: %.1f" ,self.h,self.eckeuntenx,self.eckeunteny);
  //NSLog(@"Ordinate drawRect teile: %d",self.teile);
  CGContextRef context = UIGraphicsGetCurrentContext();
  //CGContextTranslateCTM (context,8,0);
- CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
+// CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
  CGContextSetTextDrawingMode(context, kCGTextFill);
  //CGContextTranslateCTM (xcontext,10,0);
  CGContextSetTextMatrix (context, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
  
  CGContextSetLineWidth(context, 0.4);
  CGContextSetStrokeColorWithColor(context, [[UIColor grayColor] CGColor]);
+
+ */  
 
 //   float startx = self.eckeuntenx;
 //   float starty = self.eckeunteny;

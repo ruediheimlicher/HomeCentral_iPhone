@@ -43,6 +43,7 @@
    NSString* HomeCentralAdresseString;
    NSString* HomeServerAdresseString;
 
+   NSString* debugstring;
 
 }
 @property (weak, nonatomic) IBOutlet UIScrollView *               tagplanscroller;
@@ -94,8 +95,9 @@
 @property (weak, nonatomic) IBOutlet UITextField *                twialarm;
 @property (weak, nonatomic) IBOutlet UITextField *                connection;
 
++ (void)checkInternetConnectivityWithSuccessCompletion:(void (^)(void))completion ;
 
-
+- (void)showDebug:(NSString*)warnung;
 
 - (IBAction)reportResetTaste:(id)sender;
 

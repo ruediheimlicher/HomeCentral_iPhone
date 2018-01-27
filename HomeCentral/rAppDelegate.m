@@ -31,11 +31,94 @@
    if (IPString)
    {
 
-   //NSArray* IPArray = [IPString componentsSeparatedByString:@"\r\n"];
-   //NSLog(@"IPArray: %@",[IPArray description]);
+   NSArray* IPArray = [IPString componentsSeparatedByString:@"\r\n"];
+   NSLog(@"IPArray: %@",[IPArray description]);
    NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
    [nc postNotificationName:@"IP" object:self userInfo:[NSDictionary dictionaryWithObject:IPString forKey:@"ip"]];
       [[rVariableStore sharedInstance] setIP:IPString];
+   
+      
+   // 
+      UIAlertController* alert_IP = [UIAlertController alertControllerWithTitle:@"IP-Status"
+                                                                        message:@"IPString ist vorhanden?"
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+      
+      /*
+      UIAlertAction* NOAction = [UIAlertAction actionWithTitle:@"NEIN" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action)
+                                 {
+                                    NSLog(@"TWI nicht ausschalten.");
+                                    //self.twitaste.on=YES;
+                                    // Nichts tun
+                                    
+                                    
+                                 }];
+      
+      
+      [alert_IP addAction:NOAction];
+      */
+      UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action)
+                                 {
+                                    NSLog(@"IP-String OK");
+                                    //[self setTWIState:NO]; // TWI ausschalten
+                                    
+                                 }];
+      
+      [alert_IP addAction:OKAction];
+      
+      UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+      alertWindow.rootViewController = [[UIViewController alloc] init];
+      alertWindow.windowLevel = UIWindowLevelAlert + 1;
+      [alertWindow makeKeyAndVisible];
+      [alertWindow.rootViewController presentViewController:alert_IP animated:YES completion:nil];
+
+      
+      //
+      
+      
+      
+   
+   }
+   else
+   {
+      UIAlertController* alert_IP = [UIAlertController alertControllerWithTitle:@"IP-Status"
+                                                                        message:@"IPString nicht vorhanden?"
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+      /*
+      UIAlertAction* NOAction = [UIAlertAction actionWithTitle:@"NEIN" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action)
+                                 {
+                                    NSLog(@"TWI nicht ausschalten.");
+                                    //self.twitaste.on=YES;
+                                    // Nichts tun
+                                    
+                                    
+                                 }];
+      
+      
+      [alert_IP addAction:NOAction];
+      */
+      UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"Quit" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action)
+                                 {
+                                    NSLog(@"Quit");
+                                    //[self setTWIState:NO]; // TWI ausschalten
+                                    NSNotificationCenter* nc=[NSNotificationCenter defaultCenter];
+                                    [nc postNotificationName:@"Beenden" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:1]forKey:@"status"]];
+
+                                 }];
+      
+      [alert_IP addAction:OKAction];
+      
+      // https://stackoverflow.com/questions/27807104/how-to-present-uialertview-from-appdelegate
+      UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+      alertWindow.rootViewController = [[UIViewController alloc] init];
+      alertWindow.windowLevel = UIWindowLevelAlert + 1;
+      [alertWindow makeKeyAndVisible];
+      [alertWindow.rootViewController presentViewController:alert_IP animated:YES completion:nil];
+ //     [self presentViewController:alert_IP animated:YES completion:nil];
+      
    }
    
     return YES;
@@ -64,11 +147,13 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+   NSLog(@"applicationWillEnterForeground: ");
    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+   NSLog(@"applicationDidBecomeActive: ");
    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
    //NSArray* Kontroller = [self rootViewController];
 }
