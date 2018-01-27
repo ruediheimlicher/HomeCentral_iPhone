@@ -961,7 +961,10 @@
    }
    
    NSLog(@"shouldStartLoadWithRequest YES %@",[request URL]);
-   [[UIApplication sharedApplication] openURL:[request URL]];
+   [[UIApplication sharedApplication] openURL:[request URL] options: UIApplicationOpenURLOptionUniversalLinksOnly completionHandler:^(BOOL success) {
+      NSLog(@"Open success: %d",success);
+   }];
+   
    return YES;
    
    
