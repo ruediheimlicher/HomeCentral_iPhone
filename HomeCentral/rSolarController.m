@@ -961,8 +961,8 @@
    }
    
    NSLog(@"shouldStartLoadWithRequest YES %@",[request URL]);
-   [[UIApplication sharedApplication] openURL:[request URL] options: UIApplicationOpenURLOptionUniversalLinksOnly completionHandler:^(BOOL success) {
-      NSLog(@"Open success: %d",success);
+   [[UIApplication sharedApplication] openURL:[request URL] options: @{} completionHandler:^(BOOL success) {
+      NSLog(@"SolarController Open success: %d",success);
    }];
    
    return YES;

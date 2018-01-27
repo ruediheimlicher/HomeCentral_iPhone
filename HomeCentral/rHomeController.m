@@ -1487,9 +1487,9 @@
 			[nc postNotificationName:@"FinishLoad" object:self userInfo:tempDataDic];
 			[derTimer invalidate]; // Anfragen stop
          
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"EEPROM write" message:@"Schreiben auf EEPROM ist misslungen" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-         [alert show];
-
+         //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"EEPROM write" message:@"Schreiben auf EEPROM ist misslungen" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+         //[alert show];
+         [self showWarnungMitTitel:@"EEPROM write" mitWarnung:@"Schreiben auf EEPROM ist misslungen"];
          
 		}
 		
