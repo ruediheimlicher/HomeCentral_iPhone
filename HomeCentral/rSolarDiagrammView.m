@@ -40,7 +40,11 @@
 {
    // Drawing code
    //NSLog(@"Solardiagramm drawRect bounds w: %.1f\t h: %.1f diagrammhoehe: %.1f" ,self.bounds.size.width,self.bounds.size.height,self.diagrammhoehe);
+   UIColor* itemColor=[UIColor blackColor];
+   UIFont *ordinateFont = [UIFont fontWithName:@"HelveticaNeue-Medium" size:8];
    
+   NSDictionary* tempAttr=[NSDictionary dictionaryWithObjectsAndKeys:itemColor, NSForegroundColorAttributeName,ordinateFont,NSFontAttributeName,nil];
+
    self.diagrammbreite = self.bounds.size.width;
    if ([DataDic objectForKey:@"diagrammbreite"])
    {
@@ -105,7 +109,7 @@
    CGContextSetLineWidth(context, 0.4);
    CGContextSetStrokeColorWithColor(context, [[UIColor lightGrayColor] CGColor]);
    
-   CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
+//   CGContextSelectFont(context, "Helvetica", 10, kCGEncodingMacRoman);
    CGContextSetTextMatrix (context, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
    CGContextSetTextDrawingMode(context, kCGTextFill);
 
@@ -135,7 +139,11 @@
       const char* cName = [Stundestring UTF8String];
       //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
       
-      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, linieoben-5,cName,strlen(cName));
+      
+//      CGContextShowTextAtPoint(context,self.randlinks + i * intervall-5, linieoben-5,cName,strlen(cName));
+      NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",i+startstd] attributes:tempAttr];
+      
+      [wertstring drawAtPoint:CGPointMake(self.randlinks + i * intervall-5, linieoben-10)]; 
 
    }
    
@@ -167,7 +175,7 @@
    CGContextStrokePath(context);
    
    CGContextRef xcontext = UIGraphicsGetCurrentContext();
-   CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
+   //CGContextSelectFont(xcontext, "Helvetica", 14, kCGEncodingMacRoman);
    CGContextSetTextDrawingMode(xcontext, kCGTextFill);
    //CGContextTranslateCTM (xcontext,10,0);
    CGContextMoveToPoint(xcontext,kOffsetX,kOffsetY);
@@ -256,7 +264,7 @@
                CGContextStrokePath(templinecontext);
                
                CGContextBeginPath(templinecontext);
-               CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
+               //CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
                CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
                CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
                
@@ -266,8 +274,14 @@
                const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
                //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
 
-               CGContextShowTextAtPoint(templinecontext,x +10,y+4,cName,2);
+               //CGContextShowTextAtPoint(templinecontext,x +10,y+4,cName,2);
+               
+               
                CGContextStrokePath(templinecontext);
+
+               NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",[tempLineDic objectForKey:@"linename"]] attributes:tempAttr];
+               
+               [wertstring drawAtPoint:CGPointMake(x +10,y-10)]; 
 
                //UIGraphicsPopContext();
             } //if count
@@ -278,7 +292,6 @@
          // Linien fuer Heizung und Pumpe
          
          // Beginn Pumpe
-         
          
          int pumpecodeindex = 6;
          if ([[tempLineArray objectAtIndex:pumpecodeindex]count]) // linie vorhanden
@@ -365,7 +378,8 @@
             CGContextStrokePath(templinecontext);
             
             CGContextBeginPath(templinecontext);
-            CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
+ //           CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
+            /*
             CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
             CGContextMoveToPoint(templinecontext,x,yON);
             CGContextSetTextMatrix (templinecontext, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
@@ -373,9 +387,13 @@
             const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
             //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
             
-            CGContextShowTextAtPoint(templinecontext,x,yON+4,cName,1);
+ //           CGContextShowTextAtPoint(templinecontext,x,yON+4,cName,1);
             CGContextStrokePath(templinecontext);
+            */
+            NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",[tempLineDic objectForKey:@"linename"] ] attributes:tempAttr];
             
+            [wertstring drawAtPoint:CGPointMake(x,yON-4)]; 
+
             
             
             //UIGraphicsPopContext();
@@ -419,7 +437,7 @@
             
 //            int heizungyoff=-100;
             int lastON=0;
-            int yON=self.bounds.size.height-220;
+            int yON=self.bounds.size.height-215;
             float x=startx;
             float datawert=-100;
             
@@ -466,6 +484,7 @@
             }// for index
             CGContextStrokePath(templinecontext);
             
+            /*
             CGContextBeginPath(templinecontext);
             CGContextSelectFont(templinecontext, "Helvetica", 10, kCGEncodingMacRoman);
             CGContextSetTextDrawingMode(templinecontext, kCGTextFill);
@@ -475,9 +494,13 @@
             const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
             //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
             
-            CGContextShowTextAtPoint(templinecontext,x,yON+4,cName,1);
-            CGContextStrokePath(templinecontext);
+          //  CGContextShowTextAtPoint(templinecontext,x,yON+14,cName,1);
+          //  CGContextStrokePath(templinecontext);
+            */
+            NSMutableAttributedString * wertstring = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",[tempLineDic objectForKey:@"linename"] ] attributes:tempAttr];
             
+            [wertstring drawAtPoint:CGPointMake(x,yON-4)]; 
+
             
             
             //UIGraphicsPopContext();
