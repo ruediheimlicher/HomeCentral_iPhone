@@ -363,11 +363,15 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+   [super viewDidAppear:animated];
+   [rHomeController  checkInternetConnectivityWithSuccessCompletion:^{
+      // your internet is working - add code here
+      NSLog(@"viewDidAppear: Internet OK");
+   }];
    NSLog(@"viewDidAppear");
    NSString* message = [NSString stringWithFormat:@"viewDidAppear debugstring: %@",debugstring];
    NSLog(@"viewDidAppear message: %@",message);
    [self showDebug:message];
-   
 }
 
 - (void)backgroundaktion:(NSNotification*)note
@@ -1546,6 +1550,31 @@
    self.twitimer.hidden=NO;
    self.twitimer.text = [NSString stringWithFormat:@"%d",maxAnzahl];
 
+}
+
++ (void)checkInternetConnectivityWithSuccessCompletion:(void (^)(void))completion {
+   
+   // https://stackoverflow.com/questions/48341595/ios-how-to-test-internet-connection-in-the-most-easy-way-without-freezing-the
+   NSOperationQueue *myQueue = [[NSOperationQueue alloc] init];
+   NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://www.google.com"]];
+   request.timeoutInterval = 10;
+   
+   [NSURLConnection sendAsynchronousRequest:request queue:myQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+    {
+       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+       NSLog(@"response status code: %ld, error status : %@", (long)[httpResponse statusCode], error.description);
+       
+       if ((long)[httpResponse statusCode] >= 200 && (long)[httpResponse statusCode]< 400)
+       {
+          // do stuff
+          NSLog(@"Connected!");
+          completion();
+       }
+       else
+       {
+          NSLog(@"Not connected!");
+       }
+    }];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
