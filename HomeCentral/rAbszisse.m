@@ -86,7 +86,7 @@
    UIColor* itemColor=[UIColor blackColor];
    UIFont *ordinateFont = [UIFont fontWithName:@"HelveticaNeue-Medium" size:9];
    
-   NSDictionary* tempAttr=[NSDictionary dictionaryWithObjectsAndKeys:itemColor, NSForegroundColorAttributeName,ordinateFont,NSFontAttributeName,nil];
+//   NSDictionary* tempAttr=[NSDictionary dictionaryWithObjectsAndKeys:itemColor, NSForegroundColorAttributeName,ordinateFont,NSFontAttributeName,nil];
    
   // int wert = 10;
    

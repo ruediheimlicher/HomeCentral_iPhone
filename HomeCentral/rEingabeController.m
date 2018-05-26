@@ -84,6 +84,7 @@
    [message setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
    [message show];
    */
+   
    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Einloggen"
                                                                   message:@"Name und Passwort für den Login."
                                                            preferredStyle:UIAlertControllerStyleAlert];

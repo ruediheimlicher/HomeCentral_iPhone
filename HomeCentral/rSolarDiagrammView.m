@@ -136,7 +136,7 @@
       CGContextAddLineToPoint(context, x,linieoben);
 
       NSString* Stundestring = [NSString stringWithFormat:@"%d",i+startstd];
-      const char* cName = [Stundestring UTF8String];
+ //     const char* cName = [Stundestring UTF8String];
       //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
       
       
@@ -271,7 +271,7 @@
                CGContextMoveToPoint(templinecontext,x,y);
                
                //char* x_achse = "0 1 2 3\0";
-               const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
+  //             const char* cName = [[tempLineDic objectForKey:@"linename"] UTF8String];
                //NSLog(@"linie: %d linename: %@ %s x: %.2f y: %.2f",linie ,[tempLineDic objectForKey:@"linename"],cName,x,y);
 
                //CGContextShowTextAtPoint(templinecontext,x +10,y+4,cName,2);

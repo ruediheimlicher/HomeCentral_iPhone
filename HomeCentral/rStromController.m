@@ -16,6 +16,7 @@
 
 - (void)showDebug:(NSString*)warnung
 {
+   NSLog(@"alertController Strom D");
    UIAlertController* alert_Debug = [UIAlertController alertControllerWithTitle:@"Debug-Status"
                                                                         message:warnung
                                                                  preferredStyle:UIAlertControllerStyleAlert];
@@ -361,7 +362,7 @@
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
          */
-         
+         NSLog(@"alertController StromDataDicVonHeute");
          UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Fehler beim Download der Stromdaten von heute"
                                                                         message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
                                                                  preferredStyle:UIAlertControllerStyleAlert];

@@ -51,7 +51,7 @@
 - (void)showMessage:(BOOL)animated
 {
   // http://stackoverflow.com/questions/32804506/uialertcontroller-not-appearing-at-all
-   
+   NSLog(@"alertController showMessage");
    UIAlertController *alertController = [UIAlertController  alertControllerWithTitle:@"Do not leave any Field Empty"  message:nil  preferredStyle:UIAlertControllerStyleAlert];
    
    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -62,6 +62,8 @@
 
 - (void)showDebug:(NSString*)warnung
 {
+   NSLog(@"alertController showDebug");
+   return;
    UIAlertController* alert_Debug = [UIAlertController alertControllerWithTitle:@"Debug-Status"
                                                                         message:warnung
                                                                  preferredStyle:UIAlertControllerStyleAlert];
@@ -82,6 +84,7 @@
 
 - (void)showWarnungMitTitel:(NSString*)titel mitWarnung:(NSString*)warnung
 {
+   NSLog(@"alertController showWarnungMitTitel");
    UIAlertController* alert_Warnung = [UIAlertController alertControllerWithTitle:titel
                                                                           message:warnung
                                                                    preferredStyle:UIAlertControllerStyleAlert];
@@ -270,9 +273,9 @@
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    //[self.tagplananzeige setNeedsDisplay];
    
-   
+   // https
    HomeCentralAdresseString = @"http://ruediheimlicher.dyndns.org";
-   HomeServerAdresseString = @"https://www.ruediheimlicher.ch";
+   HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
 
    self.webfenster.delegate = self;
    maxAnzahl = 32;
@@ -364,10 +367,12 @@
 - (void)viewDidAppear:(BOOL)animated
 {
    [super viewDidAppear:animated];
+   /*
    [rHomeController  checkInternetConnectivityWithSuccessCompletion:^{
       // your internet is working - add code here
       NSLog(@"viewDidAppear: Internet OK");
    }];
+    */
    NSLog(@"viewDidAppear");
    NSString* message = [NSString stringWithFormat:@"viewDidAppear debugstring: %@",debugstring];
    NSLog(@"viewDidAppear message: %@",message);
@@ -687,7 +692,7 @@
    self.aktuellerWochentag = sender.selectedSegmentIndex;
    [self setTagplanInRaum:self.aktuellerRaum fuerObjekt:self.aktuellesObjekt anWochentag:self.aktuellerWochentag];
    
-   NSLog(@"reportWochentagSeg aktuellerWochentag: %d",self.aktuellerWochentag);
+   NSLog(@"reportWochentagSeg aktuellerWochentag: %ld",self.aktuellerWochentag);
    [self restartTWITimer];
    if (self.twitaste.on == YES)
    {
@@ -997,6 +1002,7 @@
       [self.ladeindikator startAnimating];
       self.ladeindikator.hidden = NO;
       
+      // https
       Reachability* reach = [Reachability reachabilityWithHostname:@"ruediheimlicher.dyndns.org"];
       
       // Set the blocks
@@ -1072,7 +1078,7 @@
          //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Keine Verbindung zum Internet" message:@"*Mobile Daten muss //aktiviert sein" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil,nil];
          //[alert show];
          
-         
+         NSLog(@"alertController keone Verbindung ");
          UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Keine Verbindung zum Internet"
                                                                         message:@"Mobile Daten muss aktiviert sein."
                                                                  preferredStyle:UIAlertControllerStyleAlert];
@@ -1555,10 +1561,20 @@
 + (void)checkInternetConnectivityWithSuccessCompletion:(void (^)(void))completion {
    
    // https://stackoverflow.com/questions/48341595/ios-how-to-test-internet-connection-in-the-most-easy-way-without-freezing-the
-   NSOperationQueue *myQueue = [[NSOperationQueue alloc] init];
+   //NSOperationQueue *myQueue = [[NSOperationQueue alloc] init];
    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://www.google.com"]];
    request.timeoutInterval = 10;
+   //https://stackoverflow.com/questions/30935304/sendasynchronousrequest-was-deprecated-in-ios-9-how-to-alter-code-to-fix
+   NSURLSession *session = [NSURLSession sharedSession];
    
+   [[session dataTaskWithURL:[NSURL URLWithString:@"https://www.google.com"]
+           completionHandler:^(NSData *data,
+                               NSURLResponse *response,
+                               NSError *error) {
+              // handle response
+              
+           }] resume];   
+   /*
    [NSURLConnection sendAsynchronousRequest:request queue:myQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
     {
        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
@@ -1575,6 +1591,7 @@
           NSLog(@"Not connected!");
        }
     }];
+    */
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView

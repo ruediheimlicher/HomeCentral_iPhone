@@ -16,6 +16,7 @@
 
 - (void)showDebug:(NSString*)warnung
 {
+   NSLog(@"alertController solar A");
    UIAlertController* alert_Debug = [UIAlertController alertControllerWithTitle:@"Debug-Status"
                                                                      message:warnung
                                                               preferredStyle:UIAlertControllerStyleAlert];
@@ -37,6 +38,7 @@
 
 - (void)showWarnungMitTitel:(NSString*)titel mitWarnung:(NSString*)warnung
 {
+   NSLog(@"alertController solar B");
    UIAlertController* alert_Warnung = [UIAlertController alertControllerWithTitle:titel
                                                                         message:warnung
                                                                  preferredStyle:UIAlertControllerStyleAlert];
@@ -119,7 +121,7 @@
    NSLog(@"Solar A");
    //[self showDebug:@"Solar A"];
    [self loadLastData];
-   [self showDebug:@"Solar loadLastData"];
+//   [self showDebug:@"Solar loadLastData"];
    return;
    
    
@@ -456,7 +458,7 @@
          [message setAlertViewStyle:UIAlertViewStyleDefault];
          [message show];
          */
-         
+         NSLog(@"alertController lastsolardata");
          UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Fehler beim Download der letzten Solardaten"
                                                                         message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
                                                                  preferredStyle:UIAlertControllerStyleAlert];

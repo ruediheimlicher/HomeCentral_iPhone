@@ -39,9 +39,10 @@
    
       
    // 
-      UIAlertController* alert_IP = [UIAlertController alertControllerWithTitle:@"IP-Status"
-                                                                        message:@"IPString ist vorhanden?"
-                                                                 preferredStyle:UIAlertControllerStyleAlert];
+      NSLog(@"alertController appdel IPStatus");
+ //     UIAlertController* alert_IP = [UIAlertController alertControllerWithTitle:@"IP-Status"
+  //                                                                      message:@"IPString ist vorhanden?"
+  //                                                               preferredStyle:UIAlertControllerStyleAlert];
       
       /*
       UIAlertAction* NOAction = [UIAlertAction actionWithTitle:@"NEIN" style:UIAlertActionStyleDefault
@@ -64,7 +65,7 @@
                                     //[self setTWIState:NO]; // TWI ausschalten
                                     
                                  }];
-      
+      /*
       [alert_IP addAction:OKAction];
       
       UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -72,7 +73,7 @@
       alertWindow.windowLevel = UIWindowLevelAlert + 1;
       [alertWindow makeKeyAndVisible];
       [alertWindow.rootViewController presentViewController:alert_IP animated:YES completion:nil];
-
+*/
       
       //
       
@@ -82,6 +83,7 @@
    }
    else
    {
+      NSLog(@"alertController AppDel IP Status nicht vorhanden");
       UIAlertController* alert_IP = [UIAlertController alertControllerWithTitle:@"IP-Status"
                                                                         message:@"IPString nicht vorhanden?"
                                                                  preferredStyle:UIAlertControllerStyleAlert];
