@@ -48,6 +48,65 @@
 @implementation rHomeController
 
 
+- (NSString*)passwortstring
+{
+   NSString* returnstring = [NSString string];
+   NSString* ResourcenPfad=[[[NSBundle mainBundle]bundlePath]stringByAppendingPathComponent:@"Contents/Resources"];
+   //NSLog(@"ResourcenPfad: %@",ResourcenPfad);
+   NSString* PasswortTabellePfad=[[[NSBundle mainBundle]bundlePath]stringByAppendingPathComponent:@"Contents/Resources/Passwort.txt"];
+   //NSLog(@"PasswortTabellePfad: %@",PasswortTabellePfad);
+   NSString* PasswortTabelleString = [NSString stringWithContentsOfFile:PasswortTabellePfad encoding:NSMacOSRomanStringEncoding error:NULL];
+   
+   // NSLog(@"PasswortString: \n%@",PasswortTabelleString);
+   NSArray* PasswortTabelle = [PasswortTabelleString componentsSeparatedByString:@"\n"];
+   //NSLog(@"PasswortArray: \n%@",PasswortTabelle  );
+   //NSLog(@"PasswortArray 6: \n%@",[PasswortTabelle objectAtIndex:6] );
+   //NSString* tempPW = [[[PasswortTabelle objectAtIndex:6]componentsSeparatedByString:@"\t"]objectAtIndex:3];
+   //NSLog(@"tempPW: %@",tempPW);
+   
+   /*
+    pw_array = 
+    {0x47,   0x3E,   0xD,   0x5,   0x21,   0x3D,   0x42,   0x25,
+    0x22,   0x34,   0x3F,   0x4C,   0x10,   0x5,   0x3C,   0x63,
+    0x50,   0x5,   0x7,   0x0,   0x3C,   0x11,   0x43,   0x4D,
+    0x6,   0x5E,   0x0,   0x53,   0x34,   0x10,   0x41,   0x1F,
+    0x2A,   0x5E,   0x16,   0x2B,   0x56,   0x7,   0x44,   0x62,
+    0x8,   0x54,   0x18,   0x2F,   0x4D,   0x1,   0x5F,   0x4,
+    0x9,   0x22,   0x5E,   0x36,   0x2C,   0x48,   0x45,   0x13,
+    0x26,   0x5C,   0x4D,   0x4B,   0x32,   0x1E,   0x1D,   0x3F};
+    */
+   
+   srand((unsigned int)time(NULL));   // should only be called once
+   int randomnummer1 = rand()%63+1;
+   
+   randomnummer1=59;
+   
+   //NSLog(@"Util passwortstring randomnummer 1: *%d* reminder: %d mantisse: %d",randomnummer1 ,randomnummer1%8,randomnummer1/8);
+   int randomzeile1 = randomnummer1%8;
+   int randomkolonne1 = randomnummer1/8;
+   NSLog(@"Util passwortstring randomnummer 1: *%d* randomzeile: %d randomkolonne: %d",randomnummer1 ,randomzeile1,randomkolonne1);
+   
+   NSString* passwort1 = [[[PasswortTabelle objectAtIndex:randomzeile1]componentsSeparatedByString:@"\t"]objectAtIndex:randomkolonne1];
+   //   NSLog(@"passwortstring passwort1: %@ randomnummer 1: *%d* randomzeile: %d randomkolonne: %d",passwort1,randomnummer1 ,randomzeile,randomkolonne);
+   
+   
+   int randomnummer2 = rand()%63+1;
+   
+   randomnummer2 = 51;
+   //NSLog(@"Util passwortstring randomnummer 2: *%d* reminder: %d mantisse: %d",randomnummer2 ,randomnummer2%8,randomnummer2/8);
+   int randomzeile2 = randomnummer2%8;
+   int randomkolonne2 = randomnummer2/8;
+   NSString* passwort2 = [[[PasswortTabelle objectAtIndex:randomzeile2]componentsSeparatedByString:@"\t"]objectAtIndex:randomkolonne2];
+   NSLog(@"Util passwortstring randomnummer 2: *%d* randomzeile: %d randomkolonne: %d",randomnummer2 ,randomzeile2,randomkolonne2);
+   
+   
+   returnstring = [NSString stringWithFormat:@"%02X\t%02X\t%02X\t%02X",randomnummer1,[passwort1 intValue],randomnummer2,[passwort2 intValue]];
+   
+   NSLog(@"Util passwortstring returnstring: %@",returnstring);
+   return returnstring;
+}
+
+
 - (void)showMessage:(BOOL)animated
 {
   // http://stackoverflow.com/questions/32804506/uialertcontroller-not-appearing-at-all
@@ -139,7 +198,7 @@
                                             selector:@selector(beendenAktion:)
                                                 name:@"Beenden"
                                               object:nil];
-
+   pwpart = 
    //[UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
    debugstring = [debugstring stringByAppendingString:@"A"];
    loadstring = [loadstring stringByAppendingString:@"B"];
@@ -274,8 +333,8 @@
    //[self.tagplananzeige setNeedsDisplay];
    
    // https
-   HomeCentralAdresseString = @"http://ruediheimlicher.dyndns.org";
-   HomeServerAdresseString = @"http://www.ruediheimlicher.ch";
+   HomeCentralAdresseString = @"https://ruediheimlicherhome.dyndns.org";
+   HomeServerAdresseString = @"https://www.ruediheimlicher.ch";
 
    self.webfenster.delegate = self;
    maxAnzahl = 32;
@@ -376,7 +435,7 @@
    NSLog(@"viewDidAppear");
    NSString* message = [NSString stringWithFormat:@"viewDidAppear debugstring: %@",debugstring];
    NSLog(@"viewDidAppear message: %@",message);
-   [self showDebug:message];
+  // [self showDebug:message];
 }
 
 - (void)backgroundaktion:(NSNotification*)note
@@ -976,7 +1035,7 @@
       
       self.sendtaste.enabled= NO;
       NSString* TWIStatusSuffix = [NSString stringWithFormat:@"pw=%s&status=%@",PW,@"1"];
-      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix];
+      NSString* TWIStatusURLString =[NSString stringWithFormat:@"%@/twi?%@",HomeCentralAdresseString, TWIStatusSuffix,pwpart];
       
       //NSLog(@"TWIStatusAktion >ON TWIStatusURL: %@",TWIStatusURLString);
       self.testdata.text = [NSString stringWithFormat:@"ON %@",TWIStatusURLString];
@@ -1003,7 +1062,7 @@
       self.ladeindikator.hidden = NO;
       
       // https
-      Reachability* reach = [Reachability reachabilityWithHostname:@"ruediheimlicher.dyndns.org"];
+      Reachability* reach = [Reachability reachabilityWithHostname:@"ruediheimlicherhome.dyndns.org"];
       
       // Set the blocks
       

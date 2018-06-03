@@ -28,11 +28,11 @@
    // http://stackoverflow.com/questions/31254725/transport-security-has-blocked-a-cleartext-http/32560433#32560433
     [super viewDidLoad];
    // https
-   self.websitename = @"ruediheimlicher.dyndns.org";
+   self.websitename = @"ruediheimlicherhome.dyndns.org";
 	// Do any additional setup after loading the view.
 //self.title = self.websitename;
    // https
-   NSString *fullURL = [NSString stringWithFormat:@"http://%@", self.websitename];
+   NSString *fullURL = [NSString stringWithFormat:@"https://%@", self.websitename];
    NSURL *websiteURL = [NSURL URLWithString:fullURL];
    NSURLRequest *requestObj = [NSURLRequest requestWithURL:websiteURL];
    [self.webfenster loadRequest:requestObj];

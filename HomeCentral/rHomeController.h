@@ -32,18 +32,18 @@
 
 @interface rHomeController : UIViewController <UIAlertViewDelegate,UIWebViewDelegate>
 {
-   NSURL* HomeCentralURL;
-   rToggleTaste* OnOffTaste;
-   rToggleTaste* StundenTaste;
-   NSTimer* confirmTimer;
-	NSTimer* confirmStatusTimer;
-   NSTimer* TWIStatusTimer;
-	int maxAnzahl;
-   NSURL* HomeServerURL;
-   NSString* HomeCentralAdresseString;
-   NSString* HomeServerAdresseString;
-
-   NSString* debugstring;
+   NSURL*               HomeCentralURL;
+   rToggleTaste*        OnOffTaste;
+   rToggleTaste*        StundenTaste;
+   NSTimer*             confirmTimer;
+	NSTimer*             confirmStatusTimer;
+   NSTimer*             TWIStatusTimer;
+	int                  maxAnzahl;
+   NSURL*               HomeServerURL;
+   NSString*            HomeCentralAdresseString;
+   NSString*            HomeServerAdresseString;
+   NSMutableString*     pwpart; // teil der URL mit daten von pw
+   NSString*            debugstring;
 
 }
 @property (weak, nonatomic) IBOutlet UIScrollView *               tagplanscroller;

@@ -378,7 +378,7 @@
       return ;
    }
    
-   url = [NSString stringWithFormat:@"http://%@",url];
+   url = [NSString stringWithFormat:@"https://%@",url];
    NSLog(@"reportTextFieldReturn url: %@",url);
    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunesconnect.apple.com"]];
    
@@ -949,7 +949,7 @@
       NSLog(@"shouldStartLoadWithRequest YES");
       return YES;
    }
-   if ([[[request URL] absoluteString] isEqualToString: @"http://home/"])
+   if ([[[request URL] absoluteString] isEqualToString: @"https://home/"])
    {
       NSLog(@"shouldStartLoadWithRequest NO");
       [super dismissViewControllerAnimated:YES completion:NULL];

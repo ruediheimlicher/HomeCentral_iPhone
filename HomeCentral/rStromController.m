@@ -440,7 +440,7 @@
 			NSArray* ErrorArray=[[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]componentsSeparatedByString:@" "];
 			NSLog(@"ErrorArray: %@",[ErrorArray description]);
          // Login-Alert zeigen
-         [self showDebug:@"StromDataDicVonHeute: Download misslungen"];
+         //[self showDebug:@"StromDataDicVonHeute: Download misslungen"];
          /*
          UIAlertView *message = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error in Download",@"Download misslungen")
                                                            message:[[[WebFehler userInfo]objectForKey:@"NSUnderlyingError"]description]
